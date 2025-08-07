@@ -2,6 +2,9 @@ class MatchHandler {
     constructor(app) {
         this.app = app;
         this.currentIndex = 0;
+        this.isExpanded = false; // Добавляем состояние для свайпа
+        this.startY = 0;
+        this.currentY = 0;
         this.init();
     }
 
@@ -15,10 +18,16 @@ class MatchHandler {
             matchCard: document.getElementById('matchCard'),
             matchCardBg: document.getElementById('matchCardBg'),
             matchNameAge: document.getElementById('matchNameAge'),
-            matchDescription: document.getElementById('matchDescription'),
+            matchDescriptionShort: document.getElementById('matchDescriptionShort'), // Добавлено для краткого описания
+            matchDescriptionFull: document.getElementById('matchDescriptionFull'), // Добавлено для полного описания
             matchLastActive: document.getElementById('matchLastActive'),
             matchDistance: document.getElementById('matchDistance'),
-            // matchPhotos: document.getElementById('matchPhotos'), // УДАЛЕНО: Больше не нужно
+            matchScrollableContent: document.getElementById('matchScrollableContent'), // Добавлено для свайпа
+            matchFixedInfo: document.getElementById('matchFixedInfo'), // Добавлено для фиксированной части
+            matchLookingFor: document.getElementById('matchLookingFor'), // Добавлено для "Ищу"
+            matchInterests: document.getElementById('matchInterests'), // Добавлено для "Интересы"
+            matchPhotosGrid: document.getElementById('matchPhotosGrid'), // Добавлено для фото
+            matchScrollIndicator: document.querySelector('#matchScrollableContent .match-scroll-indicator'), // Добавлено для индикатора свайпа
             likeBtn: document.getElementById('matchLikeBtn'),
             passBtn: document.getElementById('matchPassBtn'),
             noProfilesMessage: document.getElementById('noProfilesMessage')
@@ -28,6 +37,17 @@ class MatchHandler {
     setupEventListeners() {
         this.elements.likeBtn.addEventListener('click', () => this.handleLike());
         this.elements.passBtn.addEventListener('click', () => this.handlePass());
+
+        // Обработчики для свайпа
+        this.handleTouchStart = this.handleTouchStart.bind(this);
+        this.handleTouchMove = this.handleTouchMove.bind(this);
+        this.handleTouchEnd = this.handleTouchEnd.bind(this);
+        this.toggleExpand = this.toggleExpand.bind(this);
+
+        this.elements.matchScrollableContent.addEventListener('touchstart', this.handleTouchStart);
+        this.elements.matchScrollableContent.addEventListener('touchmove', this.handleTouchMove);
+        this.elements.matchScrollableContent.addEventListener('touchend', this.handleTouchEnd);
+        this.elements.matchScrollIndicator.addEventListener('click', this.toggleExpand);
     }
 
     generateRandomProfiles(count = 30) {
@@ -178,12 +198,20 @@ class MatchHandler {
 
         const profile = this.app.state.suggestedProfiles[this.currentIndex];
         this.renderProfile(profile);
+        this.resetScrollState(); // Сбрасываем состояние свайпа при показе нового профиля
     }
 
     renderProfile(profile) {
         this.elements.matchCardBg.style.backgroundImage = `url(${profile.avatar})`;
         this.elements.matchNameAge.textContent = `${profile.name}, ${profile.age}`;
-        this.elements.matchDescription.textContent = profile.interestingFact || profile.description || 'Пользователь пока ничего о себе не рассказал.';
+        
+        const fullDescription = profile.interestingFact || profile.description || 'Пользователь пока ничего о себе не рассказал.';
+        this.elements.matchDescriptionShort.textContent = fullDescription.split('.')[0] + (fullDescription.includes('.') ? '.' : '');
+        if (this.elements.matchDescriptionShort.textContent.length > 100) {
+            this.elements.matchDescriptionShort.textContent = this.elements.matchDescriptionShort.textContent.substring(0, 97) + '...';
+        }
+        this.elements.matchDescriptionFull.textContent = fullDescription;
+
         this.elements.matchLastActive.textContent = profile.lastActive;
 
         if (this.app.state.userData.location?.lat && profile.location?.lat) {
@@ -198,23 +226,74 @@ class MatchHandler {
             this.elements.matchDistance.textContent = '';
         }
         
-        // УДАЛЕНО: Рендеринг фотографий больше не нужен
-        // let photosHtml = '';
-        // const maxPhotosToShow = 6;
-        // for (let i = 0; i < maxPhotosToShow; i++) {
-        //     if (profile.photos[i]) {
-        //         photosHtml += `<div class="match-photo-item" style="background-image: url(${profile.photos[i]})"></div>`;
-        //     } else {
-        //         photosHtml += `<div class="match-photo-item match-photo-placeholder">📸</div>`;
-        //     }
-        // }
-        // this.elements.matchPhotos.innerHTML = photosHtml;
+        this.updateLookingFor(profile.lookingFor, this.app.config.lookingForOptions, this.elements.matchLookingFor);
+        this.updateInterests(profile.interests, this.app.config.interests, this.elements.matchInterests);
+        this.updatePhotos(profile.photos, this.elements.matchPhotosGrid);
 
         this.elements.matchCard.style.transition = 'none';
         this.elements.matchCard.style.transform = 'translateX(0) rotate(0)';
         this.elements.matchCard.style.opacity = '1';
         void this.elements.matchCard.offsetWidth;
         this.elements.matchCard.style.transition = 'all var(--transition-normal) ease';
+    }
+
+    updateLookingFor(lookingFor, options, container) {
+        if (!container) return;
+        container.innerHTML = '';
+        if (lookingFor && lookingFor.length > 0) {
+            const lookingForContainer = document.createElement('div');
+            lookingForContainer.className = 'looking-for-container';
+            lookingFor.forEach(optionId => {
+                const option = options.find(o => o.id === optionId);
+                if (option) {
+                    const el = document.createElement('div');
+                    el.className = 'looking-for-item';
+                    el.innerHTML = `
+                        <div class="looking-for-emoji">${option.emoji}</div>
+                        <div class="looking-for-text">${option.name}</div>
+                    `;
+                    lookingForContainer.appendChild(el);
+                }
+            });
+            container.appendChild(lookingForContainer);
+        } else {
+            container.innerHTML = '<div class="no-data">Не указано, что ищет</div>';
+        }
+    }
+
+    updateInterests(userInterests, configInterests, container) {
+        if (!container) return;
+        container.innerHTML = '';
+        if (userInterests && userInterests.length > 0) {
+            const interestsContainer = document.createElement('div');
+            interestsContainer.className = 'interests-container';
+            userInterests.forEach(interestId => {
+                const interest = configInterests.find(i => i.id === interestId);
+                if (interest) {
+                    const el = document.createElement('div');
+                    el.className = 'interest-item';
+                    el.innerHTML = `
+                        <div class="interest-emoji">${interest.emoji}</div>
+                        <div class="interest-text">${interest.name}</div>
+                    `;
+                    interestsContainer.appendChild(el);
+                }
+            });
+            container.appendChild(interestsContainer);
+        } else {
+            container.innerHTML = '<div class="no-data">Интересы не выбраны</div>';
+        }
+    }
+
+    updatePhotos(photos, container) {
+        if (!container) return;
+        if (photos && photos.length > 0) {
+            container.innerHTML = photos.map(photo => `
+                <div class="match-photo-item" style="background-image: url(${photo})"></div>
+            `).join('');
+        } else {
+            container.innerHTML = '<div class="no-data">Фотографии не добавлены</div>';
+        }
     }
 
     handleLike() {
@@ -242,5 +321,87 @@ class MatchHandler {
             ? 'translateX(100%) rotate(15deg)' 
             : 'translateX(-100%) rotate(-15deg)';
         card.style.opacity = '0';
+    }
+
+    resetScrollState() {
+        this.isExpanded = false;
+        this.elements.matchScrollableContent.classList.remove('expanded');
+        this.elements.matchScrollableContent.style.transform = ''; // Сброс inline стиля
+        this.elements.matchScrollableContent.scrollTop = 0; // Сброс прокрутки
+    }
+
+    handleTouchStart(e) {
+        this.startY = e.touches[0].clientY;
+        this.currentY = this.elements.matchScrollableContent.getBoundingClientRect().top;
+        this.elements.matchScrollableContent.style.transition = 'none'; // Отключаем переход для плавного свайпа
+    }
+
+    handleTouchMove(e) {
+        const deltaY = e.touches[0].clientY - this.startY;
+        const scrollableHeight = this.elements.matchScrollableContent.offsetHeight;
+        const fixedHeight = this.elements.matchFixedInfo.offsetHeight + 30; // 30px - padding-bottom match-card-content
+        const minTranslateY = 0;
+        const maxTranslateY = scrollableHeight - fixedHeight; // Максимальное смещение вверх
+
+        let newTranslateY;
+
+        if (this.isExpanded) {
+            // Если уже раскрыто, свайп вниз должен закрывать
+            newTranslateY = Math.max(minTranslateY, deltaY);
+            if (newTranslateY > maxTranslateY / 2) { // Если сдвинули достаточно вниз, закрываем
+                this.elements.matchScrollableContent.classList.remove('expanded');
+                this.isExpanded = false;
+            }
+        } else {
+            // Если не раскрыто, свайп вверх должен раскрывать
+            newTranslateY = Math.min(maxTranslateY, maxTranslateY + deltaY);
+            if (newTranslateY < maxTranslateY / 2) { // Если сдвинули достаточно вверх, раскрываем
+                this.elements.matchScrollableContent.classList.add('expanded');
+                this.isExpanded = true;
+            }
+        }
+        
+        // Применяем transform только если не полностью раскрыто/закрыто
+        if (!this.isExpanded && newTranslateY > 0) {
+             this.elements.matchScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
+        } else if (this.isExpanded && newTranslateY < maxTranslateY) {
+             this.elements.matchScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
+        }
+    }
+
+    handleTouchEnd(e) {
+        this.elements.matchScrollableContent.style.transition = 'transform 0.4s ease-out'; // Включаем переход обратно
+
+        const currentTransformY = parseFloat(this.elements.matchScrollableContent.style.transform.replace('translateY(', '').replace('px)', '')) || 0;
+        const scrollableHeight = this.elements.matchScrollableContent.offsetHeight;
+        const fixedHeight = this.elements.matchFixedInfo.offsetHeight + 30;
+        const threshold = (scrollableHeight - fixedHeight) / 2; // Порог для определения раскрытия/закрытия
+
+        if (this.isExpanded) {
+            // Если было раскрыто, и сдвинули вниз больше порога, закрываем
+            if (currentTransformY > threshold) {
+                this.elements.matchScrollableContent.classList.remove('expanded');
+                this.isExpanded = false;
+            } else { // Иначе возвращаем в раскрытое состояние
+                this.elements.matchScrollableContent.classList.add('expanded');
+                this.isExpanded = true;
+            }
+        } else {
+            // Если было закрыто, и сдвинули вверх больше порога, раскрываем
+            if (currentTransformY < threshold) {
+                this.elements.matchScrollableContent.classList.add('expanded');
+                this.isExpanded = true;
+            } else { // Иначе возвращаем в закрытое состояние
+                this.elements.matchScrollableContent.classList.remove('expanded');
+                this.isExpanded = false;
+            }
+        }
+        this.elements.matchScrollableContent.style.transform = ''; // Сброс inline стиля, чтобы класс управлял
+    }
+
+    toggleExpand() {
+        this.isExpanded = !this.isExpanded;
+        this.elements.matchScrollableContent.classList.toggle('expanded', this.isExpanded);
+        this.elements.matchScrollableContent.scrollTop = 0; // Сбрасываем прокрутку при переключении
     }
 }

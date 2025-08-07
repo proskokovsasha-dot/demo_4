@@ -9,18 +9,19 @@ class ProfileHandler {
 
     initElements() {
         this.elements = {
-            profileCard: document.getElementById('myProfileCard'), // Изменено ID
-            profileCardBg: document.getElementById('myProfileCardBg'), // Новый элемент
-            profileNameAge: document.getElementById('myProfileNameAge'), // Новый элемент
-            profileDescriptionShort: document.getElementById('myProfileDescriptionShort'), // Новый элемент
-            profileScrollableContent: document.getElementById('myProfileScrollableContent'), // Новый элемент
-            profileDescriptionFull: document.getElementById('myProfileDescriptionFull'), // Новый элемент
-            profileLookingFor: document.getElementById('myProfileLookingFor'), // Изменено ID
-            profileInterests: document.getElementById('myProfileInterests'), // Изменено ID
-            profilePhotosGrid: document.getElementById('myProfilePhotosGrid'), // Новый элемент
+            profileCard: document.getElementById('myProfileCard'),
+            profileCardBg: document.getElementById('myProfileCardBg'),
+            profileNameAge: document.getElementById('myProfileNameAge'),
+            profileDescriptionShort: document.getElementById('myProfileDescriptionShort'),
+            profileScrollableContent: document.getElementById('myProfileScrollableContent'),
+            profileDescriptionFull: document.getElementById('myProfileDescriptionFull'),
+            profileLookingFor: document.getElementById('myProfileLookingFor'),
+            profileInterests: document.getElementById('myProfileInterests'),
+            profilePhotosGrid: document.getElementById('myProfilePhotosGrid'),
             editBtn: document.getElementById('editBtn'),
             newProfileBtn: document.getElementById('newProfileBtn'),
-            scrollIndicator: document.querySelector('#myProfileScrollableContent .scroll-indicator')
+            scrollIndicator: document.querySelector('#myProfileScrollableContent .scroll-indicator'),
+            profileFixedInfo: document.getElementById('myProfileFixedInfo') // Добавлено для фиксированной части
         };
     }
 
