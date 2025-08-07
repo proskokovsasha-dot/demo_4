@@ -4,7 +4,8 @@ class ProfileHandler {
         this.initElements();
         this.isExpanded = false;
         this.startY = 0;
-        this.currentTranslateY = 0; // Изменено на currentTranslateY для более точного отслеживания
+        this.currentTranslateY = 0;
+        this.isScrollingContent = false; // Новый флаг
     }
 
     initElements() {
@@ -63,7 +64,7 @@ class ProfileHandler {
         const amt = Math.round(2.55 * percent);
         const R = Math.min(255, (num >> 16) + amt);
         const G = Math.min(255, (num >> 8 & 0x00FF) + amt);
-        const B = Math.min(255, (num & 0x0000FF) - amt);
+        const B = Math.min(255, (num & 0x0000FF) + amt);
         return `#${(1 << 24 | R << 16 | G << 8 | B).toString(16).slice(1)}`;
     }
 
@@ -243,13 +244,11 @@ class ProfileHandler {
         const style = window.getComputedStyle(this.elements.profileScrollableContent);
         this.currentTranslateY = new DOMMatrixReadOnly(style.transform).m42;
 
-        // Проверяем, если касание началось внутри прокручиваемой области
         const target = e.target;
-        const isInsideScrollableContent = this.elements.profileScrollableContent.contains(target) && target !== this.elements.scrollIndicator;
+        const scrollable = this.elements.profileScrollableContent;
+        const isInsideScrollableContent = scrollable.contains(target) && target !== this.elements.scrollIndicator;
 
         if (isInsideScrollableContent && this.isExpanded) {
-            // Если контент прокручивается и пользователь пытается прокрутить его
-            const scrollable = this.elements.profileScrollableContent;
             const atTop = scrollable.scrollTop === 0;
             const atBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight;
 
@@ -257,14 +256,15 @@ class ProfileHandler {
             // то мы можем перехватить событие для свайпа карточки.
             // В противном случае, позволяем прокрутке контента.
             if ((atTop && e.touches[0].clientY > this.startY) || (atBottom && e.touches[0].clientY < this.startY)) {
-                // Продолжаем обработку свайпа карточки
+                this.isScrollingContent = false; // Переключаем на свайп карточки
             } else {
-                // Позволяем прокрутке контента
-                this.isScrollingContent = true;
-                return;
+                this.isScrollingContent = true; // Позволяем прокрутке контента
+                return; // Выходим, чтобы не обрабатывать как свайп карточки
             }
+        } else {
+            this.isScrollingContent = false;
         }
-        this.isScrollingContent = false;
+        
         this.elements.profileScrollableContent.style.transition = 'none';
     }
 
@@ -303,6 +303,7 @@ class ProfileHandler {
         const initialVisibleHeight = 150;
         const maxScrollUp = cardHeight - initialVisibleHeight;
 
+        // Определяем, должна ли карточка быть полностью раскрыта или свернута
         if (currentTransformY < maxScrollUp / 2) {
             this.elements.profileScrollableContent.classList.add('expanded');
             this.isExpanded = true;
@@ -310,6 +311,7 @@ class ProfileHandler {
             this.elements.profileScrollableContent.classList.remove('expanded');
             this.isExpanded = false;
         }
+        // Сброс трансформации, чтобы класс expanded мог управлять
         this.elements.profileScrollableContent.style.transform = ''; 
     }
 
