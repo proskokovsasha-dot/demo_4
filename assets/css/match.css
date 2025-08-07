@@ -181,84 +181,81 @@
     border: 1px solid var(--border);
 }
 
-/* Стили для раздела "Ищу" (повторяются из components.css) */
-.match-looking-for {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 8px;
+/* НОВЫЕ СТИЛИ ДЛЯ БЛОКОВ "ИЩУ" И "ИНТЕРЕСЫ" В MATCH.CSS */
+
+/* Общий контейнер для элементов "Ищу" и "Интересы" */
+.match-looking-for-container,
+.match-interests-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Отступ между элементами */
+    margin-top: 10px; /* Отступ сверху от заголовка секции */
+    justify-content: flex-start; /* Выравнивание по левому краю */
     width: 100%;
-    justify-content: center;
 }
 
-.match-looking-for .looking-for-item {
+/* Стили для отдельных элементов "Ищу" */
+.match-looking-for-item {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 6px;
-    padding: 12px;
+    gap: 8px;
+    padding: 12px 18px;
     background-color: var(--surface);
     border-radius: var(--radius-md);
-    transition: all var(--transition-fast) ease;
-    box-shadow: var(--shadow-sm);
     border: 1px solid var(--border);
-    text-align: center;
-    color: var(--text-primary);
-}
-
-.match-looking-for .looking-for-item:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--primary-light);
-}
-
-.match-looking-for .looking-for-emoji {
-    font-size: 1.6rem;
-}
-
-.match-looking-for .looking-for-text {
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast) ease;
     font-size: 0.9rem;
     color: var(--text-primary);
     font-weight: 500;
+    flex-shrink: 0;
 }
 
-/* Стили для раздела "Интересы" (повторяются из components.css) */
-.match-interests {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 8px;
-    width: 100%;
-    justify-content: center;
-}
-
-.match-interests .interest-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 12px;
-    background-color: var(--surface);
-    border-radius: var(--radius-md);
-    transition: all var(--transition-fast) ease;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
-    text-align: center;
-    color: var(--text-primary);
-}
-
-.match-interests .interest-item:hover {
-    transform: translateY(-3px);
+.match-looking-for-item:hover {
+    transform: translateY(-2px);
     box-shadow: var(--shadow-md);
     border-color: var(--primary-light);
 }
 
-.match-interests .interest-emoji {
-    font-size: 1.8rem;
-    margin-bottom: 4px;
+.match-looking-for-item .emoji {
+    font-size: 1.4rem;
+    line-height: 1;
 }
 
-.match-interests .interest-text {
+.match-looking-for-item .text {
+    white-space: nowrap;
+}
+
+/* Стили для отдельных элементов "Интересы" */
+.match-interest-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast) ease;
     font-size: 0.85rem;
     color: var(--text-primary);
     font-weight: 500;
+    flex-shrink: 0;
+}
+
+.match-interest-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-light);
+}
+
+.match-interest-item .emoji {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.match-interest-item .text {
+    white-space: nowrap;
 }
 
 /* Общие стили для пустых разделов */
@@ -396,6 +393,23 @@
     .match-status-text {
         font-size: 3rem;
     }
+
+    /* Адаптация для мобильных для "Ищу" и "Интересы" */
+    .match-looking-for-item {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+    .match-looking-for-item .emoji {
+        font-size: 1.2rem;
+    }
+
+    .match-interest-item {
+        padding: 7px 12px;
+        font-size: 0.8rem;
+    }
+    .match-interest-item .emoji {
+        font-size: 1.1rem;
+    }
 }
 
 @media (max-width: 360px) {
@@ -426,5 +440,22 @@
     /* Удалены стили для .match-actions */
     .match-status-text {
         font-size: 2.5rem;
+    }
+
+    /* Адаптация для мобильных для "Ищу" и "Интересы" */
+    .match-looking-for-item {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+    }
+    .match-looking-for-item .emoji {
+        font-size: 1.1rem;
+    }
+
+    .match-interest-item {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+    }
+    .match-interest-item .emoji {
+        font-size: 1rem;
     }
 }

@@ -63,7 +63,7 @@ class ProfileHandler {
         const amt = Math.round(2.55 * percent);
         const R = Math.min(255, (num >> 16) + amt);
         const G = Math.min(255, (num >> 8 & 0x00FF) + amt);
-        const B = Math.min(255, (num & 0x0000FF) + amt);
+        const B = Math.min(255, (num & 0x0000FF) - amt);
         return `#${(1 << 24 | R << 16 | G << 8 | B).toString(16).slice(1)}`;
     }
 
@@ -105,6 +105,7 @@ class ProfileHandler {
         this.elements.profileDescriptionFull.textContent = fullDescription;
     }
 
+    // ОБНОВЛЕННЫЙ МЕТОД updateLookingFor
     updateLookingFor(lookingFor, options) {
         const container = this.elements.profileLookingFor;
         if (!container) return;
@@ -113,16 +114,16 @@ class ProfileHandler {
         
         if (lookingFor && lookingFor.length > 0) {
             const lookingForContainer = document.createElement('div');
-            lookingForContainer.className = 'looking-for-container';
+            lookingForContainer.className = 'profile-looking-for-container'; // Новый класс контейнера
             
             lookingFor.forEach(optionId => {
                 const option = options.find(o => o.id === optionId);
                 if (option) {
                     const el = document.createElement('div');
-                    el.className = 'looking-for-item';
+                    el.className = 'profile-looking-for-item'; // Новый класс элемента
                     el.innerHTML = `
-                        <div class="looking-for-emoji">${option.emoji}</div>
-                        <div class="looking-for-text">${option.name}</div>
+                        <span class="emoji">${option.emoji}</span>
+                        <span class="text">${option.name}</span>
                     `;
                     lookingForContainer.appendChild(el);
                 }
@@ -134,6 +135,7 @@ class ProfileHandler {
         }
     }
 
+    // ОБНОВЛЕННЫЙ МЕТОД updateInterests
     updateInterests(userInterests, configInterests) {
         const container = this.elements.profileInterests;
         if (!container) return;
@@ -142,16 +144,16 @@ class ProfileHandler {
         
         if (userInterests && userInterests.length > 0) {
             const interestsContainer = document.createElement('div');
-            interestsContainer.className = 'interests-container';
+            interestsContainer.className = 'profile-interests-container'; // Новый класс контейнера
             
             userInterests.forEach(interestId => {
                 const interest = configInterests.find(i => i.id === interestId);
                 if (interest) {
                     const el = document.createElement('div');
-                    el.className = 'interest-item';
+                    el.className = 'profile-interest-item'; // Новый класс элемента
                     el.innerHTML = `
-                        <div class="interest-emoji">${interest.emoji}</div>
-                        <div class="interest-text">${interest.name}</div>
+                        <span class="emoji">${interest.emoji}</span>
+                        <span class="text">${interest.name}</span>
                     `;
                     interestsContainer.appendChild(el);
                 }

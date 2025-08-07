@@ -123,7 +123,11 @@ class DatingApp {
             navButtons: document.querySelectorAll('.nav-btn'),
             locationModal: document.getElementById('locationModal'), 
             modalAllowLocationBtn: document.getElementById('modalAllowLocationBtn'),
-            modalSkipLocationBtn: document.getElementById('modalSkipLocationBtn')
+            modalSkipLocationBtn: document.getElementById('modalSkipLocationBtn'),
+            swipeTutorialModal: document.getElementById('swipeTutorialModal'), // Новый элемент
+            modalGotItBtn: document.getElementById('modalGotItBtn'), // Новый элемент
+            likeSound: document.getElementById('likeSound'), // Новый элемент
+            nopeSound: document.getElementById('nopeSound') // Новый элемент
         };
     }
 
@@ -155,6 +159,11 @@ class DatingApp {
         }
         if (this.elements.modalSkipLocationBtn) {
             this.elements.modalSkipLocationBtn.addEventListener('click', () => this.handleLocationPermission(false));
+        }
+
+        // Обработчик для кнопки "Понятно!" в модальном окне подсказок
+        if (this.elements.modalGotItBtn) {
+            this.elements.modalGotItBtn.addEventListener('click', () => this.hideSwipeTutorialModal());
         }
     }
 
@@ -190,10 +199,16 @@ class DatingApp {
 
     startMatch() { 
         this.matchHandler.startMatch(); 
+        // Показываем подсказку по свайпу, если пользователь видит экран анкет впервые
+        if (!localStorage.getItem('swipeTutorialShown')) {
+            this.showSwipeTutorialModal();
+            localStorage.setItem('swipeTutorialShown', 'true');
+        }
     }
 
     clearAllData() {
         localStorage.removeItem('datingProfile');
+        localStorage.removeItem('swipeTutorialShown'); // Очищаем флаг подсказки
         this.state.userData = {
             name: '',
             gender: '',
@@ -295,6 +310,32 @@ class DatingApp {
             this.state.userData.location = { lat: null, lng: null }; // Пропускаем
             alert('Доступ к геолокации пропущен.');
             this.formHandler.nextStep(); // Переходим к следующему шагу
+        }
+    }
+
+    // Методы для работы с модальным окном подсказок по свайпу
+    showSwipeTutorialModal() {
+        this.elements.swipeTutorialModal.classList.add('active');
+    }
+
+    hideSwipeTutorialModal() {
+        this.elements.swipeTutorialModal.classList.remove('active');
+    }
+
+    // Методы для звуковых эффектов и виброотклика
+    playSound(type) {
+        if (type === 'like' && this.elements.likeSound) {
+            this.elements.likeSound.currentTime = 0;
+            this.elements.likeSound.play();
+        } else if (type === 'nope' && this.elements.nopeSound) {
+            this.elements.nopeSound.currentTime = 0;
+            this.elements.nopeSound.play();
+        }
+    }
+
+    vibrate(pattern) {
+        if (navigator.vibrate) {
+            navigator.vibrate(pattern);
         }
     }
 

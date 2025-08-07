@@ -391,6 +391,26 @@
         </div>
     </div>
 
+    <!-- Модальное окно для подсказок по свайпу -->
+    <div class="modal-overlay" id="swipeTutorialModal">
+        <div class="modal-content">
+            <h3>Добро пожаловать в Анкеты!</h3>
+            <p>Здесь вы можете просматривать профили других пользователей.</p>
+            <p>
+                👉 Смахните вправо, чтобы поставить **ЛАЙК**.<br>
+                👈 Смахните влево, чтобы **ПРОПУСТИТЬ** анкету.<br>
+                👆 Смахните вверх, чтобы увидеть полную информацию о профиле.
+            </p>
+            <div class="modal-actions">
+                <button class="btn" id="modalGotItBtn">Понятно!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Аудио элементы для звуковых эффектов -->
+    <audio id="likeSound" src="assets/audio/like.mp3" preload="auto"></audio>
+    <audio id="nopeSound" src="assets/audio/nope.mp3" preload="auto"></audio>
+
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/components/ui.js"></script>
     <script src="assets/js/components/form.js"></script>

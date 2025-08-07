@@ -257,20 +257,21 @@ class MatchHandler {
         this.elements.matchCard.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out'; // Возвращаем плавный переход
     }
 
+    // ОБНОВЛЕННЫЙ МЕТОД updateLookingFor
     updateLookingFor(lookingFor, options, container) {
         if (!container) return;
         container.innerHTML = '';
         if (lookingFor && lookingFor.length > 0) {
             const lookingForContainer = document.createElement('div');
-            lookingForContainer.className = 'looking-for-container';
+            lookingForContainer.className = 'match-looking-for-container'; // Новый класс контейнера
             lookingFor.forEach(optionId => {
                 const option = options.find(o => o.id === optionId);
                 if (option) {
                     const el = document.createElement('div');
-                    el.className = 'looking-for-item';
+                    el.className = 'match-looking-for-item'; // Новый класс элемента
                     el.innerHTML = `
-                        <div class="looking-for-emoji">${option.emoji}</div>
-                        <div class="looking-for-text">${option.name}</div>
+                        <span class="emoji">${option.emoji}</span>
+                        <span class="text">${option.name}</span>
                     `;
                     lookingForContainer.appendChild(el);
                 }
@@ -281,20 +282,21 @@ class MatchHandler {
         }
     }
 
+    // ОБНОВЛЕННЫЙ МЕТОД updateInterests
     updateInterests(userInterests, configInterests, container) {
         if (!container) return;
         container.innerHTML = '';
         if (userInterests && userInterests.length > 0) {
             const interestsContainer = document.createElement('div');
-            interestsContainer.className = 'interests-container';
+            interestsContainer.className = 'match-interests-container'; // Новый класс контейнера
             userInterests.forEach(interestId => {
                 const interest = configInterests.find(i => i.id === interestId);
                 if (interest) {
                     const el = document.createElement('div');
-                    el.className = 'interest-item';
+                    el.className = 'match-interest-item'; // Новый класс элемента
                     el.innerHTML = `
-                        <div class="interest-emoji">${interest.emoji}</div>
-                        <div class="interest-text">${interest.name}</div>
+                        <span class="emoji">${interest.emoji}</span>
+                        <span class="text">${interest.name}</span>
                     `;
                     interestsContainer.appendChild(el);
                 }
@@ -324,6 +326,8 @@ class MatchHandler {
         const profile = this.app.state.suggestedProfiles[this.currentIndex];
         this.app.state.likedProfiles.push(profile);
         console.log('Liked:', profile.name);
+        this.app.playSound('like'); // Воспроизвести звук лайка
+        this.app.vibrate(100); // Виброотклик на 100 мс
         this.animateCard('like');
         this.currentIndex++;
         setTimeout(() => this.showNextProfile(), 300); // Уменьшено время для более быстрого перехода
@@ -333,6 +337,8 @@ class MatchHandler {
         const profile = this.app.state.suggestedProfiles[this.currentIndex];
         this.app.state.passedProfiles.push(profile);
         console.log('Passed:', profile.name);
+        this.app.playSound('nope'); // Воспроизвести звук пропуска
+        this.app.vibrate(50); // Виброотклик на 50 мс
         this.animateCard('pass');
         this.currentIndex++;
         setTimeout(() => this.showNextProfile(), 300); // Уменьшено время для более быстрого перехода
