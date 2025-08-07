@@ -305,51 +305,29 @@
                     <div class="match-card-bg" id="matchCardBg"></div>
                     <div class="match-card-overlay"></div>
                     <div class="match-card-content">
-                        <!-- Верхняя часть: Заголовок приложения, статус, расстояние (фиксированная) -->
-                        <div class="match-fixed-info" id="matchFixedInfo">
-                            <div class="match-header">
-                                <div class="match-app-title">
-                                    <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                        <path class="logo-path" d="M20,50 Q35,20 50,50 T80,50" 
-                                            stroke="white" 
-                                            stroke-width="8" 
-                                            fill="none"
-                                            stroke-linecap="round"/>
-                                    </svg>
-                                    <span>ТочкаСхода</span>
-                                </div>
-                                <div class="match-status">
-                                    <span class="match-active-dot"></span>
-                                    <span id="matchLastActive">Была сегодня</span>
-                                </div>
-                                <div class="match-distance" id="matchDistance">9 км</div>
+                        <!-- Верхняя часть: Заголовок приложения, статус, расстояние -->
+                        <div class="match-header">
+                            <div class="match-app-title">
+                                <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <path class="logo-path" d="M20,50 Q35,20 50,50 T80,50" 
+                                        stroke="white" 
+                                        stroke-width="8" 
+                                        fill="none"
+                                        stroke-linecap="round"/>
+                                </svg>
+                                <span>ТочкаСхода</span>
                             </div>
-                            <h1 class="match-name-age" id="matchNameAge"></h1>
-                            <p class="match-description-short" id="matchDescriptionShort"></p>
+                            <div class="match-status">
+                                <span class="match-active-dot"></span>
+                                <span id="matchLastActive">Была сегодня</span>
+                            </div>
+                            <div class="match-distance" id="matchDistance">9 км</div>
                         </div>
-
-                        <!-- Свайпаемая часть: Полная информация -->
-                        <div class="match-scrollable-content" id="matchScrollableContent">
-                            <div class="match-scroll-indicator"></div>
-                            <div class="match-section">
-                                <h3 class="section-title">О себе</h3>
-                                <div class="match-description-full" id="matchDescriptionFull"></div>
-                            </div>
-
-                            <div class="match-section">
-                                <h3 class="section-title">Ищу</h3>
-                                <div class="match-looking-for" id="matchLookingFor"></div>
-                            </div>
-
-                            <div class="match-section">
-                                <h3 class="section-title">Интересы</h3>
-                                <div class="match-interests" id="matchInterests"></div>
-                            </div>
-
-                            <div class="match-section">
-                                <h3 class="section-title">Фото</h3>
-                                <div class="match-photos-grid" id="matchPhotosGrid"></div>
-                            </div>
+                        
+                        <!-- Средняя часть: Имя, возраст, описание -->
+                        <div class="match-info">
+                            <h1 class="match-name-age" id="matchNameAge"></h1>
+                            <p class="match-description" id="matchDescription"></p>
                         </div>
 
                         <!-- Кнопки лайка/пропуска теперь внутри match-card-content -->

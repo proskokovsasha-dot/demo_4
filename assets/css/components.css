@@ -379,18 +379,20 @@
     box-shadow: var(--shadow-lg);
     transform: translateY(calc(100% - 150px)); /* Изначально скрыта, видна только часть */
     transition: transform 0.4s ease-out;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow-y: auto; /* Позволяем прокрутку контента внутри */
+    -webkit-overflow-scrolling: touch; /* Для плавного скролла на iOS */
     color: var(--text-primary); /* Цвет текста для свайпаемой части */
     display: flex;
     flex-direction: column;
     gap: 20px;
-    /* Стилизация скроллбара */
+
+    /* Скрываем стандартный скроллбар */
     scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
 }
 
 .profile-scrollable-content::-webkit-scrollbar {
-    display: none; /* Webkit */
+    display: none; /* Chrome, Safari, Opera */
 }
 
 .profile-scrollable-content.expanded {
@@ -562,8 +564,8 @@
     }
     
     .profile-card-wrapper {
-        height: 580px; /* Увеличена высота на мобильных */
-        max-width: 360px; /* Увеличена максимальная ширина */
+        height: 500px; /* Немного уменьшаем высоту на мобильных */
+        max-width: 340px;
     }
 
     .profile-card-content {
@@ -571,41 +573,41 @@
     }
 
     .profile-name-age {
-        font-size: 2.2rem; /* Увеличен шрифт */
+        font-size: 2rem;
     }
 
     .profile-description-short {
-        font-size: 1.05rem; /* Увеличен шрифт */
+        font-size: 1rem;
     }
 
     .profile-scrollable-content {
         padding: 20px;
         padding-top: 40px;
-        transform: translateY(calc(100% - 130px)); /* Адаптация для мобильных */
+        transform: translateY(calc(100% - 120px)); /* Адаптация для мобильных */
     }
 
     .profile-section .section-title {
-        font-size: 1.2rem; /* Увеличен шрифт */
+        font-size: 1.1rem;
     }
     
     .profile-description-full {
         padding: 12px;
-        font-size: 0.95rem; /* Увеличен шрифт */
+        font-size: 0.9rem;
     }
 
     .profile-interests .interest-item {
-        padding: 8px 14px; /* Увеличен паддинг */
-        font-size: 0.9rem; /* Увеличен шрифт */
+        padding: 7px 12px;
+        font-size: 0.85rem;
     }
     
     .color-option {
-        width: 38px; /* Увеличен размер */
-        height: 38px;
+        width: 36px;
+        height: 36px;
     }
     
     .color-custom input[type="color"] {
-        width: 55px; /* Увеличен размер */
-        height: 55px;
+        width: 50px;
+        height: 50px;
     }
 
     .profile-photos-grid {
@@ -613,45 +615,45 @@
         gap: 8px;
     }
     .profile-photo-item {
-        height: 85px; /* Увеличена высота */
+        height: 80px;
     }
 
     .input-field {
-        padding: 13px; /* Увеличен паддинг */
-        font-size: 0.95rem; /* Увеличен шрифт */
+        padding: 12px;
+        font-size: 0.9rem;
     }
 
     .tags-container .tag {
-        padding: 11px 18px; /* Увеличен паддинг */
-        font-size: 0.9rem; /* Увеличен шрифт */
-        min-width: 95px; /* Увеличена мин. ширина */
+        padding: 10px 16px;
+        font-size: 0.85rem;
+        min-width: 90px;
     }
 }   
 
 @media (max-width: 360px) {
     .profile-card-wrapper {
-        height: 520px; /* Еще уменьшаем высоту */
-        max-width: 320px; /* Еще уменьшаем ширину */
+        height: 450px;
+        max-width: 300px;
     }
     .profile-card-content {
-        padding: 18px;
+        padding: 15px;
     }
     .profile-name-age {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
     .profile-description-short {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
     .profile-scrollable-content {
-        padding: 18px;
-        padding-top: 38px;
-        transform: translateY(calc(100% - 110px));
+        padding: 15px;
+        padding-top: 35px;
+        transform: translateY(calc(100% - 100px));
     }
     .profile-photos-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 6px;
+        gap: 5px;
     }
     .profile-photo-item {
-        height: 75px;
+        height: 60px;
     }
 }

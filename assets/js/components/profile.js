@@ -5,6 +5,7 @@ class ProfileHandler {
         this.isExpanded = false;
         this.startY = 0;
         this.currentY = 0;
+        this.scrollThreshold = 50; // Порог в пикселях для свайпа
     }
 
     initElements() {
@@ -21,7 +22,7 @@ class ProfileHandler {
             editBtn: document.getElementById('editBtn'),
             newProfileBtn: document.getElementById('newProfileBtn'),
             scrollIndicator: document.querySelector('#myProfileScrollableContent .scroll-indicator'),
-            profileFixedInfo: document.getElementById('myProfileFixedInfo') // Добавлено для фиксированной части
+            profileFixedInfo: document.getElementById('myProfileFixedInfo') // Новый элемент
         };
     }
 
@@ -199,15 +200,10 @@ class ProfileHandler {
         this.elements.newProfileBtn.addEventListener('click', this.newProfileHandler);
 
         // Обработчики для свайпа
-        this.handleTouchStart = this.handleTouchStart.bind(this);
-        this.handleTouchMove = this.handleTouchMove.bind(this);
-        this.handleTouchEnd = this.handleTouchEnd.bind(this);
-        this.toggleExpand = this.toggleExpand.bind(this);
-
-        this.elements.profileScrollableContent.addEventListener('touchstart', this.handleTouchStart);
-        this.elements.profileScrollableContent.addEventListener('touchmove', this.handleTouchMove);
-        this.elements.profileScrollableContent.addEventListener('touchend', this.handleTouchEnd);
-        this.elements.scrollIndicator.addEventListener('click', this.toggleExpand);
+        this.elements.profileCard.addEventListener('touchstart', this.handleTouchStart.bind(this));
+        this.elements.profileCard.addEventListener('touchmove', this.handleTouchMove.bind(this));
+        this.elements.profileCard.addEventListener('touchend', this.handleTouchEnd.bind(this));
+        this.elements.scrollIndicator.addEventListener('click', this.toggleExpand.bind(this));
     }
 
     resetProfile() {
@@ -234,77 +230,75 @@ class ProfileHandler {
     resetScrollState() {
         this.isExpanded = false;
         this.elements.profileScrollableContent.classList.remove('expanded');
-        this.elements.profileScrollableContent.style.transform = ''; // Сброс inline стиля
+        // Устанавливаем transform на начальное значение из CSS
+        this.elements.profileScrollableContent.style.transform = 'translateY(calc(100% - 150px))'; 
         this.elements.profileScrollableContent.scrollTop = 0; // Сброс прокрутки
     }
 
     handleTouchStart(e) {
+        // Проверяем, если касание началось внутри прокручиваемой области и она уже прокручена до конца
+        if (this.isExpanded && this.elements.profileScrollableContent.scrollTop > 0 && e.target !== this.elements.scrollIndicator) {
+            // Если пользователь пытается прокрутить вверх, когда уже вверху, или вниз, когда уже внизу,
+            // то не перехватываем событие для свайпа карточки, а позволяем прокрутке контента
+            if (this.elements.profileScrollableContent.scrollHeight > this.elements.profileScrollableContent.clientHeight) {
+                // Если контент внутри прокручивается, позволяем ему прокручиваться
+                return;
+            }
+        }
+
         this.startY = e.touches[0].clientY;
-        this.currentY = this.elements.profileScrollableContent.getBoundingClientRect().top;
+        // Получаем текущее смещение translateY
+        const style = window.getComputedStyle(this.elements.profileScrollableContent);
+        const matrix = new DOMMatrixReadOnly(style.transform);
+        this.currentTranslateY = matrix.m42; // m42 - это значение translateY
+
         this.elements.profileScrollableContent.style.transition = 'none'; // Отключаем переход для плавного свайпа
     }
 
     handleTouchMove(e) {
         const deltaY = e.touches[0].clientY - this.startY;
-        const scrollableHeight = this.elements.profileScrollableContent.offsetHeight;
-        const fixedHeight = this.elements.profileFixedInfo.offsetHeight + 30; // 30px - padding-bottom profile-card-content
-        const minTranslateY = 0;
-        const maxTranslateY = scrollableHeight - fixedHeight; // Максимальное смещение вверх
-
-        let newTranslateY;
-
-        if (this.isExpanded) {
-            // Если уже раскрыто, свайп вниз должен закрывать
-            newTranslateY = Math.max(minTranslateY, deltaY);
-            if (newTranslateY > maxTranslateY / 2) { // Если сдвинули достаточно вниз, закрываем
-                this.elements.profileScrollableContent.classList.remove('expanded');
-                this.isExpanded = false;
-            }
-        } else {
-            // Если не раскрыто, свайп вверх должен раскрывать
-            newTranslateY = Math.min(maxTranslateY, maxTranslateY + deltaY);
-            if (newTranslateY < maxTranslateY / 2) { // Если сдвинули достаточно вверх, раскрываем
-                this.elements.profileScrollableContent.classList.add('expanded');
-                this.isExpanded = true;
-            }
-        }
         
-        // Применяем transform только если не полностью раскрыто/закрыто
-        if (!this.isExpanded && newTranslateY > 0) {
-             this.elements.profileScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
-        } else if (this.isExpanded && newTranslateY < maxTranslateY) {
-             this.elements.profileScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
-        }
+        // Вычисляем максимальное смещение вверх (когда карточка полностью раскрыта)
+        // и начальное смещение (когда карточка скрыта, видна только часть)
+        const cardHeight = this.elements.profileCard.offsetHeight;
+        const fixedInfoHeight = this.elements.profileFixedInfo.offsetHeight;
+        const initialVisibleHeight = 150; // Высота видимой части в скрытом состоянии
+        
+        // Максимальное смещение вверх (когда transform: translateY(0))
+        const maxScrollUp = cardHeight - initialVisibleHeight; 
+
+        let newTranslateY = this.currentTranslateY + deltaY;
+
+        // Ограничиваем newTranslateY в пределах от 0 (полностью раскрыта) до maxScrollUp (скрыта)
+        newTranslateY = Math.max(0, Math.min(maxScrollUp, newTranslateY));
+
+        this.elements.profileScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
+
+        // Предотвращаем прокрутку страницы, если мы управляем свайпом карточки
+        e.preventDefault();
     }
 
     handleTouchEnd(e) {
         this.elements.profileScrollableContent.style.transition = 'transform 0.4s ease-out'; // Включаем переход обратно
 
         const currentTransformY = parseFloat(this.elements.profileScrollableContent.style.transform.replace('translateY(', '').replace('px)', '')) || 0;
-        const scrollableHeight = this.elements.profileScrollableContent.offsetHeight;
-        const fixedHeight = this.elements.profileFixedInfo.offsetHeight + 30;
-        const threshold = (scrollableHeight - fixedHeight) / 2; // Порог для определения раскрытия/закрытия
+        
+        const cardHeight = this.elements.profileCard.offsetHeight;
+        const initialVisibleHeight = 150;
+        const maxScrollUp = cardHeight - initialVisibleHeight;
 
-        if (this.isExpanded) {
-            // Если было раскрыто, и сдвинули вниз больше порога, закрываем
-            if (currentTransformY > threshold) {
-                this.elements.profileScrollableContent.classList.remove('expanded');
-                this.isExpanded = false;
-            } else { // Иначе возвращаем в раскрытое состояние
-                this.elements.profileScrollableContent.classList.add('expanded');
-                this.isExpanded = true;
-            }
+        // Определяем, должна ли карточка быть раскрыта или скрыта
+        if (currentTransformY < maxScrollUp / 2) {
+            // Если сдвинули вверх достаточно, раскрываем
+            this.elements.profileScrollableContent.classList.add('expanded');
+            this.isExpanded = true;
         } else {
-            // Если было закрыто, и сдвинули вверх больше порога, раскрываем
-            if (currentTransformY < threshold) {
-                this.elements.profileScrollableContent.classList.add('expanded');
-                this.isExpanded = true;
-            } else { // Иначе возвращаем в закрытое состояние
-                this.elements.profileScrollableContent.classList.remove('expanded');
-                this.isExpanded = false;
-            }
+            // Иначе скрываем
+            this.elements.profileScrollableContent.classList.remove('expanded');
+            this.isExpanded = false;
         }
-        this.elements.profileScrollableContent.style.transform = ''; // Сброс inline стиля, чтобы класс управлял
+        // Сброс inline стиля, чтобы класс управлял окончательным положением
+        this.elements.profileScrollableContent.style.transform = ''; 
     }
 
     toggleExpand() {
