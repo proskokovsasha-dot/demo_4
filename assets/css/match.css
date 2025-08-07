@@ -274,54 +274,7 @@
     font-size: 0.9rem;
 }
 
-.match-actions {
-    display: flex;
-    gap: 25px; /* Увеличен зазор между кнопками */
-    margin-top: 20px; /* Отступ сверху для кнопок */
-    width: 100%;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.match-actions .btn {
-    min-width: unset;
-    width: 70px; /* Увеличенный размер для круглых кнопок */
-    height: 70px;
-    padding: 0;
-    font-size: 1.2rem;
-    border-radius: 50%;
-    box-shadow: var(--shadow-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid rgba(255,255,255,0.2); /* Легкая белая обводка */
-}
-
-.match-actions .btn-match-pass {
-    background-color: rgba(255, 255, 255, 0.2); /* Полупрозрачный белый */
-    color: white;
-}
-
-.match-actions .btn-match-pass:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1); /* Увеличение при наведении */
-}
-
-.match-actions .btn-match-like {
-    background-color: var(--primary); /* Основной цвет приложения */
-    color: white;
-}
-
-.match-actions .btn-match-like:hover {
-    background-color: var(--primary-dark);
-    transform: scale(1.1); /* Увеличение при наведении */
-}
-
-.match-actions .btn svg {
-    width: 32px; /* Увеличен размер иконок */
-    height: 32px;
-    stroke: white;
-}
+/* Удалены стили для .match-actions и кнопок лайка/пропуска */
 
 .no-profiles-message {
     font-size: 1.1rem;
@@ -336,6 +289,41 @@
     border: 1px solid var(--border);
     flex-shrink: 0;
 }
+
+/* Стили для текста "LIKE" / "NOPE" при свайпе */
+.match-status-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 4rem;
+    font-weight: 800;
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    opacity: 0;
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+    z-index: 4; /* Выше оверлея, но ниже контента */
+    pointer-events: none; /* Чтобы не блокировать касания */
+    text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.match-status-text.like {
+    color: var(--success);
+    border: 4px solid var(--success);
+    transform: translate(-50%, -50%) rotate(-45deg) scale(0.8);
+}
+
+.match-status-text.nope {
+    color: var(--error);
+    border: 4px solid var(--error);
+    transform: translate(-50%, -50%) rotate(45deg) scale(0.8);
+}
+
+.match-status-text.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+}
+
 
 /* Адаптация для мобильных */
 @media (max-width: 480px) {
@@ -398,23 +386,15 @@
         height: 80px;
     }
 
-    .match-actions {
-        gap: 20px;
-        margin-top: 20px;
-    }
-
-    .match-actions .btn {
-        width: 60px;
-        height: 60px;
-    }
-    .match-actions .btn svg {
-        width: 28px;
-        height: 28px;
-    }
+    /* Удалены стили для .match-actions */
 
     .no-profiles-message {
         padding: 25px;
         font-size: 1rem;
+    }
+
+    .match-status-text {
+        font-size: 3rem;
     }
 }
 
@@ -443,12 +423,8 @@
     .match-photo-item {
         height: 60px;
     }
-    .match-actions .btn {
-        width: 50px;
-        height: 50px;
-    }
-    .match-actions .btn svg {
-        width: 24px;
-        height: 24px;
+    /* Удалены стили для .match-actions */
+    .match-status-text {
+        font-size: 2.5rem;
     }
 }

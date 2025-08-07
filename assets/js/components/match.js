@@ -4,7 +4,10 @@ class MatchHandler {
         this.currentIndex = 0;
         this.isExpanded = false;
         this.startY = 0;
-        this.currentTranslateY = 0; // Изменено на currentTranslateY для более точного отслеживания
+        this.startX = 0; // Добавлено для отслеживания горизонтального свайпа
+        this.currentTranslateY = 0;
+        this.currentTranslateX = 0; // Добавлено для отслеживания горизонтального свайпа
+        this.isScrollingContent = false; // Флаг для определения, скроллится ли контент внутри карточки
         this.init();
     }
 
@@ -26,17 +29,18 @@ class MatchHandler {
             matchPhotosGrid: document.getElementById('matchPhotosGrid'),
             matchLastActive: document.getElementById('matchLastActive'),
             matchDistance: document.getElementById('matchDistance'),
-            likeBtn: document.getElementById('matchLikeBtn'),
-            passBtn: document.getElementById('matchPassBtn'),
             noProfilesMessage: document.getElementById('noProfilesMessage'),
             matchScrollIndicator: document.querySelector('#matchScrollableContent .match-scroll-indicator'),
-            matchFixedInfo: document.getElementById('matchFixedInfo')
+            matchFixedInfo: document.getElementById('matchFixedInfo'),
+            matchLikeText: document.getElementById('matchLikeText'), // Новый элемент
+            matchNopeText: document.getElementById('matchNopeText')  // Новый элемент
         };
     }
 
     setupEventListeners() {
-        this.elements.likeBtn.addEventListener('click', () => this.handleLike());
-        this.elements.passBtn.addEventListener('click', () => this.handlePass());
+        // Удаляем старые обработчики кнопок, так как теперь используем свайп
+        // this.elements.likeBtn.addEventListener('click', () => this.handleLike());
+        // this.elements.passBtn.addEventListener('click', () => this.handlePass());
 
         // Удаляем старые обработчики, чтобы избежать дублирования
         this.elements.matchCard.removeEventListener('touchstart', this.handleTouchStartBound);
@@ -243,11 +247,14 @@ class MatchHandler {
         this.updateInterests(profile.interests, this.app.config.interests, this.elements.matchInterests);
         this.updatePhotos(profile.photos, this.elements.matchPhotosGrid);
 
+        // Сброс трансформаций и прозрачности для новой карточки
         this.elements.matchCard.style.transition = 'none';
         this.elements.matchCard.style.transform = 'translateX(0) rotate(0)';
         this.elements.matchCard.style.opacity = '1';
-        void this.elements.matchCard.offsetWidth;
-        this.elements.matchCard.style.transition = 'all var(--transition-normal) ease';
+        this.elements.matchLikeText.classList.remove('visible');
+        this.elements.matchNopeText.classList.remove('visible');
+        void this.elements.matchCard.offsetWidth; // Принудительный рефлоу для сброса трансформации
+        this.elements.matchCard.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out'; // Возвращаем плавный переход
     }
 
     updateLookingFor(lookingFor, options, container) {
@@ -319,7 +326,7 @@ class MatchHandler {
         console.log('Liked:', profile.name);
         this.animateCard('like');
         this.currentIndex++;
-        setTimeout(() => this.showNextProfile(), 500);
+        setTimeout(() => this.showNextProfile(), 300); // Уменьшено время для более быстрого перехода
     }
 
     handlePass() {
@@ -328,15 +335,15 @@ class MatchHandler {
         console.log('Passed:', profile.name);
         this.animateCard('pass');
         this.currentIndex++;
-        setTimeout(() => this.showNextProfile(), 500);
+        setTimeout(() => this.showNextProfile(), 300); // Уменьшено время для более быстрого перехода
     }
 
     animateCard(action) {
         const card = this.elements.matchCard;
-        card.style.transition = 'all 0.5s ease-out';
+        card.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
         card.style.transform = action === 'like' 
-            ? 'translateX(100%) rotate(15deg)' 
-            : 'translateX(-100%) rotate(-15deg)';
+            ? 'translateX(150%) rotate(30deg)' // Увеличено смещение и поворот
+            : 'translateX(-150%) rotate(-30deg)'; // Увеличено смещение и поворот
         card.style.opacity = '0';
     }
 
@@ -349,8 +356,11 @@ class MatchHandler {
 
     handleTouchStart(e) {
         this.startY = e.touches[0].clientY;
-        const style = window.getComputedStyle(this.elements.matchScrollableContent);
-        this.currentTranslateY = new DOMMatrixReadOnly(style.transform).m42;
+        this.startX = e.touches[0].clientX; // Сохраняем начальную позицию X
+        const styleY = window.getComputedStyle(this.elements.matchScrollableContent);
+        this.currentTranslateY = new DOMMatrixReadOnly(styleY.transform).m42;
+        const styleX = window.getComputedStyle(this.elements.matchCard);
+        this.currentTranslateX = new DOMMatrixReadOnly(styleX.transform).m41; // Получаем текущее смещение по X
 
         const target = e.target;
         const isInsideScrollableContent = this.elements.matchScrollableContent.contains(target) && target !== this.elements.matchScrollIndicator;
@@ -360,35 +370,72 @@ class MatchHandler {
             const atTop = scrollable.scrollTop === 0;
             const atBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight;
 
+            // Если пользователь пытается прокрутить вниз, когда уже внизу, или вверх, когда уже вверху,
+            // то мы можем перехватить событие для свайпа карточки.
+            // В противном случае, позволяем прокрутке контента.
             if ((atTop && e.touches[0].clientY > this.startY) || (atBottom && e.touches[0].clientY < this.startY)) {
-                // Продолжаем обработку свайпа карточки
+                this.isScrollingContent = false; // Переключаем на свайп карточки
             } else {
-                this.isScrollingContent = true;
+                this.isScrollingContent = true; // Позволяем прокрутке контента
                 return;
             }
+        } else {
+            this.isScrollingContent = false;
         }
-        this.isScrollingContent = false;
+        
         this.elements.matchScrollableContent.style.transition = 'none';
+        this.elements.matchCard.style.transition = 'none'; // Отключаем переход для плавного свайпа
     }
 
     handleTouchMove(e) {
-        if (this.isScrollingContent) {
+        const deltaY = e.touches[0].clientY - this.startY;
+        const deltaX = e.touches[0].clientX - this.startX; // Смещение по X
+
+        // Определяем, является ли жест вертикальным или горизонтальным
+        const isVerticalSwipe = Math.abs(deltaY) > Math.abs(deltaX);
+
+        if (this.isScrollingContent && isVerticalSwipe) {
+            // Если мы прокручиваем контент и жест вертикальный, не перехватываем событие
             return;
         }
 
-        const deltaY = e.touches[0].clientY - this.startY;
-        
-        const cardHeight = this.elements.matchCard.offsetHeight;
-        const initialVisibleHeight = 150;
-        const maxScrollUp = cardHeight - initialVisibleHeight; 
+        if (!this.isScrollingContent && !isVerticalSwipe) {
+            // Если мы не скроллим контент и жест горизонтальный, обрабатываем свайп карточки
+            e.preventDefault(); // Предотвращаем прокрутку страницы
+            
+            const cardWidth = this.elements.matchCard.offsetWidth;
+            const rotation = deltaX * 0.1; // Небольшой поворот карточки при свайпе
 
-        let newTranslateY = this.currentTranslateY + deltaY;
+            this.elements.matchCard.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
 
-        newTranslateY = Math.max(0, Math.min(maxScrollUp, newTranslateY));
+            // Показываем текст "LIKE" или "NOPE"
+            if (deltaX > 0) { // Свайп вправо (LIKE)
+                this.elements.matchLikeText.classList.add('visible');
+                this.elements.matchNopeText.classList.remove('visible');
+                this.elements.matchLikeText.style.transform = `translate(-50%, -50%) rotate(-45deg) scale(${0.8 + Math.min(1, deltaX / (cardWidth / 4)) * 0.2})`;
+            } else if (deltaX < 0) { // Свайп влево (NOPE)
+                this.elements.matchNopeText.classList.add('visible');
+                this.elements.matchLikeText.classList.remove('visible');
+                this.elements.matchNopeText.style.transform = `translate(-50%, -50%) rotate(45deg) scale(${0.8 + Math.min(1, Math.abs(deltaX) / (cardWidth / 4)) * 0.2})`;
+            } else {
+                this.elements.matchLikeText.classList.remove('visible');
+                this.elements.matchNopeText.classList.remove('visible');
+            }
 
-        this.elements.matchScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
+        } else if (!this.isScrollingContent && isVerticalSwipe) {
+            // Если мы не скроллим контент и жест вертикальный, обрабатываем свайп контента карточки
+            e.preventDefault(); // Предотвращаем прокрутку страницы
+            
+            const cardHeight = this.elements.matchCard.offsetHeight;
+            const initialVisibleHeight = 150;
+            const maxScrollUp = cardHeight - initialVisibleHeight; 
 
-        e.preventDefault();
+            let newTranslateY = this.currentTranslateY + deltaY;
+
+            newTranslateY = Math.max(0, Math.min(maxScrollUp, newTranslateY));
+
+            this.elements.matchScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
+        }
     }
 
     handleTouchEnd(e) {
@@ -397,10 +444,27 @@ class MatchHandler {
             return;
         }
 
+        this.elements.matchCard.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
         this.elements.matchScrollableContent.style.transition = 'transform 0.4s ease-out';
 
+        const currentTransformX = new DOMMatrixReadOnly(window.getComputedStyle(this.elements.matchCard).transform).m41;
+        const cardWidth = this.elements.matchCard.offsetWidth;
+        const swipeThreshold = cardWidth / 3; // Порог для свайпа
+
+        if (currentTransformX > swipeThreshold) {
+            this.handleLike();
+        } else if (currentTransformX < -swipeThreshold) {
+            this.handlePass();
+        } else {
+            // Возвращаем карточку в исходное положение
+            this.elements.matchCard.style.transform = 'translateX(0) rotate(0)';
+            this.elements.matchCard.style.opacity = '1';
+            this.elements.matchLikeText.classList.remove('visible');
+            this.elements.matchNopeText.classList.remove('visible');
+        }
+
+        // Логика для вертикального свайпа контента
         const currentTransformY = parseFloat(this.elements.matchScrollableContent.style.transform.replace('translateY(', '').replace('px)', '')) || 0;
-        
         const cardHeight = this.elements.matchCard.offsetHeight;
         const initialVisibleHeight = 150;
         const maxScrollUp = cardHeight - initialVisibleHeight;
@@ -412,7 +476,7 @@ class MatchHandler {
             this.elements.matchScrollableContent.classList.remove('expanded');
             this.isExpanded = false;
         }
-        this.elements.matchScrollableContent.style.transform = ''; 
+        this.elements.matchScrollableContent.style.transform = ''; // Сброс трансформации, чтобы класс expanded мог управлять
     }
 
     toggleExpand() {
