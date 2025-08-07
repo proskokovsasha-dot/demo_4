@@ -564,8 +564,10 @@
     }
     
     .profile-card-wrapper {
-        height: 500px; /* Немного уменьшаем высоту на мобильных */
-        max-width: 340px;
+        width: 100%; /* Растягиваем на всю ширину */
+        max-width: unset; /* Снимаем ограничение max-width */
+        height: calc(100vh - var(--top-nav-height, 60px) - 40px); /* Занимаем почти всю высоту экрана, учитывая навигацию и паддинги */
+        margin: 20px auto; /* Центрируем и добавляем отступы */
     }
 
     .profile-card-content {
@@ -632,8 +634,7 @@
 
 @media (max-width: 360px) {
     .profile-card-wrapper {
-        height: 450px;
-        max-width: 300px;
+        height: calc(100vh - var(--top-nav-height, 60px) - 30px); /* Еще немного уменьшаем паддинг */
     }
     .profile-card-content {
         padding: 15px;

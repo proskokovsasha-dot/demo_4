@@ -25,6 +25,8 @@
     --shadow-lg: 0 12px 30px rgba(0,0,0,0.15);
     --transition-fast: 0.2s;
     --transition-normal: 0.4s; /* Немного медленнее для плавности */
+
+    --top-nav-height: 60px; /* Добавляем переменную для высоты навигации */
 }
 
 * {
@@ -132,6 +134,7 @@ body {
     top: 0;
     z-index: 999;
     flex-shrink: 0;
+    height: var(--top-nav-height); /* Используем переменную */
 }
 
 .nav-btn {
@@ -200,6 +203,7 @@ body {
 
     .top-navigation {
         padding: 8px 0;
+        height: var(--top-nav-height, 60px); /* Убедимся, что высота применяется */
     }
 
     .nav-btn {
