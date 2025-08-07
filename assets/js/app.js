@@ -51,10 +51,11 @@ class DatingApp {
         this.state = {
             currentScreen: 'main', // Это будет изменено на 'registration' или 'profile' после проверки localStorage
             currentStep: 1,
-            totalSteps: 11, // Увеличено количество шагов: 9 (старых) + 2 (новых) = 11
+            totalSteps: 10, // ИЗМЕНЕНО: Уменьшено количество шагов на 1 (было 11, теперь 10)
             userData: {
                 name: '',
                 gender: '',
+                dateOfBirth: '', // НОВОЕ: для хранения даты рождения
                 age: '',
                 zodiacSign: '',
                 city: '',
@@ -182,6 +183,10 @@ class DatingApp {
                 if (!this.state.userData.preference) {
                     this.state.userData.preference = 'both';
                 }
+                // НОВОЕ: Инициализация dateOfBirth, если его нет
+                if (!this.state.userData.dateOfBirth) {
+                    this.state.userData.dateOfBirth = '';
+                }
                 this.state.currentScreen = 'profile'; // Если профиль есть, показываем профиль
             } catch (e) {
                 console.error('Ошибка при загрузке профиля:', e);
@@ -212,6 +217,7 @@ class DatingApp {
         this.state.userData = {
             name: '',
             gender: '',
+            dateOfBirth: '', // НОВОЕ: сброс даты рождения
             age: '',
             zodiacSign: '',
             city: '',

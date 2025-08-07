@@ -56,11 +56,11 @@ class FormHandler {
         this.setupFormHandlers();
         this.focusCurrentField();
         // Инициализация выбора цвета теперь происходит только на соответствующем шаге
-        if (this.app.state.currentStep === 9) {
+        if (this.app.state.currentStep === 8) { // ИЗМЕНЕНО: Шаг 9 стал шагом 8
             this.initColorSelection();
         }
         // Рендеринг фото также только на соответствующем шаге
-        if (this.app.state.currentStep === 10) {
+        if (this.app.state.currentStep === 9) { // ИЗМЕНЕНО: Шаг 10 стал шагом 9
             this.renderPhotos();
         }
     }
@@ -83,15 +83,14 @@ class FormHandler {
         const stepContents = {
             1: this.getNameStep(),
             2: this.getGenderStep(),
-            3: this.getAgeStep(),
-            4: this.getZodiacStep(),
-            5: this.getCityStep(),
-            6: this.getLookingForStep(),
-            7: this.getInterestsStep(),
-            8: this.getPreferenceStep(),
-            9: this.getProfileColorStep(), // Новый шаг для цвета профиля
-            10: this.getPhotosStep(),      // Новый шаг для фото
-            11: this.getAboutMeStep()      // Новый шаг для "О себе"
+            3: this.getAgeAndZodiacStep(), // ИЗМЕНЕНО: Объединенный шаг
+            4: this.getCityStep(),         // ИЗМЕНЕНО: Шаг 5 стал шагом 4
+            5: this.getLookingForStep(),   // ИЗМЕНЕНО: Шаг 6 стал шагом 5
+            6: this.getInterestsStep(),    // ИЗМЕНЕНО: Шаг 7 стал шагом 6
+            7: this.getPreferenceStep(),   // ИЗМЕНЕНО: Шаг 8 стал шагом 7
+            8: this.getProfileColorStep(), // ИЗМЕНЕНО: Шаг 9 стал шагом 8
+            9: this.getPhotosStep(),       // ИЗМЕНЕНО: Шаг 10 стал шагом 9
+            10: this.getAboutMeStep()      // ИЗМЕНЕНО: Шаг 11 стал шагом 10
         };
         return stepContents[step] || '';
     }
@@ -123,29 +122,29 @@ class FormHandler {
         `;
     }
 
-    getAgeStep() {
-        return `
-            <h2 class="section-title">Сколько вам лет?</h2>
-            <p class="section-description">Ваш возраст должен быть от ${this.app.config.minAge} до ${this.app.config.maxAge} лет.</p>
-            <input type="number" class="input-field" id="userAge" 
-                   min="${this.app.config.minAge}" max="${this.app.config.maxAge}" 
-                   placeholder="Ваш возраст" 
-                   value="${this.app.state.userData.age || ''}" required>
-        `;
-    }
+    // НОВЫЙ/ИЗМЕНЕННЫЙ ШАГ: Дата рождения и знак зодиака
+    getAgeAndZodiacStep() {
+        const today = new Date().toISOString().split('T')[0]; // Текущая дата для max атрибута
+        const minDate = new Date();
+        minDate.setFullYear(minDate.getFullYear() - this.app.config.maxAge);
+        const minDateISO = minDate.toISOString().split('T')[0];
 
-    getZodiacStep() {
+        const maxDate = new Date();
+        maxDate.setFullYear(maxDate.getFullYear() - this.app.config.minAge);
+        const maxDateISO = maxDate.toISOString().split('T')[0];
+
+        const currentZodiac = this.app.state.userData.zodiacSign 
+            ? this.app.config.zodiacSigns.find(s => s.id === this.app.state.userData.zodiacSign)?.name || ''
+            : '';
+
         return `
-            <h2 class="section-title">Ваш знак зодиака</h2>
-            <p class="section-description">Выберите ваш знак зодиака.</p>
-            <select class="input-field" id="userZodiac">
-                <option value="">Выберите знак зодиака</option>
-                ${this.app.config.zodiacSigns.map(sign => `
-                    <option value="${sign.id}" ${this.app.state.userData.zodiacSign === sign.id ? 'selected' : ''}>
-                        ${sign.name} (${sign.dates})
-                    </option>
-                `).join('')}
-            </select>
+            <h2 class="section-title">Ваша дата рождения</h2>
+            <p class="section-description">Введите вашу дату рождения, чтобы мы могли определить ваш возраст и знак зодиака.</p>
+            <input type="date" class="input-field" id="userDateOfBirth" 
+                   value="${this.app.state.userData.dateOfBirth || ''}" 
+                   min="${minDateISO}" max="${maxDateISO}" required>
+            <p class="section-description" style="margin-top: 10px;">Ваш возраст: <span id="displayAge">${this.app.state.userData.age || 'Не указан'}</span></p>
+            <p class="section-description">Ваш знак зодиака: <span id="displayZodiac">${currentZodiac || 'Не определен'}</span></p>
         `;
     }
 
@@ -267,7 +266,7 @@ class FormHandler {
     setupFormHandlers() {
         this.setupNavigationHandlers();
         this.setupGenderHandlers();
-        this.setupZodiacHandler();
+        this.setupDateOfBirthHandler(); // НОВОЕ: Обработчик для даты рождения
         this.setupLookingForHandlers();
         this.setupInterestsHandlers();
         this.setupPreferenceHandlers();
@@ -296,13 +295,56 @@ class FormHandler {
         });
     }
 
-    setupZodiacHandler() {
-        const zodiacInput = document.getElementById('userZodiac');
-        if (zodiacInput) {
-            zodiacInput.addEventListener('change', (e) => {
-                this.app.state.userData.zodiacSign = e.target.value;
+    // НОВЫЙ ОБРАБОТЧИК: для поля даты рождения
+    setupDateOfBirthHandler() {
+        const dateInput = document.getElementById('userDateOfBirth');
+        if (dateInput) {
+            dateInput.addEventListener('change', (e) => {
+                const dob = e.target.value;
+                this.app.state.userData.dateOfBirth = dob;
+                const { age, zodiacSign } = this.calculateAgeAndZodiac(dob);
+                this.app.state.userData.age = age;
+                this.app.state.userData.zodiacSign = zodiacSign;
+
+                document.getElementById('displayAge').textContent = age ? `${age} лет` : 'Не указан';
+                const zodiacName = this.app.config.zodiacSigns.find(s => s.id === zodiacSign)?.name || 'Не определен';
+                document.getElementById('displayZodiac').textContent = zodiacName;
             });
         }
+    }
+
+    // НОВАЯ ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ: для расчета возраста и знака зодиака
+    calculateAgeAndZodiac(dateString) {
+        if (!dateString) return { age: null, zodiacSign: null };
+
+        const birthDate = new Date(dateString);
+        const today = new Date();
+
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        // Определение знака зодиака
+        const month = birthDate.getMonth() + 1; // Месяцы от 1 до 12
+        const day = birthDate.getDate();
+        let zodiacSignId = null;
+
+        if ((month == 3 && day >= 21) || (month == 4 && day <= 19)) zodiacSignId = 'aries';
+        else if ((month == 4 && day >= 20) || (month == 5 && day <= 20)) zodiacSignId = 'taurus';
+        else if ((month == 5 && day >= 21) || (month == 6 && day <= 20)) zodiacSignId = 'gemini';
+        else if ((month == 6 && day >= 21) || (month == 7 && day <= 22)) zodiacSignId = 'cancer';
+        else if ((month == 7 && day >= 23) || (month == 8 && day <= 22)) zodiacSignId = 'leo';
+        else if ((month == 8 && day >= 23) || (month == 9 && day <= 22)) zodiacSignId = 'virgo';
+        else if ((month == 9 && day >= 23) || (month == 10 && day <= 22)) zodiacSignId = 'libra';
+        else if ((month == 10 && day >= 23) || (month == 11 && day <= 21)) zodiacSignId = 'scorpio';
+        else if ((month == 11 && day >= 22) || (month == 12 && day <= 21)) zodiacSignId = 'sagittarius';
+        else if ((month == 12 && day >= 22) || (month == 1 && day <= 19)) zodiacSignId = 'capricorn';
+        else if ((month == 1 && day >= 20) || (month == 2 && day <= 18)) zodiacSignId = 'aquarius';
+        else if ((month == 2 && day >= 19) || (month == 3 && day <= 20)) zodiacSignId = 'pisces';
+
+        return { age, zodiacSign: zodiacSignId };
     }
 
     setupLookingForHandlers() {
@@ -355,7 +397,7 @@ class FormHandler {
 
     setupColorHandlers() {
         // Эти обработчики должны быть привязаны только когда шаг с цветом активен
-        if (this.app.state.currentStep === 9) {
+        if (this.app.state.currentStep === 8) { // ИЗМЕНЕНО: Шаг 9 стал шагом 8
             document.querySelectorAll('[data-color]').forEach(color => {
                 color.addEventListener('click', (e) => {
                     const selectedColor = e.currentTarget.dataset.color;
@@ -375,7 +417,7 @@ class FormHandler {
 
     setupPhotoHandlers() {
         // Эти обработчики должны быть привязаны только когда шаг с фото активен
-        if (this.app.state.currentStep === 10) {
+        if (this.app.state.currentStep === 9) { // ИЗМЕНЕНО: Шаг 10 стал шагом 9
             const upload = document.getElementById('photoUpload');
             if (upload) {
                 upload.addEventListener('change', (e) => {
@@ -492,7 +534,7 @@ class FormHandler {
     }
 
     handleNextStep() {
-        if (this.app.state.currentStep === 5) { // Если это шаг "Город"
+        if (this.app.state.currentStep === 4) { // ИЗМЕНЕНО: Если это шаг "Город" (был 5)
             if (!document.getElementById('userCity').value.trim()) {
                 alert('Пожалуйста, укажите ваш город.');
                 return;
@@ -532,10 +574,17 @@ class FormHandler {
             nextStepEl.classList.add('active');
             this.focusCurrentField();
             // Переинициализация обработчиков для новых шагов
-            if (step === 9) { // Шаг "Цвет профиля"
+            if (step === 3) { // НОВОЕ: Шаг с датой рождения
+                this.setupDateOfBirthHandler();
+                // Принудительно вызываем change, если дата уже есть, чтобы обновить отображение
+                const dateInput = document.getElementById('userDateOfBirth');
+                if (dateInput && dateInput.value) {
+                    dateInput.dispatchEvent(new Event('change'));
+                }
+            } else if (step === 8) { // ИЗМЕНЕНО: Шаг "Цвет профиля" (был 9)
                 this.setupColorHandlers();
                 this.initColorSelection();
-            } else if (step === 10) { // Шаг "Ваши фото"
+            } else if (step === 9) { // ИЗМЕНЕНО: Шаг "Ваши фото" (был 10)
                 this.setupPhotoHandlers();
                 this.renderPhotos();
             }
@@ -556,38 +605,43 @@ class FormHandler {
                     return false;
                 }
                 return true;
-            case 3:
-                const age = parseInt(document.getElementById('userAge').value);
-                if (isNaN(age) || age < this.app.config.minAge || age > this.app.config.maxAge) {
-                    alert(`Пожалуйста, введите корректный возраст (от ${this.app.config.minAge} до ${this.app.config.maxAge} лет).`);
+            case 3: // ИЗМЕНЕНО: Валидация для даты рождения
+                const dateOfBirth = document.getElementById('userDateOfBirth').value;
+                if (!dateOfBirth) {
+                    alert('Пожалуйста, введите вашу дату рождения.');
+                    return false;
+                }
+                const { age } = this.calculateAgeAndZodiac(dateOfBirth);
+                if (age < this.app.config.minAge || age > this.app.config.maxAge) {
+                    alert(`Ваш возраст должен быть от ${this.app.config.minAge} до ${this.app.config.maxAge} лет.`);
                     return false;
                 }
                 return true;
-            case 5: // Валидация города остается, но модальное окно вызывается в handleNextStep
+            case 4: // ИЗМЕНЕНО: Валидация города (был 5)
                 if (!document.getElementById('userCity').value.trim()) {
                     alert('Пожалуйста, укажите ваш город.');
                     return false;
                 }
                 return true;
-            case 6:
+            case 5: // ИЗМЕНЕНО: Валидация "Что ищете?" (был 6)
                 if (this.app.state.userData.lookingFor.length === 0) {
                     alert('Пожалуйста, укажите, что вы ищете.');
                     return false;
                 }
                 return true;
-            case 7:
+            case 6: // ИЗМЕНЕНО: Валидация интересов (был 7)
                 if (this.app.state.userData.interests.length === 0) {
                     alert('Пожалуйста, выберите хотя бы один интерес.');
                     return false;
                 }
                 return true;
-            case 8:
+            case 7: // ИЗМЕНЕНО: Валидация предпочтений (был 8)
                 if (!this.app.state.userData.preference) {
                     alert('Пожалуйста, выберите, кого вы ищете.');
                     return false;
                 }
                 return true;
-            // Для новых шагов 9, 10, 11 пока нет специфической валидации, кроме сохранения данных
+            // Для новых шагов 8, 9, 10 пока нет специфической валидации, кроме сохранения данных
             default:
                 return true;
         }
@@ -598,17 +652,18 @@ class FormHandler {
             case 1:
                 this.app.state.userData.name = document.getElementById('userName').value.trim();
                 break;
-            case 3:
-                this.app.state.userData.age = document.getElementById('userAge').value;
+            case 3: // ИЗМЕНЕНО: Сохранение даты рождения, возраста и знака зодиака
+                const dateOfBirth = document.getElementById('userDateOfBirth').value;
+                this.app.state.userData.dateOfBirth = dateOfBirth;
+                const { age, zodiacSign } = this.calculateAgeAndZodiac(dateOfBirth);
+                this.app.state.userData.age = age;
+                this.app.state.userData.zodiacSign = zodiacSign;
                 break;
-            case 4:
-                this.app.state.userData.zodiacSign = document.getElementById('userZodiac').value;
-                break;
-            case 5:
+            case 4: // ИЗМЕНЕНО: Сохранение города (был 5)
                 this.app.state.userData.city = document.getElementById('userCity').value.trim();
                 // Геолокация обрабатывается в app.js после модального окна
                 break;
-            case 11: // Теперь это последний шаг с описанием
+            case 10: // ИЗМЕНЕНО: Теперь это последний шаг с описанием (был 11)
                 this.app.state.userData.description = document.getElementById('userDescription').value.trim();
                 break;
         }
