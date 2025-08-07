@@ -76,7 +76,7 @@ class DatingApp {
         this.formHandler = new FormHandler(this);
         this.profileHandler = new ProfileHandler(this);
         this.uiHandler = new UIHandler(this);
-        this.discoveryHandler = new DiscoveryHandler(this);
+        this.matchHandler = new MatchHandler(this); // Изменено на MatchHandler
 
         this.bindEvents();
         this.checkSavedProfile(); // Определяет начальный экран
@@ -117,7 +117,7 @@ class DatingApp {
         this.elements = {
             registrationForm: document.getElementById('registrationForm'),
             profileView: document.getElementById('profileView'),
-            discoveryScreen: document.getElementById('discoveryScreen'),
+            matchScreen: document.getElementById('matchScreen'), // Изменено на matchScreen
             settingsScreen: document.getElementById('settingsScreen'),
             topNavigation: document.getElementById('topNavigation'),
             navButtons: document.querySelectorAll('.nav-btn'),
@@ -135,9 +135,9 @@ class DatingApp {
             });
         });
 
-        const backToProfileFromDiscoveryBtn = document.getElementById('backToProfileFromDiscoveryBtn');
-        if (backToProfileFromDiscoveryBtn) {
-            backToProfileFromDiscoveryBtn.addEventListener('click', () => this.switchScreen('profile'));
+        const backToProfileFromMatchBtn = document.getElementById('backToProfileFromMatchBtn'); // Изменено на backToProfileFromMatchBtn
+        if (backToProfileFromMatchBtn) {
+            backToProfileFromMatchBtn.addEventListener('click', () => this.switchScreen('profile'));
         }
 
         const clearDataBtn = document.getElementById('clearDataBtn');
@@ -188,8 +188,8 @@ class DatingApp {
         this.profileHandler.showProfile();
     }
 
-    startDiscovery() {
-        this.discoveryHandler.startDiscovery();
+    startMatch() { // Изменено на startMatch
+        this.matchHandler.startMatch(); // Изменено на startMatch
     }
 
     clearAllData() {
@@ -234,11 +234,11 @@ class DatingApp {
             document.querySelector('.nav-btn[data-screen="profile"]').classList.add('active');
             this.elements.topNavigation.style.display = 'flex';
             this.profileHandler.showProfile();
-        } else if (screenName === 'discovery') {
-            targetScreenElement = this.elements.discoveryScreen;
-            document.querySelector('.nav-btn[data-screen="discovery"]').classList.add('active');
+        } else if (screenName === 'match') { // Изменено на match
+            targetScreenElement = this.elements.matchScreen; // Изменено на matchScreen
+            document.querySelector('.nav-btn[data-screen="match"]').classList.add('active'); // Изменено на match
             this.elements.topNavigation.style.display = 'flex';
-            this.discoveryHandler.startDiscovery(); // Запускаем подборку анкет
+            this.matchHandler.startMatch(); // Запускаем подборку анкет // Изменено на startMatch
         } else if (screenName === 'settings') {
             targetScreenElement = this.elements.settingsScreen;
             document.querySelector('.nav-btn[data-screen="settings"]').classList.add('active');

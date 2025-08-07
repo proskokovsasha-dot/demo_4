@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/components.css">
     <link rel="stylesheet" href="assets/css/animations.css">
-    <link rel="stylesheet" href="assets/css/discovery.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/match.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* Общие стили для body и app-container */
         body {
@@ -222,12 +222,17 @@
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 Профиль
             </button>
-            <button class="nav-btn" data-screen="discovery">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <button class="nav-btn" data-screen="match">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
                 Анкеты
             </button>
             <button class="nav-btn" data-screen="settings">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0-.33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0-.33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
                 Настройки
             </button>
         </nav>
@@ -292,50 +297,58 @@
             </div>
         </div>
 
-        <!-- Экран подборки анкет -->
-        <div class="screen" id="discoveryScreen">
-            <div class="discovery-card" id="discoveryCard">
-                <div class="discovery-avatar" id="discoveryAvatar"></div>
-                <div class="discovery-info">
-                    <h1 class="discovery-name" id="discoveryName"></h1>
-                    <div class="discovery-meta">
-                        <span id="discoveryAge"></span>
-                        <span id="discoveryCity"></span>
+        <!-- Экран подборки анкет (Match Screen) -->
+        <div class="screen" id="matchScreen">
+            <div class="match-card-wrapper">
+                <div class="match-card" id="matchCard">
+                    <div class="match-card-bg" id="matchCardBg"></div>
+                    <div class="match-card-overlay"></div>
+                    <div class="match-card-content">
+                        <!-- Верхняя часть: Заголовок приложения, статус, расстояние -->
+                        <div class="match-header">
+                            <div class="match-app-title">
+                                <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <path class="logo-path" d="M20,50 Q35,20 50,50 T80,50" 
+                                        stroke="white" 
+                                        stroke-width="8" 
+                                        fill="none"
+                                        stroke-linecap="round"/>
+                                </svg>
+                                <span>ТочкаСхода</span>
+                            </div>
+                            <div class="match-status">
+                                <span class="match-active-dot"></span>
+                                <span id="matchLastActive">Была сегодня</span>
+                            </div>
+                            <div class="match-distance" id="matchDistance">9 км</div>
+                        </div>
+                        
+                        <!-- Средняя часть: Имя, возраст, описание -->
+                        <div class="match-info">
+                            <h1 class="match-name-age" id="matchNameAge"></h1>
+                            <p class="match-description" id="matchDescription"></p>
+                        </div>
+
+                        <!-- Кнопки лайка/пропуска теперь внутри match-card-content -->
+                        <div class="match-actions">
+                            <button class="btn btn-match-pass" id="matchPassBtn">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                            <button class="btn btn-match-like" id="matchLikeBtn">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                </div>
-
-                <div class="discovery-section">
-                    <h3 class="section-title">О себе</h3>
-                    <div class="discovery-description" id="discoveryBio"></div>
-                </div>
-
-                <div class="discovery-section">
-                    <h3 class="section-title">Ищу</h3>
-                    <div class="discovery-looking-for" id="discoveryLookingFor"></div>
-                </div>
-
-                <div class="discovery-section">
-                    <h3 class="section-title">Интересы</h3>
-                    <div class="discovery-interests" id="discoveryInterests"></div>
-                </div>
-
-                <div class="discovery-actions">
-                    <button class="btn btn-pass" id="passBtn">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
-                    <button class="btn btn-like" id="likeBtn">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                        </svg>
-                    </button>
                 </div>
             </div>
             <div class="no-profiles-message" id="noProfilesMessage">
                 <p>Пока нет новых анкет. Попробуйте позже!</p>
-                <button class="btn btn-secondary" style="margin-top: 20px;" id="backToProfileFromDiscoveryBtn">
+                <button class="btn btn-secondary" style="margin-top: 20px;" id="backToProfileFromMatchBtn">
                     Вернуться в профиль
                 </button>
             </div>
@@ -365,7 +378,7 @@
     <script src="assets/js/components/ui.js"></script>
     <script src="assets/js/components/form.js"></script>
     <script src="assets/js/components/profile.js"></script>
-    <script src="assets/js/components/discovery.js"></script>
+    <script src="assets/js/components/match.js"></script>
     <script src="assets/js/app.js"></script>
 </body>
 </html>
