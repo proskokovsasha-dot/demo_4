@@ -4,8 +4,7 @@ class ProfileHandler {
         this.initElements();
         this.isExpanded = false;
         this.startY = 0;
-        this.currentY = 0;
-        this.scrollThreshold = 50; // Порог в пикселях для свайпа
+        this.currentTranslateY = 0; // Изменено на currentTranslateY для более точного отслеживания
     }
 
     initElements() {
@@ -22,7 +21,7 @@ class ProfileHandler {
             editBtn: document.getElementById('editBtn'),
             newProfileBtn: document.getElementById('newProfileBtn'),
             scrollIndicator: document.querySelector('#myProfileScrollableContent .scroll-indicator'),
-            profileFixedInfo: document.getElementById('myProfileFixedInfo') // Новый элемент
+            profileFixedInfo: document.getElementById('myProfileFixedInfo')
         };
     }
 
@@ -37,7 +36,7 @@ class ProfileHandler {
         this.updateInterests(userData.interests, this.app.config.interests);
         this.updatePhotos(userData.photos);
         this.bindEvents();
-        this.resetScrollState(); // Сбрасываем состояние свайпа при открытии профиля
+        this.resetScrollState();
     }
 
     applyProfileColor(color) {
@@ -86,7 +85,7 @@ class ProfileHandler {
             this.elements.profileCardBg.style.backgroundImage = `url(${avatar})`;
         } else {
             this.elements.profileCardBg.style.backgroundImage = 'none';
-            this.elements.profileCardBg.style.backgroundColor = 'var(--primary-dark)'; // Фоновый цвет, если нет аватара
+            this.elements.profileCardBg.style.backgroundColor = 'var(--primary-dark)';
         }
     }
 
@@ -97,14 +96,12 @@ class ProfileHandler {
         }
         this.elements.profileNameAge.textContent = nameAgeText;
         
-        // Краткое описание (первая строка или часть)
         const fullDescription = userData.description || 'Пользователь пока ничего о себе не рассказал.';
-        this.elements.profileDescriptionShort.textContent = fullDescription.split('.')[0] + (fullDescription.includes('.') ? '.' : ''); // Берем до первой точки
-        if (this.elements.profileDescriptionShort.textContent.length > 100) { // Если слишком длинное, обрезаем
+        this.elements.profileDescriptionShort.textContent = fullDescription.split('.')[0] + (fullDescription.includes('.') ? '.' : '');
+        if (this.elements.profileDescriptionShort.textContent.length > 100) {
             this.elements.profileDescriptionShort.textContent = this.elements.profileDescriptionShort.textContent.substring(0, 97) + '...';
         }
         
-        // Полное описание
         this.elements.profileDescriptionFull.textContent = fullDescription;
     }
 
@@ -116,7 +113,7 @@ class ProfileHandler {
         
         if (lookingFor && lookingFor.length > 0) {
             const lookingForContainer = document.createElement('div');
-            lookingForContainer.className = 'looking-for-container'; // Используем класс из components.css
+            lookingForContainer.className = 'looking-for-container';
             
             lookingFor.forEach(optionId => {
                 const option = options.find(o => o.id === optionId);
@@ -145,7 +142,7 @@ class ProfileHandler {
         
         if (userInterests && userInterests.length > 0) {
             const interestsContainer = document.createElement('div');
-            interestsContainer.className = 'interests-container'; // Используем класс из components.css
+            interestsContainer.className = 'interests-container';
             
             userInterests.forEach(interestId => {
                 const interest = configInterests.find(i => i.id === interestId);
@@ -183,10 +180,10 @@ class ProfileHandler {
         // Удаляем старые обработчики, чтобы избежать дублирования
         this.elements.editBtn.removeEventListener('click', this.editProfileHandler);
         this.elements.newProfileBtn.removeEventListener('click', this.newProfileHandler);
-        this.elements.profileScrollableContent.removeEventListener('touchstart', this.handleTouchStart);
-        this.elements.profileScrollableContent.removeEventListener('touchmove', this.handleTouchMove);
-        this.elements.profileScrollableContent.removeEventListener('touchend', this.handleTouchEnd);
-        this.elements.scrollIndicator.removeEventListener('click', this.toggleExpand);
+        this.elements.profileCard.removeEventListener('touchstart', this.handleTouchStartBound);
+        this.elements.profileCard.removeEventListener('touchmove', this.handleTouchMoveBound);
+        this.elements.profileCard.removeEventListener('touchend', this.handleTouchEndBound);
+        this.elements.scrollIndicator.removeEventListener('click', this.toggleExpandBound);
 
         // Привязываем новые обработчики
         this.editProfileHandler = () => this.app.switchScreen('registration');
@@ -199,11 +196,16 @@ class ProfileHandler {
         };
         this.elements.newProfileBtn.addEventListener('click', this.newProfileHandler);
 
-        // Обработчики для свайпа
-        this.elements.profileCard.addEventListener('touchstart', this.handleTouchStart.bind(this));
-        this.elements.profileCard.addEventListener('touchmove', this.handleTouchMove.bind(this));
-        this.elements.profileCard.addEventListener('touchend', this.handleTouchEnd.bind(this));
-        this.elements.scrollIndicator.addEventListener('click', this.toggleExpand.bind(this));
+        // Привязываем методы свайпа к this
+        this.handleTouchStartBound = this.handleTouchStart.bind(this);
+        this.handleTouchMoveBound = this.handleTouchMove.bind(this);
+        this.handleTouchEndBound = this.handleTouchEnd.bind(this);
+        this.toggleExpandBound = this.toggleExpand.bind(this);
+
+        this.elements.profileCard.addEventListener('touchstart', this.handleTouchStartBound);
+        this.elements.profileCard.addEventListener('touchmove', this.handleTouchMoveBound);
+        this.elements.profileCard.addEventListener('touchend', this.handleTouchEndBound);
+        this.elements.scrollIndicator.addEventListener('click', this.toggleExpandBound);
     }
 
     resetProfile() {
@@ -230,56 +232,68 @@ class ProfileHandler {
     resetScrollState() {
         this.isExpanded = false;
         this.elements.profileScrollableContent.classList.remove('expanded');
-        // Устанавливаем transform на начальное значение из CSS
         this.elements.profileScrollableContent.style.transform = 'translateY(calc(100% - 150px))'; 
-        this.elements.profileScrollableContent.scrollTop = 0; // Сброс прокрутки
+        this.elements.profileScrollableContent.scrollTop = 0;
     }
 
     handleTouchStart(e) {
-        // Проверяем, если касание началось внутри прокручиваемой области и она уже прокручена до конца
-        if (this.isExpanded && this.elements.profileScrollableContent.scrollTop > 0 && e.target !== this.elements.scrollIndicator) {
-            // Если пользователь пытается прокрутить вверх, когда уже вверху, или вниз, когда уже внизу,
-            // то не перехватываем событие для свайпа карточки, а позволяем прокрутке контента
-            if (this.elements.profileScrollableContent.scrollHeight > this.elements.profileScrollableContent.clientHeight) {
-                // Если контент внутри прокручивается, позволяем ему прокручиваться
+        this.startY = e.touches[0].clientY;
+        const style = window.getComputedStyle(this.elements.profileScrollableContent);
+        this.currentTranslateY = new DOMMatrixReadOnly(style.transform).m42;
+
+        // Проверяем, если касание началось внутри прокручиваемой области
+        const target = e.target;
+        const isInsideScrollableContent = this.elements.profileScrollableContent.contains(target) && target !== this.elements.scrollIndicator;
+
+        if (isInsideScrollableContent && this.isExpanded) {
+            // Если контент прокручивается и пользователь пытается прокрутить его
+            const scrollable = this.elements.profileScrollableContent;
+            const atTop = scrollable.scrollTop === 0;
+            const atBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight;
+
+            // Если пользователь пытается прокрутить вниз, когда уже внизу, или вверх, когда уже вверху,
+            // то мы можем перехватить событие для свайпа карточки.
+            // В противном случае, позволяем прокрутке контента.
+            if ((atTop && e.touches[0].clientY > this.startY) || (atBottom && e.touches[0].clientY < this.startY)) {
+                // Продолжаем обработку свайпа карточки
+            } else {
+                // Позволяем прокрутке контента
+                this.isScrollingContent = true;
                 return;
             }
         }
-
-        this.startY = e.touches[0].clientY;
-        // Получаем текущее смещение translateY
-        const style = window.getComputedStyle(this.elements.profileScrollableContent);
-        const matrix = new DOMMatrixReadOnly(style.transform);
-        this.currentTranslateY = matrix.m42; // m42 - это значение translateY
-
-        this.elements.profileScrollableContent.style.transition = 'none'; // Отключаем переход для плавного свайпа
+        this.isScrollingContent = false;
+        this.elements.profileScrollableContent.style.transition = 'none';
     }
 
     handleTouchMove(e) {
+        if (this.isScrollingContent) {
+            // Если мы прокручиваем контент, не перехватываем событие
+            return;
+        }
+
         const deltaY = e.touches[0].clientY - this.startY;
         
-        // Вычисляем максимальное смещение вверх (когда карточка полностью раскрыта)
-        // и начальное смещение (когда карточка скрыта, видна только часть)
         const cardHeight = this.elements.profileCard.offsetHeight;
-        const fixedInfoHeight = this.elements.profileFixedInfo.offsetHeight;
-        const initialVisibleHeight = 150; // Высота видимой части в скрытом состоянии
-        
-        // Максимальное смещение вверх (когда transform: translateY(0))
+        const initialVisibleHeight = 150;
         const maxScrollUp = cardHeight - initialVisibleHeight; 
 
         let newTranslateY = this.currentTranslateY + deltaY;
 
-        // Ограничиваем newTranslateY в пределах от 0 (полностью раскрыта) до maxScrollUp (скрыта)
         newTranslateY = Math.max(0, Math.min(maxScrollUp, newTranslateY));
 
         this.elements.profileScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
 
-        // Предотвращаем прокрутку страницы, если мы управляем свайпом карточки
-        e.preventDefault();
+        e.preventDefault(); // Предотвращаем прокрутку страницы
     }
 
     handleTouchEnd(e) {
-        this.elements.profileScrollableContent.style.transition = 'transform 0.4s ease-out'; // Включаем переход обратно
+        if (this.isScrollingContent) {
+            this.isScrollingContent = false;
+            return;
+        }
+
+        this.elements.profileScrollableContent.style.transition = 'transform 0.4s ease-out';
 
         const currentTransformY = parseFloat(this.elements.profileScrollableContent.style.transform.replace('translateY(', '').replace('px)', '')) || 0;
         
@@ -287,23 +301,19 @@ class ProfileHandler {
         const initialVisibleHeight = 150;
         const maxScrollUp = cardHeight - initialVisibleHeight;
 
-        // Определяем, должна ли карточка быть раскрыта или скрыта
         if (currentTransformY < maxScrollUp / 2) {
-            // Если сдвинули вверх достаточно, раскрываем
             this.elements.profileScrollableContent.classList.add('expanded');
             this.isExpanded = true;
         } else {
-            // Иначе скрываем
             this.elements.profileScrollableContent.classList.remove('expanded');
             this.isExpanded = false;
         }
-        // Сброс inline стиля, чтобы класс управлял окончательным положением
         this.elements.profileScrollableContent.style.transform = ''; 
     }
 
     toggleExpand() {
         this.isExpanded = !this.isExpanded;
         this.elements.profileScrollableContent.classList.toggle('expanded', this.isExpanded);
-        this.elements.profileScrollableContent.scrollTop = 0; // Сбрасываем прокрутку при переключении
+        this.elements.profileScrollableContent.scrollTop = 0;
     }
 }
