@@ -30,7 +30,6 @@
     box-shadow: var(--match-shadow-strong); /* Более сильная тень */
     display: flex;
     flex-direction: column;
-    /* justify-content: flex-end; */ /* Удалено, чтобы контент был сверху */
     color: var(--match-text-color);
     transition: transform 0.5s ease-out, opacity 0.5s ease-out;
     transform-origin: bottom center; /* Точка вращения для свайпа */
@@ -55,7 +54,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--match-overlay-color); /* Полупрозрачная подложка */
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 100%); /* Градиент для читаемости текста */
     z-index: 2;
 }
 
@@ -65,65 +64,16 @@
     padding: 30px; /* Увеличен паддинг */
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Распределяем контент по высоте */
+    justify-content: flex-end; /* Прижимаем контент к низу */
     height: 100%;
     text-align: left; /* Текст выровнен по левому краю */
 }
 
-.match-header {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Элементы заголовка выровнены по левому краю */
-    margin-bottom: 20px; /* Отступ от верхнего края */
-}
-
-.match-app-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 1.4rem; /* Уменьшен размер заголовка */
-    font-weight: 800;
-    color: white;
-    margin-bottom: 10px;
-}
-
-.match-app-title .logo {
-    width: 30px; /* Уменьшен размер логотипа */
-    height: 30px;
-}
-
-.match-app-title .logo-path {
-    stroke: white; /* Логотип белый на темном фоне */
-}
-
-.match-status {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 5px;
-}
-
-.match-active-dot {
-    width: 8px;
-    height: 8px;
-    background-color: var(--match-active-dot);
-    border-radius: 50%;
-    display: inline-block;
-}
-
-.match-distance {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 15px;
-}
-
-.match-info {
-    /* margin-top: auto; */ /* Удалено, так как justify-content: space-between управляет этим */
-    margin-bottom: 20px; /* Отступ от кнопок */
+/* НОВЫЕ СТИЛИ ДЛЯ ФИКСИРОВАННОЙ ИНФОРМАЦИИ В АНКЕТЕ */
+.match-fixed-info {
+    margin-top: auto; /* Прижимает к низу родителя */
+    margin-bottom: 20px; /* Отступ от свайпаемой части */
+    flex-shrink: 0;
 }
 
 .match-name-age {
@@ -132,69 +82,205 @@
     line-height: 1.1;
     margin-bottom: 8px;
     text-shadow: var(--shadow-sm); /* Легкая тень для читаемости */
+    color: white; /* Убедимся, что цвет белый */
 }
 
-.match-description {
+.match-description-short {
     font-size: 1.1rem; /* Размер для описания */
     line-height: 1.4;
-    /* margin-bottom: 20px; */ /* Удалено, так как теперь есть прокрутка и фото */
     color: rgba(255, 255, 255, 0.9);
     text-shadow: var(--shadow-sm);
-    max-height: 120px; /* Ограничиваем высоту для прокрутки */
-    overflow-y: auto; /* Добавляем прокрутку */
-    padding-right: 10px; /* Отступ для скроллбара */
-    /* Стилизация скроллбара */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Ограничиваем 3 строками */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* НОВЫЕ СТИЛИ ДЛЯ СВАЙПАЕМОЙ ЧАСТИ В АНКЕТЕ */
+.match-scrollable-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; /* Изначально занимает всю высоту, но будет сдвигаться */
+    background-color: var(--surface); /* Фон для свайпаемой части */
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+    padding: 30px;
+    padding-top: 50px; /* Отступ для индикатора свайпа */
+    box-shadow: var(--shadow-lg);
+    transform: translateY(calc(100% - 150px)); /* Изначально скрыта, видна только часть */
+    transition: transform 0.4s ease-out;
+    overflow-y: auto; /* Позволяем прокрутку контента внутри */
+    -webkit-overflow-scrolling: touch; /* Для плавного скролла на iOS */
+    color: var(--text-primary); /* Цвет текста для свайпаемой части */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    /* Скрываем стандартный скроллбар */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none;  /* IE and Edge */
 }
 
-/* Webkit (Chrome, Safari) скроллбар */
-.match-description::-webkit-scrollbar {
-    display: none;
+.match-scrollable-content::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
+.match-scrollable-content.expanded {
+    transform: translateY(0); /* Полностью раскрыта */
+}
 
-/* Сетка фотографий - УДАЛЕНО */
-/* .match-photos-grid {
+.match-scroll-indicator {
+    width: 40px;
+    height: 5px;
+    background-color: var(--border);
+    border-radius: 5px;
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+}
+
+.match-section .section-title {
+    font-size: 1.3rem;
+    color: var(--primary);
+    margin-bottom: 12px;
+    font-weight: 800;
+    text-align: left;
+}
+
+.match-description-full {
+    background: var(--surface);
+    padding: 15px;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+    text-align: left;
+    border: 1px solid var(--border);
+    word-break: break-word;
+}
+
+.match-photos-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-top: 15px;
-    width: 100%;
-    flex-shrink: 0;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .match-photo-item {
     background-size: cover;
     background-position: center;
-    height: 80px;
+    height: 90px;
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
-    border: 1px solid rgba(255,255,255,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    border: 1px solid var(--border);
 }
 
-.match-photo-placeholder {
-    background-color: rgba(255,255,255,0.1);
-    display: flex;
-    align-items: center;
+/* Стили для раздела "Ищу" (повторяются из components.css) */
+.match-looking-for {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+    width: 100%;
     justify-content: center;
-    color: rgba(255,255,255,0.3);
-    font-size: 2rem;
-} */
+}
 
+.match-looking-for .looking-for-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px;
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast) ease;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-primary);
+}
+
+.match-looking-for .looking-for-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-light);
+}
+
+.match-looking-for .looking-for-emoji {
+    font-size: 1.6rem;
+}
+
+.match-looking-for .looking-for-text {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Стили для раздела "Интересы" (повторяются из components.css) */
+.match-interests {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+}
+
+.match-interests .interest-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast) ease;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    text-align: center;
+    color: var(--text-primary);
+}
+
+.match-interests .interest-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-light);
+}
+
+.match-interests .interest-emoji {
+    font-size: 1.8rem;
+    margin-bottom: 4px;
+}
+
+.match-interests .interest-text {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Общие стили для пустых разделов */
+.no-data {
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 15px;
+    text-align: center;
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+    border: 1px dashed var(--border);
+    font-size: 0.9rem;
+}
 
 .match-actions {
     display: flex;
     gap: 25px; /* Увеличен зазор между кнопками */
-    margin-top: auto; /* Прижимаем кнопки к низу карточки */
+    margin-top: 20px; /* Отступ сверху для кнопок */
     width: 100%;
     justify-content: center;
     flex-shrink: 0;
-    padding-top: 20px; /* Отступ сверху для кнопок */
 }
 
 .match-actions .btn {
@@ -278,18 +364,37 @@
         font-size: 2rem;
     }
 
-    .match-description {
+    .match-description-short {
         font-size: 1rem;
-        max-height: 100px; /* Уменьшаем высоту прокрутки на мобильных */
     }
 
-    /* .match-photos-grid {
+    .match-scrollable-content {
+        padding: 20px;
+        padding-top: 40px;
+        transform: translateY(calc(100% - 120px)); /* Адаптация для мобильных */
+    }
+
+    .match-section .section-title {
+        font-size: 1.1rem;
+    }
+    
+    .match-description-full {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .match-interests .interest-item {
+        padding: 7px 12px;
+        font-size: 0.85rem;
+    }
+
+    .match-photos-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 6px;
+        gap: 8px;
     }
     .match-photo-item {
-        height: 70px;
-    } */
+        height: 80px;
+    }
 
     .match-actions {
         gap: 20px;
@@ -322,17 +427,21 @@
     .match-name-age {
         font-size: 1.8rem;
     }
-    .match-description {
+    .match-description-short {
         font-size: 0.9rem;
-        max-height: 80px; /* Еще уменьшаем высоту прокрутки */
     }
-    /* .match-photos-grid {
+    .match-scrollable-content {
+        padding: 15px;
+        padding-top: 35px;
+        transform: translateY(calc(100% - 100px));
+    }
+    .match-photos-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 5px;
     }
     .match-photo-item {
         height: 60px;
-    } */
+    }
     .match-actions .btn {
         width: 50px;
         height: 50px;
