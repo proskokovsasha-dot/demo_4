@@ -2,23 +2,25 @@ class ProfileHandler {
     constructor(app) {
         this.app = app;
         this.initElements();
+        this.isExpanded = false;
+        this.startY = 0;
+        this.currentY = 0;
     }
 
     initElements() {
         this.elements = {
-            profileCard: document.querySelector('#profileView .profile-card'),
-            profileName: document.getElementById('profileName'),
-            profileAge: document.getElementById('profileAge'),
-            profileZodiac: document.getElementById('profileZodiac'),
-            profileCity: document.getElementById('profileCity'),
-            profileDistance: document.getElementById('profileDistance'),
-            profileDescription: document.getElementById('profileDescription'),
-            profileLookingFor: document.getElementById('profileLookingFor'),
-            profileInterests: document.getElementById('profileInterests'),
-            profilePhotos: document.getElementById('profilePhotos'),
-            profileAvatar: document.getElementById('profileAvatar'),
+            profileCard: document.getElementById('myProfileCard'), // Изменено ID
+            profileCardBg: document.getElementById('myProfileCardBg'), // Новый элемент
+            profileNameAge: document.getElementById('myProfileNameAge'), // Новый элемент
+            profileDescriptionShort: document.getElementById('myProfileDescriptionShort'), // Новый элемент
+            profileScrollableContent: document.getElementById('myProfileScrollableContent'), // Новый элемент
+            profileDescriptionFull: document.getElementById('myProfileDescriptionFull'), // Новый элемент
+            profileLookingFor: document.getElementById('myProfileLookingFor'), // Изменено ID
+            profileInterests: document.getElementById('myProfileInterests'), // Изменено ID
+            profilePhotosGrid: document.getElementById('myProfilePhotosGrid'), // Новый элемент
             editBtn: document.getElementById('editBtn'),
-            newProfileBtn: document.getElementById('newProfileBtn')
+            newProfileBtn: document.getElementById('newProfileBtn'),
+            scrollIndicator: document.querySelector('#myProfileScrollableContent .scroll-indicator')
         };
     }
 
@@ -27,12 +29,13 @@ class ProfileHandler {
         const profileColor = userData.profileColor || '#FF6B6B';
         
         this.applyProfileColor(profileColor);
-        this.updateAvatar(userData.avatar);
+        this.updateProfileCardBackground(userData.avatar);
         this.updateProfileInfo(userData);
         this.updateLookingFor(userData.lookingFor, this.app.config.lookingForOptions);
         this.updateInterests(userData.interests, this.app.config.interests);
         this.updatePhotos(userData.photos);
         this.bindEvents();
+        this.resetScrollState(); // Сбрасываем состояние свайпа при открытии профиля
     }
 
     applyProfileColor(color) {
@@ -76,42 +79,31 @@ class ProfileHandler {
         } : null;
     }
 
+    updateProfileCardBackground(avatar) {
+        if (avatar) {
+            this.elements.profileCardBg.style.backgroundImage = `url(${avatar})`;
+        } else {
+            this.elements.profileCardBg.style.backgroundImage = 'none';
+            this.elements.profileCardBg.style.backgroundColor = 'var(--primary-dark)'; // Фоновый цвет, если нет аватара
+        }
+    }
+
     updateProfileInfo(userData) {
-        this.elements.profileName.textContent = userData.name || 'Аноним';
+        let nameAgeText = userData.name || 'Аноним';
+        if (userData.age) {
+            nameAgeText += `, ${userData.age}`;
+        }
+        this.elements.profileNameAge.textContent = nameAgeText;
         
-        if (userData.gender) {
-            const genderEmoji = userData.gender === 'male' ? '👨' : '👩';
-            this.elements.profileName.textContent += ` ${genderEmoji}`;
+        // Краткое описание (первая строка или часть)
+        const fullDescription = userData.description || 'Пользователь пока ничего о себе не рассказал.';
+        this.elements.profileDescriptionShort.textContent = fullDescription.split('.')[0] + (fullDescription.includes('.') ? '.' : ''); // Берем до первой точки
+        if (this.elements.profileDescriptionShort.textContent.length > 100) { // Если слишком длинное, обрезаем
+            this.elements.profileDescriptionShort.textContent = this.elements.profileDescriptionShort.textContent.substring(0, 97) + '...';
         }
         
-        this.elements.profileAge.textContent = userData.age ? `${userData.age} лет` : '';
-        
-        if (userData.zodiacSign) {
-            const zodiac = this.app.config.zodiacSigns.find(z => z.id === userData.zodiacSign);
-            this.elements.profileZodiac.textContent = zodiac ? `, ${zodiac.name}` : '';
-        } else {
-            this.elements.profileZodiac.textContent = '';
-        }
-        
-        this.elements.profileCity.textContent = userData.city ? `, ${userData.city}` : '';
-        
-        if (userData.location?.lat && this.app.state.userData.location?.lat) {
-            const distance = this.app.calculateDistance(
-                userData.location.lat,
-                userData.location.lng,
-                this.app.state.userData.location.lat,
-                this.app.state.userData.location.lng
-            );
-            if (distance) {
-                this.elements.profileDistance.textContent = `, ~${distance} км от вас`;
-            } else {
-                this.elements.profileDistance.textContent = '';
-            }
-        } else {
-            this.elements.profileDistance.textContent = '';
-        }
-        
-        this.elements.profileDescription.textContent = userData.description || 'Пользователь пока ничего о себе не рассказал';
+        // Полное описание
+        this.elements.profileDescriptionFull.textContent = fullDescription;
     }
 
     updateLookingFor(lookingFor, options) {
@@ -122,7 +114,7 @@ class ProfileHandler {
         
         if (lookingFor && lookingFor.length > 0) {
             const lookingForContainer = document.createElement('div');
-            lookingForContainer.className = 'looking-for-container';
+            lookingForContainer.className = 'looking-for-container'; // Используем класс из components.css
             
             lookingFor.forEach(optionId => {
                 const option = options.find(o => o.id === optionId);
@@ -151,7 +143,7 @@ class ProfileHandler {
         
         if (userInterests && userInterests.length > 0) {
             const interestsContainer = document.createElement('div');
-            interestsContainer.className = 'interests-container';
+            interestsContainer.className = 'interests-container'; // Используем класс из components.css
             
             userInterests.forEach(interestId => {
                 const interest = configInterests.find(i => i.id === interestId);
@@ -172,47 +164,49 @@ class ProfileHandler {
         }
     }
 
-    updateAvatar(avatar) {
-        const avatarElement = this.elements.profileAvatar;
-        if (!avatarElement) return;
-
-        if (avatar) {
-            avatarElement.style.backgroundImage = `url(${avatar})`;
-            avatarElement.innerHTML = '';
-        } else {
-            avatarElement.style.backgroundImage = '';
-            avatarElement.innerHTML = '<span class="avatar-placeholder">👤</span>';
-        }
-    }
-
     updatePhotos(photos) {
-        const photosContainer = this.elements.profilePhotos;
+        const photosContainer = this.elements.profilePhotosGrid;
         if (!photosContainer) return;
 
         if (photos && photos.length > 0) {
-            photosContainer.innerHTML = `
-                <div class="photos-grid">
-                    ${photos.map(photo => `
-                        <div class="photo-preview ${this.app.state.userData.avatar === photo ? 'main-avatar' : ''}" 
-                             style="background-image: url(${photo})"></div>
-                    `).join('')}
-                </div>
-            `;
+            photosContainer.innerHTML = photos.map(photo => `
+                <div class="profile-photo-item" style="background-image: url(${photo})"></div>
+            `).join('');
         } else {
             photosContainer.innerHTML = '<div class="no-data">Фотографии не добавлены</div>';
         }
     }
 
     bindEvents() {
-        this.elements.editBtn.addEventListener('click', () => {
-            this.app.switchScreen('registration');
-        });
+        // Удаляем старые обработчики, чтобы избежать дублирования
+        this.elements.editBtn.removeEventListener('click', this.editProfileHandler);
+        this.elements.newProfileBtn.removeEventListener('click', this.newProfileHandler);
+        this.elements.profileScrollableContent.removeEventListener('touchstart', this.handleTouchStart);
+        this.elements.profileScrollableContent.removeEventListener('touchmove', this.handleTouchMove);
+        this.elements.profileScrollableContent.removeEventListener('touchend', this.handleTouchEnd);
+        this.elements.scrollIndicator.removeEventListener('click', this.toggleExpand);
 
-        this.elements.newProfileBtn.addEventListener('click', () => {
+        // Привязываем новые обработчики
+        this.editProfileHandler = () => this.app.switchScreen('registration');
+        this.elements.editBtn.addEventListener('click', this.editProfileHandler);
+
+        this.newProfileHandler = () => {
             if (confirm('Вы уверены, что хотите создать новый профиль? Текущие данные будут удалены.')) {
                 this.resetProfile();
             }
-        });
+        };
+        this.elements.newProfileBtn.addEventListener('click', this.newProfileHandler);
+
+        // Обработчики для свайпа
+        this.handleTouchStart = this.handleTouchStart.bind(this);
+        this.handleTouchMove = this.handleTouchMove.bind(this);
+        this.handleTouchEnd = this.handleTouchEnd.bind(this);
+        this.toggleExpand = this.toggleExpand.bind(this);
+
+        this.elements.profileScrollableContent.addEventListener('touchstart', this.handleTouchStart);
+        this.elements.profileScrollableContent.addEventListener('touchmove', this.handleTouchMove);
+        this.elements.profileScrollableContent.addEventListener('touchend', this.handleTouchEnd);
+        this.elements.scrollIndicator.addEventListener('click', this.toggleExpand);
     }
 
     resetProfile() {
@@ -234,5 +228,87 @@ class ProfileHandler {
         
         localStorage.removeItem('datingProfile');
         this.app.switchScreen('registration');
+    }
+
+    resetScrollState() {
+        this.isExpanded = false;
+        this.elements.profileScrollableContent.classList.remove('expanded');
+        this.elements.profileScrollableContent.style.transform = ''; // Сброс inline стиля
+        this.elements.profileScrollableContent.scrollTop = 0; // Сброс прокрутки
+    }
+
+    handleTouchStart(e) {
+        this.startY = e.touches[0].clientY;
+        this.currentY = this.elements.profileScrollableContent.getBoundingClientRect().top;
+        this.elements.profileScrollableContent.style.transition = 'none'; // Отключаем переход для плавного свайпа
+    }
+
+    handleTouchMove(e) {
+        const deltaY = e.touches[0].clientY - this.startY;
+        const scrollableHeight = this.elements.profileScrollableContent.offsetHeight;
+        const fixedHeight = this.elements.profileFixedInfo.offsetHeight + 30; // 30px - padding-bottom profile-card-content
+        const minTranslateY = 0;
+        const maxTranslateY = scrollableHeight - fixedHeight; // Максимальное смещение вверх
+
+        let newTranslateY;
+
+        if (this.isExpanded) {
+            // Если уже раскрыто, свайп вниз должен закрывать
+            newTranslateY = Math.max(minTranslateY, deltaY);
+            if (newTranslateY > maxTranslateY / 2) { // Если сдвинули достаточно вниз, закрываем
+                this.elements.profileScrollableContent.classList.remove('expanded');
+                this.isExpanded = false;
+            }
+        } else {
+            // Если не раскрыто, свайп вверх должен раскрывать
+            newTranslateY = Math.min(maxTranslateY, maxTranslateY + deltaY);
+            if (newTranslateY < maxTranslateY / 2) { // Если сдвинули достаточно вверх, раскрываем
+                this.elements.profileScrollableContent.classList.add('expanded');
+                this.isExpanded = true;
+            }
+        }
+        
+        // Применяем transform только если не полностью раскрыто/закрыто
+        if (!this.isExpanded && newTranslateY > 0) {
+             this.elements.profileScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
+        } else if (this.isExpanded && newTranslateY < maxTranslateY) {
+             this.elements.profileScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
+        }
+    }
+
+    handleTouchEnd(e) {
+        this.elements.profileScrollableContent.style.transition = 'transform 0.4s ease-out'; // Включаем переход обратно
+
+        const currentTransformY = parseFloat(this.elements.profileScrollableContent.style.transform.replace('translateY(', '').replace('px)', '')) || 0;
+        const scrollableHeight = this.elements.profileScrollableContent.offsetHeight;
+        const fixedHeight = this.elements.profileFixedInfo.offsetHeight + 30;
+        const threshold = (scrollableHeight - fixedHeight) / 2; // Порог для определения раскрытия/закрытия
+
+        if (this.isExpanded) {
+            // Если было раскрыто, и сдвинули вниз больше порога, закрываем
+            if (currentTransformY > threshold) {
+                this.elements.profileScrollableContent.classList.remove('expanded');
+                this.isExpanded = false;
+            } else { // Иначе возвращаем в раскрытое состояние
+                this.elements.profileScrollableContent.classList.add('expanded');
+                this.isExpanded = true;
+            }
+        } else {
+            // Если было закрыто, и сдвинули вверх больше порога, раскрываем
+            if (currentTransformY < threshold) {
+                this.elements.profileScrollableContent.classList.add('expanded');
+                this.isExpanded = true;
+            } else { // Иначе возвращаем в закрытое состояние
+                this.elements.profileScrollableContent.classList.remove('expanded');
+                this.isExpanded = false;
+            }
+        }
+        this.elements.profileScrollableContent.style.transform = ''; // Сброс inline стиля, чтобы класс управлял
+    }
+
+    toggleExpand() {
+        this.isExpanded = !this.isExpanded;
+        this.elements.profileScrollableContent.classList.toggle('expanded', this.isExpanded);
+        this.elements.profileScrollableContent.scrollTop = 0; // Сбрасываем прокрутку при переключении
     }
 }

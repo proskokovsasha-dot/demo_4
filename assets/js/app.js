@@ -76,7 +76,7 @@ class DatingApp {
         this.formHandler = new FormHandler(this);
         this.profileHandler = new ProfileHandler(this);
         this.uiHandler = new UIHandler(this);
-        this.matchHandler = new MatchHandler(this); // Изменено на MatchHandler
+        this.matchHandler = new MatchHandler(this); 
 
         this.bindEvents();
         this.checkSavedProfile(); // Определяет начальный экран
@@ -117,11 +117,11 @@ class DatingApp {
         this.elements = {
             registrationForm: document.getElementById('registrationForm'),
             profileView: document.getElementById('profileView'),
-            matchScreen: document.getElementById('matchScreen'), // Изменено на matchScreen
+            matchScreen: document.getElementById('matchScreen'), 
             settingsScreen: document.getElementById('settingsScreen'),
             topNavigation: document.getElementById('topNavigation'),
             navButtons: document.querySelectorAll('.nav-btn'),
-            locationModal: document.getElementById('locationModal'), // Добавляем модальное окно
+            locationModal: document.getElementById('locationModal'), 
             modalAllowLocationBtn: document.getElementById('modalAllowLocationBtn'),
             modalSkipLocationBtn: document.getElementById('modalSkipLocationBtn')
         };
@@ -135,7 +135,7 @@ class DatingApp {
             });
         });
 
-        const backToProfileFromMatchBtn = document.getElementById('backToProfileFromMatchBtn'); // Изменено на backToProfileFromMatchBtn
+        const backToProfileFromMatchBtn = document.getElementById('backToProfileFromMatchBtn'); 
         if (backToProfileFromMatchBtn) {
             backToProfileFromMatchBtn.addEventListener('click', () => this.switchScreen('profile'));
         }
@@ -188,8 +188,8 @@ class DatingApp {
         this.profileHandler.showProfile();
     }
 
-    startMatch() { // Изменено на startMatch
-        this.matchHandler.startMatch(); // Изменено на startMatch
+    startMatch() { 
+        this.matchHandler.startMatch(); 
     }
 
     clearAllData() {
@@ -234,11 +234,11 @@ class DatingApp {
             document.querySelector('.nav-btn[data-screen="profile"]').classList.add('active');
             this.elements.topNavigation.style.display = 'flex';
             this.profileHandler.showProfile();
-        } else if (screenName === 'match') { // Изменено на match
-            targetScreenElement = this.elements.matchScreen; // Изменено на matchScreen
-            document.querySelector('.nav-btn[data-screen="match"]').classList.add('active'); // Изменено на match
+        } else if (screenName === 'match') { 
+            targetScreenElement = this.elements.matchScreen; 
+            document.querySelector('.nav-btn[data-screen="match"]').classList.add('active'); 
             this.elements.topNavigation.style.display = 'flex';
-            this.matchHandler.startMatch(); // Запускаем подборку анкет // Изменено на startMatch
+            this.matchHandler.startMatch(); 
         } else if (screenName === 'settings') {
             targetScreenElement = this.elements.settingsScreen;
             document.querySelector('.nav-btn[data-screen="settings"]').classList.add('active');

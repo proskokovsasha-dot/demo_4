@@ -277,103 +277,146 @@
     flex-shrink: 0;
 }
 
-/* Профиль */
-.profile-card {
-    background: var(--surface);
-    border-radius: var(--radius-lg);
-    padding: 25px; /* Уменьшен паддинг */
+/* Профиль - НОВЫЕ СТИЛИ */
+.profile-card-wrapper {
+    position: relative;
     width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    box-shadow: var(--shadow-lg);
-    transition: all var(--transition-normal) ease;
+    max-width: 380px; /* Уменьшена максимальная ширина */
+    height: 550px; /* Фиксированная высота для карточки */
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Уменьшен зазор между секциями */
-    border: 1px solid var(--border);
-    flex-grow: 1;
-    overflow-y: auto; /* Добавляем прокрутку, если контент не помещается */
-    -webkit-overflow-scrolling: touch;
-    max-height: calc(100vh - 120px); /* Ограничиваем высоту для мобильных */
-}
-
-.profile-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px; /* Уменьшен зазор */
-    margin-bottom: 15px; /* Уменьшен отступ */
-    text-align: center;
-    flex-shrink: 0;
-}
-
-.profile-avatar {
-    width: 120px; /* Уменьшен размер */
-    height: 120px;
-    border-radius: var(--radius-lg);
-    background-color: var(--surface);
-    box-shadow: var(--shadow-md);
-    overflow: hidden;
-    display: flex;
     align-items: center;
     justify-content: center;
+    perspective: 1000px; /* Для 3D-трансформаций */
+}
+
+.profile-card {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--match-shadow-strong); /* Более сильная тень */
+    display: flex;
+    flex-direction: column;
+    color: var(--match-text-color);
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    transform-origin: bottom center; /* Точка вращения для свайпа */
+}
+
+.profile-card-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-size: cover;
     background-position: center;
-    transition: all var(--transition-normal) ease;
-    border: 2px solid var(--border);
-    flex-shrink: 0;
+    filter: blur(8px); /* Размытие фонового фото */
+    transform: scale(1.05); /* Увеличиваем для скрытия краев после размытия */
+    z-index: 1;
 }
 
-.profile-info {
-    text-align: center;
-    flex-shrink: 0;
+.profile-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 100%); /* Градиент для читаемости текста */
+    z-index: 2;
 }
 
-.profile-name {
-    font-size: 2rem; /* Уменьшен размер */
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 4px; /* Уменьшен отступ */
-    line-height: 1.2;
-    word-break: break-word;
-}
-
-.profile-meta {
-    color: var(--text-secondary);
-    font-size: 1rem; /* Чуть уменьшен размер */
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 4px; /* Уменьшен зазор */
-    line-height: 1.4;
-}
-
-.profile-meta span:not(:last-child)::after {
-    content: ' •';
-    margin-left: 4px;
-}
-
-.profile-section {
-    margin-bottom: 20px; /* Уменьшен отступ */
+.profile-card-content {
+    position: relative;
+    z-index: 3;
+    padding: 30px; /* Увеличен паддинг */
     display: flex;
     flex-direction: column;
+    justify-content: flex-end; /* Прижимаем контент к низу */
+    height: 100%;
+    text-align: left; /* Текст выровнен по левому краю */
+}
+
+.profile-fixed-info {
+    margin-top: auto; /* Прижимает к низу родителя */
+    margin-bottom: 20px; /* Отступ от свайпаемой части */
     flex-shrink: 0;
+}
+
+.profile-name-age {
+    font-size: 2.5rem; /* Крупный шрифт для имени и возраста */
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    text-shadow: var(--shadow-sm); /* Легкая тень для читаемости */
+    color: white;
+}
+
+.profile-description-short {
+    font-size: 1.1rem; /* Размер для описания */
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: var(--shadow-sm);
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Ограничиваем 3 строками */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.profile-scrollable-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; /* Изначально занимает всю высоту, но будет сдвигаться */
+    background-color: var(--surface); /* Фон для свайпаемой части */
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+    padding: 30px;
+    padding-top: 50px; /* Отступ для индикатора свайпа */
+    box-shadow: var(--shadow-lg);
+    transform: translateY(calc(100% - 150px)); /* Изначально скрыта, видна только часть */
+    transition: transform 0.4s ease-out;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    color: var(--text-primary); /* Цвет текста для свайпаемой части */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.profile-scrollable-content.expanded {
+    transform: translateY(0); /* Полностью раскрыта */
+}
+
+.scroll-indicator {
+    width: 40px;
+    height: 5px;
+    background-color: var(--border);
+    border-radius: 5px;
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
 }
 
 .profile-section .section-title {
-    font-size: 1.3rem; /* Уменьшен размер */
+    font-size: 1.3rem;
     color: var(--primary);
-    margin-bottom: 12px; /* Уменьшен отступ */
+    margin-bottom: 12px;
     font-weight: 800;
     text-align: left;
 }
 
-.profile-description {
+.profile-description-full {
     background: var(--surface);
-    padding: 15px; /* Уменьшен паддинг */
+    padding: 15px;
     border-radius: var(--radius-md);
-    font-size: 0.95rem; /* Чуть уменьшен размер */
-    line-height: 1.6; /* Уменьшена межстрочная высота */
+    font-size: 0.95rem;
+    line-height: 1.6;
     color: var(--text-primary);
     box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
     text-align: left;
@@ -381,292 +424,106 @@
     word-break: break-word;
 }
 
-.profile-interests {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px; /* Уменьшен зазор */
-    justify-content: center;
+.profile-photos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 10px;
 }
 
-.interest-tag {
-    background: color-mix(in srgb, var(--primary) 15%, white);
-    color: var(--primary);
-    padding: 8px 14px; /* Уменьшен паддинг */
-    border-radius: 20px; /* Чуть меньше скругление */
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 500;
-    transition: all var(--transition-normal) ease;
+.profile-photo-item {
+    background-size: cover;
+    background-position: center;
+    height: 90px;
+    border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
-}
-
-.no-interests {
-    color: var(--text-secondary);
-    font-style: italic;
-    text-align: center;
+    border: 1px solid var(--border);
 }
 
 .profile-actions {
     display: flex;
     flex-direction: column;
-    margin-top: 20px; /* Уменьшен отступ */
-    gap: 10px; /* Зазор между кнопками */
+    margin-top: 20px;
+    gap: 10px;
     flex-shrink: 0;
 }
 
-.btn-edit {
-    background: var(--primary) !important;
-    color: white !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px; /* Уменьшен зазор */
-    transition: all var(--transition-normal) ease;
-}
-
-.btn-edit:hover {
-    background: var(--primary-dark) !important;
-    transform: translateY(-3px);
-}
-
-/* Фотографии */
-.profile-photos {
-    margin-bottom: 20px; /* Уменьшен отступ */
-    flex-shrink: 0;
-}
-
-.photos-grid {
+/* Стили для раздела "Ищу" (повторяются из match.css, но для профиля) */
+.profile-looking-for {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px; /* Уменьшен зазор */
-    margin-top: 10px; /* Уменьшен отступ */
-}
-
-.photo-preview {
-    background-size: cover;
-    background-position: center;
-    height: 90px; /* Уменьшена высота */
-    border-radius: var(--radius-md);
-    position: relative;
-    transition: all var(--transition-normal) ease;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
-}
-
-.photo-preview:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-md);
-}
-
-.photo-preview.main-avatar {
-    border: 3px solid var(--primary);
-    box-shadow: var(--shadow-md);
-}
-
-.set-avatar-btn {
-    position: absolute;
-    bottom: 6px; /* Уменьшен отступ */
-    left: 6px;
-    background: rgba(var(--primary-rgb), 0.9);
-    color: white;
-    border: none;
-    border-radius: 5px; /* Чуть меньше скругление */
-    padding: 3px 6px; /* Уменьшен паддинг */
-    font-size: 0.7rem;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity var(--transition-fast) ease;
-    backdrop-filter: blur(2px);
-}
-
-.photo-preview:hover .set-avatar-btn {
-    opacity: 1;
-}
-
-.delete-photo {
-    position: absolute;
-    top: 6px; /* Уменьшен отступ */
-    right: 6px;
-    background: rgba(var(--error-rgb), 0.9);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 20px; /* Уменьшен размер */
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity var(--transition-fast) ease;
-    font-size: 0.9rem;
-    font-weight: bold;
-    backdrop-filter: blur(2px);
-}
-
-.photo-preview:hover .delete-photo {
-    opacity: 1;
-}
-
-.no-photos {
-    color: var(--text-secondary);
-    font-style: italic;
-    text-align: center;
-}
-
-/* Адаптация для мобильных */
-@media (max-width: 480px) {
-    .btn {
-        padding: 12px 20px;
-        min-width: 140px;
-        width: 100%;
-        font-size: 0.9rem;
-    }
-    
-    .navigation {
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    .profile-card {
-        padding: 20px;
-        gap: 15px;
-        max-height: calc(100vh - 100px); /* Еще уменьшаем высоту для очень маленьких экранов */
-    }
-    
-    .profile-avatar {
-        width: 100px;
-        height: 100px;
-    }
-    
-    .profile-name {
-        font-size: 1.6rem;
-    }
-    
-    .profile-meta {
-        font-size: 0.9rem;
-    }
-    
-    .profile-section .section-title {
-        font-size: 1.1rem;
-    }
-    
-    .profile-description {
-        padding: 12px;
-        font-size: 0.9rem;
-    }
-
-    .interest-tag {
-        padding: 7px 12px;
-        font-size: 0.85rem;
-    }
-    
-    .color-option {
-        width: 36px;
-        height: 36px;
-    }
-    
-    .color-custom input[type="color"] {
-        width: 50px;
-        height: 50px;
-    }
-
-    .photos-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-    }
-    .photo-preview {
-        height: 80px;
-    }
-
-    .input-field {
-        padding: 12px;
-        font-size: 0.9rem;
-    }
-
-    .tags-container .tag {
-        padding: 10px 16px;
-        font-size: 0.85rem;
-        min-width: 90px;
-    }
-}   
-
-/* Стили для раздела "Ищу" */
-.looking-for-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Уменьшена мин. ширина */
-    gap: 8px; /* Уменьшен зазор */
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
     width: 100%;
     justify-content: center;
 }
 
-.looking-for-item {
+.profile-looking-for .looking-for-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px; /* Уменьшен зазор */
-    padding: 12px; /* Уменьшен паддинг */
+    gap: 6px;
+    padding: 12px;
     background-color: var(--surface);
     border-radius: var(--radius-md);
     transition: all var(--transition-fast) ease;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border);
     text-align: center;
+    color: var(--text-primary); /* Убедимся, что текст виден на белом фоне */
 }
 
-.looking-for-item:hover {
+.profile-looking-for .looking-for-item:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-md);
     border-color: var(--primary-light);
 }
 
-.looking-for-emoji {
-    font-size: 1.6rem; /* Уменьшен размер эмодзи */
+.profile-looking-for .looking-for-emoji {
+    font-size: 1.6rem;
 }
 
-.looking-for-text {
-    font-size: 0.9rem; /* Уменьшен шрифт */
+.profile-looking-for .looking-for-text {
+    font-size: 0.9rem;
     color: var(--text-primary);
     font-weight: 500;
 }
 
-/* Стили для раздела "Интересы" */
-.interests-container {
+/* Стили для раздела "Интересы" (повторяются из match.css, но для профиля) */
+.profile-interests {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); /* Уменьшена мин. ширина */
-    gap: 8px; /* Уменьшен зазор */
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
     width: 100%;
     justify-content: center;
 }
 
-.interest-item {
+.profile-interests .interest-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 12px; /* Уменьшен паддинг */
+    padding: 12px;
     background-color: var(--surface);
     border-radius: var(--radius-md);
     transition: all var(--transition-fast) ease;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border);
     text-align: center;
+    color: var(--text-primary); /* Убедимся, что текст виден на белом фоне */
 }
 
-.interest-item:hover {
+.profile-interests .interest-item:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-md);
     border-color: var(--primary-light);
 }
 
-.interest-emoji {
-    font-size: 1.8rem; /* Уменьшен размер эмодзи */
-    margin-bottom: 4px; /* Уменьшен отступ */
+.profile-interests .interest-emoji {
+    font-size: 1.8rem;
+    margin-bottom: 4px;
 }
 
-.interest-text {
-    font-size: 0.85rem; /* Уменьшен шрифт */
+.profile-interests .interest-text {
+    font-size: 0.85rem;
     color: var(--text-primary);
     font-weight: 500;
 }
@@ -684,24 +541,111 @@
     font-size: 0.9rem; /* Уменьшен шрифт */
 }
 
-/* Адаптация для очень маленьких мобильных */
-@media (max-width: 320px) {
-    .looking-for-container,
-    .interests-container {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Еще меньше мин. ширина */
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+    .btn {
+        padding: 12px 20px;
+        min-width: 140px;
+        width: 100%;
+        font-size: 0.9rem;
     }
     
-    .looking-for-item,
-    .interest-item {
-        padding: 10px;
+    .navigation {
+        flex-direction: column;
+        gap: 8px;
     }
-    .looking-for-emoji {
-        font-size: 1.4rem;
+    
+    .profile-card-wrapper {
+        height: 500px; /* Немного уменьшаем высоту на мобильных */
+        max-width: 340px;
     }
-    .interest-emoji {
-        font-size: 1.6rem;
+
+    .profile-card-content {
+        padding: 20px;
     }
-    .profile-card {
+
+    .profile-name-age {
+        font-size: 2rem;
+    }
+
+    .profile-description-short {
+        font-size: 1rem;
+    }
+
+    .profile-scrollable-content {
+        padding: 20px;
+        padding-top: 40px;
+        transform: translateY(calc(100% - 120px)); /* Адаптация для мобильных */
+    }
+
+    .profile-section .section-title {
+        font-size: 1.1rem;
+    }
+    
+    .profile-description-full {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .profile-interests .interest-item {
+        padding: 7px 12px;
+        font-size: 0.85rem;
+    }
+    
+    .color-option {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .color-custom input[type="color"] {
+        width: 50px;
+        height: 50px;
+    }
+
+    .profile-photos-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    .profile-photo-item {
+        height: 80px;
+    }
+
+    .input-field {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .tags-container .tag {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+        min-width: 90px;
+    }
+}   
+
+@media (max-width: 360px) {
+    .profile-card-wrapper {
+        height: 450px;
+        max-width: 300px;
+    }
+    .profile-card-content {
         padding: 15px;
+    }
+    .profile-name-age {
+        font-size: 1.8rem;
+    }
+    .profile-description-short {
+        font-size: 0.9rem;
+    }
+    .profile-scrollable-content {
+        padding: 15px;
+        padding-top: 35px;
+        transform: translateY(calc(100% - 100px));
+    }
+    .profile-photos-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+    }
+    .profile-photo-item {
+        height: 60px;
     }
 }
