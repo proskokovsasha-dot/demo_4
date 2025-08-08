@@ -359,9 +359,17 @@
                             </div>
                         </div>
                         
-                        <!-- Текст для свайпа -->
-                        <div class="match-status-text like" id="matchLikeText">LIKE</div>
-                        <div class="match-status-text nope" id="matchNopeText">NOPE</div>
+                        <!-- SVG для лайка (сердечко) -->
+                        <svg class="match-icon like-icon" id="matchLikeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+
+                        <!-- SVG для пропуска (разбитое сердечко) -->
+                        <svg class="match-icon nope-icon" id="matchNopeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 21.23l-7.78-7.78a5.5 5.5 0 0 1 0-7.78 5.5 5.5 0 0 1 7.78 0L12 5.67l1.06-1.06a5.5 5.5 0 0 1 7.78 7.78l-1.06 1.06L12 21.23z"></path>
+                            <line x1="7" y1="7" x2="17" y2="17"></line>
+                            <line x1="17" y1="7" x2="7" y2="17"></line>
+                        </svg>
                     </div>
                 </div>
             </div>

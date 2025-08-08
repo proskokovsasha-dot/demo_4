@@ -34,8 +34,8 @@ class MatchHandler {
             noProfilesMessage: document.getElementById('noProfilesMessage'),
             matchScrollIndicator: document.querySelector('#matchScrollableContent .match-scroll-indicator'),
             matchFixedInfo: document.getElementById('matchFixedInfo'),
-            matchLikeText: document.getElementById('matchLikeText'),
-            matchNopeText: document.getElementById('matchNopeText')
+            matchLikeIcon: document.getElementById('matchLikeIcon'), // Новый элемент
+            matchNopeIcon: document.getElementById('matchNopeIcon')  // Новый элемент
         };
     }
 
@@ -210,7 +210,9 @@ class MatchHandler {
     }
 
     renderProfile(profile) {
-        this.app.profileHandler.applyProfileColor(profile.profileColor);
+        // Устанавливаем цвет сердечка для лайка
+        this.elements.matchLikeIcon.style.stroke = profile.profileColor;
+        this.elements.matchLikeIcon.style.fill = profile.profileColor;
 
         this.elements.matchCardBg.style.backgroundImage = `url(${profile.avatar})`;
         
@@ -250,8 +252,8 @@ class MatchHandler {
         this.elements.matchCard.style.transition = 'none';
         this.elements.matchCard.style.transform = 'translateX(0) rotate(0)';
         this.elements.matchCard.style.opacity = '1';
-        this.elements.matchLikeText.classList.remove('visible');
-        this.elements.matchNopeText.classList.remove('visible');
+        this.elements.matchLikeIcon.classList.remove('visible'); // Скрываем иконки
+        this.elements.matchNopeIcon.classList.remove('visible');
         void this.elements.matchCard.offsetWidth; // Принудительный рефлоу для сброса трансформации
         this.elements.matchCard.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out'; // Возвращаем плавный переход
     }
@@ -416,6 +418,12 @@ class MatchHandler {
             }
         }
 
+        // Если анкета раскрыта, отключаем горизонтальные свайпы
+        if (this.isExpanded && !isVerticalSwipe) {
+            e.preventDefault(); // Предотвращаем горизонтальный свайп
+            return;
+        }
+
         if (!this.isScrollingContent && !isVerticalSwipe) {
             e.preventDefault();
             
@@ -425,16 +433,16 @@ class MatchHandler {
             this.elements.matchCard.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
 
             if (deltaX > 0) {
-                this.elements.matchLikeText.classList.add('visible');
-                this.elements.matchNopeText.classList.remove('visible');
-                this.elements.matchLikeText.style.transform = `translate(-50%, -50%) rotate(-45deg) scale(${0.8 + Math.min(1, deltaX / (cardWidth / 4)) * 0.2})`;
+                this.elements.matchLikeIcon.classList.add('visible');
+                this.elements.matchNopeIcon.classList.remove('visible');
+                this.elements.matchLikeIcon.style.transform = `translate(-50%, -50%) scale(${0.5 + Math.min(1, deltaX / (cardWidth / 4)) * 0.5})`;
             } else if (deltaX < 0) {
-                this.elements.matchNopeText.classList.add('visible');
-                this.elements.matchLikeText.classList.remove('visible');
-                this.elements.matchNopeText.style.transform = `translate(-50%, -50%) rotate(45deg) scale(${0.8 + Math.min(1, Math.abs(deltaX) / (cardWidth / 4)) * 0.2})`;
+                this.elements.matchNopeIcon.classList.add('visible');
+                this.elements.matchLikeIcon.classList.remove('visible');
+                this.elements.matchNopeIcon.style.transform = `translate(-50%, -50%) scale(${0.5 + Math.min(1, Math.abs(deltaX) / (cardWidth / 4)) * 0.5})`;
             } else {
-                this.elements.matchLikeText.classList.remove('visible');
-                this.elements.matchNopeText.classList.remove('visible');
+                this.elements.matchLikeIcon.classList.remove('visible');
+                this.elements.matchNopeIcon.classList.remove('visible');
             }
 
         } else if (!this.isScrollingContent && isVerticalSwipe) {
@@ -469,6 +477,15 @@ class MatchHandler {
         const cardWidth = this.elements.matchCard.offsetWidth;
         const swipeThresholdX = cardWidth / 3;
 
+        // Если анкета раскрыта, свайпы не обрабатываются
+        if (this.isExpanded) {
+            this.elements.matchCard.style.transform = 'translateX(0) rotate(0)';
+            this.elements.matchCard.style.opacity = '1';
+            this.elements.matchLikeIcon.classList.remove('visible');
+            this.elements.matchNopeIcon.classList.remove('visible');
+            return;
+        }
+
         if (Math.abs(currentTransformX) > swipeThresholdX) {
             if (currentTransformX > 0) {
                 this.handleLike();
@@ -478,8 +495,8 @@ class MatchHandler {
         } else {
             this.elements.matchCard.style.transform = 'translateX(0) rotate(0)';
             this.elements.matchCard.style.opacity = '1';
-            this.elements.matchLikeText.classList.remove('visible');
-            this.elements.matchNopeText.classList.remove('visible');
+            this.elements.matchLikeIcon.classList.remove('visible');
+            this.elements.matchNopeIcon.classList.remove('visible');
 
             const currentTransformY = new DOMMatrixReadOnly(window.getComputedStyle(this.elements.matchScrollableContent).transform).m42;
             const cardHeight = this.elements.matchCard.offsetHeight;
