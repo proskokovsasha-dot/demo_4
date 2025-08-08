@@ -71,6 +71,70 @@
     box-shadow: var(--shadow-md);
 }
 
+/* НОВЫЕ СТИЛИ ДЛЯ КРУГЛЫХ КНОПОК ДЕЙСТВИЙ */
+.action-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-fast) ease;
+    flex-shrink: 0; /* Предотвращаем сжатие */
+}
+
+.action-btn svg {
+    width: 30px;
+    height: 30px;
+}
+
+.action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-nope {
+    background-color: var(--surface);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+
+.btn-nope:hover {
+    background-color: var(--error);
+    color: white;
+    border-color: var(--error);
+}
+
+.btn-view-profile {
+    background-color: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid var(--primary-light);
+}
+
+.btn-view-profile:hover {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.btn-like {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-like:hover {
+    background-color: var(--primary-dark);
+}
+
+
 /* Формы */
 .form-container {
     width: 100%;

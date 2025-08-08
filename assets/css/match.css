@@ -3,22 +3,26 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
     padding: 0;
     flex-grow: 1;
+    position: relative;
 }
 
 .match-card-wrapper {
     position: relative;
     width: 100%;
-    max-width: 380px; /* Уменьшена максимальная ширина */
-    height: 550px; /* Фиксированная высота для карточки */
+    max-width: 380px;
+    height: 550px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    perspective: 1000px; /* Для 3D-трансформаций */
+    perspective: 1000px;
+    margin-bottom: 0;
+    flex-grow: 1;
+    margin-top: 20px;
 }
 
 .match-card {
@@ -27,12 +31,12 @@
     height: 100%;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: var(--match-shadow-strong); /* Более сильная тень */
+    box-shadow: var(--match-shadow-strong);
     display: flex;
     flex-direction: column;
     color: var(--match-text-color);
     transition: transform 0.5s ease-out, opacity 0.5s ease-out;
-    transform-origin: bottom center; /* Точка вращения для свайпа */
+    transform-origin: bottom center;
 }
 
 .match-card-bg {
@@ -43,8 +47,8 @@
     height: 100%;
     background-size: cover;
     background-position: center;
-    filter: blur(8px); /* Размытие фонового фото */
-    transform: scale(1.05); /* Увеличиваем для скрытия краев после размытия */
+    filter: blur(8px);
+    transform: scale(1.05);
     z-index: 1;
 }
 
@@ -54,51 +58,51 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 100%); /* Градиент для читаемости текста */
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 100%);
     z-index: 2;
 }
 
 .match-card-content {
     position: relative;
     z-index: 3;
-    padding: 30px; /* Увеличен паддинг */
+    padding: 30px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end; /* Прижимаем контент к низу */
+    justify-content: flex-end;
     height: 100%;
-    text-align: left; /* Текст выровнен по левому краю */
+    text-align: left;
 }
 
 /* НОВЫЕ СТИЛИ ДЛЯ ФИКСИРОВАННОЙ ИНФОРМАЦИИ В АНКЕТЕ */
 .match-fixed-info {
-    position: absolute; /* Делаем позиционирование абсолютным */
-    top: 30px; /* Отступ сверху */
-    left: 30px; /* Отступ слева */
-    right: 30px; /* Отступ справа */
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    right: 30px;
     margin-bottom: 20px;
     flex-shrink: 0;
-    z-index: 4; /* Убедимся, что поверх всего */
-    pointer-events: none; /* Чтобы не блокировать свайп */
-    opacity: 1; /* Изначально виден */
-    transition: opacity 0.4s ease-out; /* Добавляем плавный переход для opacity */
+    z-index: 4;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.4s ease-out;
 }
 
 .match-name-age {
-    font-size: 2.5rem; /* Крупный шрифт для имени и возраста */
+    font-size: 2.5rem;
     font-weight: 700;
     line-height: 1.1;
     margin-bottom: 8px;
-    text-shadow: var(--shadow-sm); /* Легкая тень для читаемости */
-    color: white; /* Убедимся, что цвет белый */
+    text-shadow: var(--shadow-sm);
+    color: white;
 }
 
 .match-description-short {
-    font-size: 1.1rem; /* Размер для описания */
+    font-size: 1.1rem;
     line-height: 1.4;
     color: rgba(255, 255, 255, 0.9);
     text-shadow: var(--shadow-sm);
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Ограничиваем 3 строками */
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -110,35 +114,31 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%; /* Изначально занимает всю высоту, но будет сдвигаться */
-    background-color: var(--surface); /* Фон для свайпаемой части */
+    height: 100%;
+    background-color: var(--surface);
     border-top-left-radius: var(--radius-lg);
     border-top-right-radius: var(--radius-lg);
     padding: 30px;
-    padding-top: 50px; /* Отступ для индикатора свайпа */
+    padding-top: 50px;
     box-shadow: var(--shadow-lg);
-    /* ИЗМЕНЕНО: Изначально скрыта, видна только часть, но теперь учитываем высоту фиксированной информации */
-    transform: translateY(calc(100% - 150px)); 
-    transition: transform 0.4s ease-out;
-    overflow-y: auto; /* Позволяем прокрутку контента внутри */
-    -webkit-overflow-scrolling: touch; /* Для плавного скролла на iOS */
-    color: var(--text-primary); /* Цвет текста для свайпаемой части */
+    transform: translateY(100%); /* Изначально полностью скрыта */
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Более плавная анимация */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    color: var(--text-primary);
     display: flex;
     flex-direction: column;
     gap: 20px;
-
-    /* Скрываем стандартный скроллбар */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .match-scrollable-content::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
 }
 
 .match-scrollable-content.expanded {
-    /* ИЗМЕНЕНО: Полностью раскрыта, но теперь с учетом фиксированной информации */
-    transform: translateY(var(--match-fixed-info-height-mobile, 120px)); /* Используем новую переменную */
+    transform: translateY(var(--match-fixed-info-height-mobile, 120px));
 }
 
 .match-scroll-indicator {
@@ -197,9 +197,9 @@
 .match-interests-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* Отступ между элементами */
-    margin-top: 10px; /* Отступ сверху от заголовка секции */
-    justify-content: flex-start; /* Выравнивание по левому краю */
+    gap: 10px;
+    margin-top: 10px;
+    justify-content: flex-start;
     width: 100%;
 }
 
@@ -275,7 +275,6 @@
     border: 1px dashed var(--border);
     font-size: 0.9rem;
 }
-/* Удалены стили для .match-actions и кнопок лайка/пропуска */
 .no-profiles-message {
     font-size: 1.1rem;
     color: var(--text-secondary);
@@ -290,42 +289,33 @@
     flex-shrink: 0;
 }
 
-/* Стили для иконок лайка/пропуска */
+/* Стили для иконок лайка/пропуска - СКРЫТЫ */
 .match-icon {
+    display: none;
+}
+
+/* НОВЫЕ СТИЛИ ДЛЯ КОНТЕЙНЕРА КНОПОК ДЕЙСТВИЙ ВНУТРИ КАРТОЧКИ */
+.match-card-actions {
     position: absolute;
-    top: 50%;
+    bottom: 20px; /* Отступ от низа карточки */
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.5); /* Изначально меньше */
-    width: 100px; /* Размер иконки */
-    height: 100px;
-    opacity: 0;
-    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-    z-index: 4;
-    pointer-events: none;
-}
-
-.match-icon.visible {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-.match-icon.like-icon {
-    stroke: var(--primary); /* Цвет сердечка будет меняться через JS */
-    fill: var(--primary); /* Заливка сердечка */
-}
-
-.match-icon.nope-icon {
-    stroke: var(--text-secondary); /* Серый цвет для разбитого сердечка */
-    fill: none; /* Без заливки */
+    transform: translateX(-50%);
+    width: 90%; /* Ширина контейнера кнопок */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 5; /* Поверх всего контента карточки */
+    padding: 10px;
+   
 }
 
 /* Адаптация для мобильных */
 @media (max-width: 480px) {
     .match-card-wrapper {
-        width: 100%; /* Растягиваем на всю ширину */
-        max-width: unset; /* Снимаем ограничение max-width */
-        height: calc(100vh - var(--top-nav-height, 60px) - 40px); /* Занимаем почти всю высоту экрана, учитывая навигацию и паддинги */
-        margin: 20px auto; /* Центрируем и добавляем отступы */
+        width: 100%;
+        max-width: unset;
+        height: calc(100vh - var(--top-nav-height, 60px) - 40px); /* Убрал -80px, так как кнопки теперь внутри */
+        margin: 20px auto 0;
     }
     .match-card-content {
         padding: 20px;
@@ -349,10 +339,10 @@
     .match-scrollable-content {
         padding: 20px;
         padding-top: 40px;
-        transform: translateY(calc(100% - 120px)); /* Адаптация для мобильных */
+        transform: translateY(100%);
     }
     .match-scrollable-content.expanded {
-        transform: translateY(var(--match-fixed-info-height-mobile-sm, 100px)); /* Используем новую переменную */
+        transform: translateY(var(--match-fixed-info-height-mobile-sm, 100px));
     }
     .match-section .section-title {
         font-size: 1.1rem;
@@ -378,8 +368,7 @@
     }
 
     .match-icon {
-        width: 80px;
-        height: 80px;
+        display: none;
     }
     .match-looking-for-item {
         padding: 10px 16px;
@@ -396,10 +385,23 @@
     .match-interest-item .emoji {
         font-size: 1.1rem;
     }
+
+    .match-card-actions {
+        padding: 5px 10px;
+        bottom: 15px; /* Немного уменьшаем отступ */
+    }
+    .action-btn {
+        width: 50px;
+        height: 50px;
+    }
+    .action-btn svg {
+        width: 25px;
+        height: 25px;
+    }
 }
 @media (max-width: 360px) {
     .match-card-wrapper {
-        height: calc(100vh - var(--top-nav-height, 60px) - 30px); /* Еще немного уменьшаем паддинг */
+        height: calc(100vh - var(--top-nav-height, 60px) - 30px); /* Убрал -70px */
     }
     .match-card-content {
         padding: 15px;
@@ -413,10 +415,10 @@
     .match-scrollable-content {
         padding: 15px;
         padding-top: 35px;
-        transform: translateY(calc(100% - 100px));
+        transform: translateY(100%);
     }
     .match-scrollable-content.expanded {
-        transform: translateY(var(--match-fixed-info-height-mobile-sm, 100px)); /* Используем новую переменную */
+        transform: translateY(var(--match-fixed-info-height-mobile-sm, 100px));
     }
     .match-photos-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -426,8 +428,7 @@
         height: 60px;
     }
     .match-icon {
-        width: 60px;
-        height: 60px;
+        display: none;
     }
     .match-looking-for-item {
         padding: 8px 14px;
@@ -443,5 +444,13 @@
     }
     .match-interest-item .emoji {
         font-size: 1rem;
+    }
+    .action-btn {
+        width: 45px;
+        height: 45px;
+    }
+    .action-btn svg {
+        width: 22px;
+        height: 22px;
     }
 }

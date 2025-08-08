@@ -4,12 +4,13 @@ class MatchHandler {
         this.currentIndex = 0;
         this.isExpanded = false;
         this.startY = 0;
-        this.startX = 0;
+        this.startX = 0; // Для горизонтального свайпа
         this.currentTranslateY = 0;
-        this.currentTranslateX = 0;
-        this.isScrollingContent = false; // Флаг, указывающий, что пользователь прокручивает контент внутри
-        this.fixedInfoHeight = 0; // Добавляем свойство для хранения высоты фиксированной информации
-        this.scrollThreshold = 50; // Порог для определения свайпа вверх/вниз
+        this.currentTranslateX = 0; // Для горизонтального свайпа
+        this.isScrollingContent = false;
+        this.fixedInfoHeight = 0;
+        this.scrollThreshold = 50;
+        this.horizontalSwipeThreshold = 75; // Порог для горизонтального свайпа
         this.init();
     }
 
@@ -34,28 +35,47 @@ class MatchHandler {
             noProfilesMessage: document.getElementById('noProfilesMessage'),
             matchScrollIndicator: document.querySelector('#matchScrollableContent .match-scroll-indicator'),
             matchFixedInfo: document.getElementById('matchFixedInfo'),
-            matchLikeIcon: document.getElementById('matchLikeIcon'), // Новый элемент
-            matchNopeIcon: document.getElementById('matchNopeIcon')  // Новый элемент
+            nopeBtn: document.getElementById('nopeBtn'),
+            viewProfileBtn: document.getElementById('viewProfileBtn'),
+            likeBtn: document.getElementById('likeBtn'),
+            matchCardActions: document.querySelector('.match-card-actions') // Новый элемент
         };
     }
 
     setupEventListeners() {
         // Удаляем старые обработчики, чтобы избежать дублирования
-        this.elements.matchCard.removeEventListener('touchstart', this.handleTouchStartBound);
-        this.elements.matchCard.removeEventListener('touchmove', this.handleTouchMoveBound);
-        this.elements.matchCard.removeEventListener('touchend', this.handleTouchEndBound);
-        this.elements.matchScrollIndicator.removeEventListener('click', this.toggleExpandBound);
+        if (this.toggleExpandBound) {
+            this.elements.matchScrollIndicator.removeEventListener('click', this.toggleExpandBound);
+        }
+        if (this.handleTouchStartBound) {
+            this.elements.matchCard.removeEventListener('touchstart', this.handleTouchStartBound); // Теперь слушаем на всей карточке
+            this.elements.matchCard.removeEventListener('touchmove', this.handleTouchMoveBound);
+            this.elements.matchCard.removeEventListener('touchend', this.handleTouchEndBound);
+        }
+        if (this.nopeBtnHandler) {
+            this.elements.nopeBtn.removeEventListener('click', this.nopeBtnHandler);
+            this.elements.viewProfileBtn.removeEventListener('click', this.viewProfileBtnHandler);
+            this.elements.likeBtn.removeEventListener('click', this.likeBtnHandler);
+        }
 
-        // Привязываем методы свайпа к this
+        // Привязываем новые обработчики
+        this.toggleExpandBound = this.toggleExpand.bind(this);
+        this.elements.matchScrollIndicator.addEventListener('click', this.toggleExpandBound);
+        this.elements.viewProfileBtn.addEventListener('click', this.toggleExpandBound); // Центральная кнопка теперь тоже переключает
+
         this.handleTouchStartBound = this.handleTouchStart.bind(this);
         this.handleTouchMoveBound = this.handleTouchMove.bind(this);
         this.handleTouchEndBound = this.handleTouchEnd.bind(this);
-        this.toggleExpandBound = this.toggleExpand.bind(this);
-
+        
         this.elements.matchCard.addEventListener('touchstart', this.handleTouchStartBound, { passive: false });
         this.elements.matchCard.addEventListener('touchmove', this.handleTouchMoveBound, { passive: false });
         this.elements.matchCard.addEventListener('touchend', this.handleTouchEndBound);
-        this.elements.matchScrollIndicator.addEventListener('click', this.toggleExpandBound);
+
+        this.nopeBtnHandler = () => this.handlePass();
+        this.elements.nopeBtn.addEventListener('click', this.nopeBtnHandler);
+        
+        this.likeBtnHandler = () => this.handleLike();
+        this.elements.likeBtn.addEventListener('click', this.likeBtnHandler);
     }
 
     generateRandomProfiles(count = 30) {
@@ -197,23 +217,22 @@ class MatchHandler {
         if (this.currentIndex >= this.app.state.suggestedProfiles.length) {
             this.elements.matchCard.style.display = 'none';
             this.elements.noProfilesMessage.style.display = 'block';
+            // Скрываем кнопки действий, если нет профилей
+            this.elements.matchCardActions.style.display = 'none'; 
             return;
         }
 
         this.elements.matchCard.style.display = 'flex';
         this.elements.noProfilesMessage.style.display = 'none';
+        this.elements.matchCardActions.style.display = 'flex'; // Показываем кнопки действий
 
         const profile = this.app.state.suggestedProfiles[this.currentIndex];
         this.renderProfile(profile);
-        this.measureFixedInfoHeight(); // Измеряем высоту после рендеринга
-        this.resetScrollState(); // Сбрасываем состояние после измерения
+        this.measureFixedInfoHeight();
+        this.resetScrollState();
     }
 
     renderProfile(profile) {
-        // Устанавливаем цвет сердечка для лайка
-        this.elements.matchLikeIcon.style.stroke = profile.profileColor;
-        this.elements.matchLikeIcon.style.fill = profile.profileColor;
-
         this.elements.matchCardBg.style.backgroundImage = `url(${profile.avatar})`;
         
         let nameAgeText = profile.name || 'Аноним';
@@ -248,14 +267,12 @@ class MatchHandler {
         this.updateInterests(profile.interests, this.app.config.interests, this.elements.matchInterests);
         this.updatePhotos(profile.photos, this.elements.matchPhotosGrid);
 
-        // Сброс трансформаций и прозрачности для новой карточки
+        // Сброс анимаций и позиций для новой карточки
         this.elements.matchCard.style.transition = 'none';
         this.elements.matchCard.style.transform = 'translateX(0) rotate(0)';
         this.elements.matchCard.style.opacity = '1';
-        this.elements.matchLikeIcon.classList.remove('visible'); // Скрываем иконки
-        this.elements.matchNopeIcon.classList.remove('visible');
-        void this.elements.matchCard.offsetWidth; // Принудительный рефлоу для сброса трансформации
-        this.elements.matchCard.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out'; // Возвращаем плавный переход
+        void this.elements.matchCard.offsetWidth; // Принудительный рефлоу для сброса
+        this.elements.matchCard.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
     }
 
     updateLookingFor(lookingFor, options, container) {
@@ -346,10 +363,15 @@ class MatchHandler {
     animateCard(action) {
         const card = this.elements.matchCard;
         card.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
-        card.style.transform = action === 'like' 
-            ? 'translateX(150%) rotate(30deg)'
-            : 'translateX(-150%) rotate(-30deg)';
-        card.style.opacity = '0';
+        card.style.animation = ''; // Сброс предыдущих анимаций
+        if (action === 'like') {
+            card.style.animation = 'swipeRight 0.3s forwards';
+        } else if (action === 'pass') {
+            card.style.animation = 'swipeLeft 0.3s forwards';
+        }
+        card.addEventListener('animationend', () => {
+            card.style.animation = ''; // Удаляем анимацию после завершения
+        }, { once: true });
     }
 
     measureFixedInfoHeight() {
@@ -371,39 +393,47 @@ class MatchHandler {
     resetScrollState() {
         this.isExpanded = false;
         this.elements.matchScrollableContent.classList.remove('expanded');
-        this.elements.matchScrollableContent.style.transform = `translateY(calc(100% - ${this.fixedInfoHeight + 30}px))`; 
+        this.elements.matchScrollableContent.style.transform = `translateY(100%)`;
         this.elements.matchScrollableContent.scrollTop = 0;
         this.elements.matchFixedInfo.style.opacity = '1';
         this.elements.matchFixedInfo.style.pointerEvents = 'none';
+        this.elements.matchCardActions.style.opacity = '1'; // Показываем кнопки
+        this.elements.matchCardActions.style.pointerEvents = 'auto'; // Делаем кнопки кликабельными
     }
 
     handleTouchStart(e) {
+        // Проверяем, не является ли цель касания одной из кнопок действий
+        if (e.target.closest('.action-btn')) {
+            return; // Если да, игнорируем свайп карточки, позволяя кнопке обработать событие
+        }
+
         this.startY = e.touches[0].clientY;
-        this.startX = e.touches[0].clientX;
-        const styleY = window.getComputedStyle(this.elements.matchScrollableContent);
-        this.currentTranslateY = new DOMMatrixReadOnly(styleY.transform).m42;
-        const styleX = window.getComputedStyle(this.elements.matchCard);
-        this.currentTranslateX = new DOMMatrixReadOnly(styleX.transform).m41;
+        this.startX = e.touches[0].clientX; // Инициализируем для горизонтального свайпа
+
+        const style = window.getComputedStyle(this.elements.matchScrollableContent);
+        this.currentTranslateY = new DOMMatrixReadOnly(style.transform).m42;
+        this.currentTranslateX = 0; // Сброс горизонтального смещения при новом касании
 
         const target = e.target;
         const scrollable = this.elements.matchScrollableContent;
         const isInsideScrollableContent = scrollable.contains(target) && target !== this.elements.matchScrollIndicator;
 
-        if (isInsideScrollableContent && this.isExpanded) {
+        if (this.isExpanded && isInsideScrollableContent) {
             this.isScrollingContent = true;
         } else {
             this.isScrollingContent = false;
         }
         
         this.elements.matchScrollableContent.style.transition = 'none';
-        this.elements.matchCard.style.transition = 'none';
         this.elements.matchFixedInfo.style.transition = 'opacity 0.3s ease-out';
+        this.elements.matchCard.style.transition = 'none'; // Отключаем переход для плавного свайпа
     }
 
     handleTouchMove(e) {
         const deltaY = e.touches[0].clientY - this.startY;
-        const deltaX = e.touches[0].clientX - this.startX;
+        const deltaX = e.touches[0].clientX - this.startX; // Горизонтальное смещение
 
+        // Определяем, является ли движение преимущественно вертикальным или горизонтальным
         const isVerticalSwipe = Math.abs(deltaY) > Math.abs(deltaX);
 
         if (this.isScrollingContent) {
@@ -418,48 +448,38 @@ class MatchHandler {
             }
         }
 
-        // Если анкета раскрыта, отключаем горизонтальные свайпы
-        if (this.isExpanded && !isVerticalSwipe) {
-            e.preventDefault(); // Предотвращаем горизонтальный свайп
-            return;
-        }
+        e.preventDefault(); // Предотвращаем прокрутку страницы
 
-        if (!this.isScrollingContent && !isVerticalSwipe) {
-            e.preventDefault();
-            
-            const cardWidth = this.elements.matchCard.offsetWidth;
-            const rotation = deltaX * 0.1;
-
-            this.elements.matchCard.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
-
-            if (deltaX > 0) {
-                this.elements.matchLikeIcon.classList.add('visible');
-                this.elements.matchNopeIcon.classList.remove('visible');
-                this.elements.matchLikeIcon.style.transform = `translate(-50%, -50%) scale(${0.5 + Math.min(1, deltaX / (cardWidth / 4)) * 0.5})`;
-            } else if (deltaX < 0) {
-                this.elements.matchNopeIcon.classList.add('visible');
-                this.elements.matchLikeIcon.classList.remove('visible');
-                this.elements.matchNopeIcon.style.transform = `translate(-50%, -50%) scale(${0.5 + Math.min(1, Math.abs(deltaX) / (cardWidth / 4)) * 0.5})`;
-            } else {
-                this.elements.matchLikeIcon.classList.remove('visible');
-                this.elements.matchNopeIcon.classList.remove('visible');
-            }
-
-        } else if (!this.isScrollingContent && isVerticalSwipe) {
-            e.preventDefault();
-            
+        if (isVerticalSwipe) {
+            // Обработка вертикального свайпа (открытие/закрытие информации)
             const cardHeight = this.elements.matchCard.offsetHeight;
-            const initialVisibleHeight = this.fixedInfoHeight + 30; 
-            const maxScrollUp = cardHeight - initialVisibleHeight; 
+            const initialHiddenPosition = cardHeight;
+            const expandedPosition = this.fixedInfoHeight + 30;
 
             let newTranslateY = this.currentTranslateY + deltaY;
 
-            newTranslateY = Math.max(initialVisibleHeight, Math.min(cardHeight - this.scrollThreshold, newTranslateY)); 
+            newTranslateY = Math.max(expandedPosition, Math.min(initialHiddenPosition, newTranslateY)); 
 
             this.elements.matchScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
 
-            const opacity = Math.min(1, Math.max(0, (newTranslateY - initialVisibleHeight) / (maxScrollUp - initialVisibleHeight)));
-            this.elements.matchFixedInfo.style.opacity = 1 - opacity;
+            const opacity = Math.min(1, Math.max(0, (newTranslateY - expandedPosition) / (initialHiddenPosition - expandedPosition)));
+            this.elements.matchFixedInfo.style.opacity = opacity;
+            this.elements.matchCardActions.style.opacity = opacity; // Кнопки тоже исчезают
+        } else {
+            // Обработка горизонтального свайпа (лайк/пропуск)
+            this.currentTranslateX = deltaX;
+            const rotation = deltaX / 20; // Небольшой поворот карточки
+            this.elements.matchCard.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
+            
+            // Визуальная обратная связь для лайка/пропуска
+            const opacity = Math.min(1, Math.abs(deltaX) / this.horizontalSwipeThreshold);
+            if (deltaX > 0) { // Свайп вправо (лайк)
+                this.elements.likeBtn.style.transform = `scale(1.1) translateX(-5px)`;
+                this.elements.nopeBtn.style.transform = `scale(1)`;
+            } else if (deltaX < 0) { // Свайп влево (пропуск)
+                this.elements.nopeBtn.style.transform = `scale(1.1) translateX(5px)`;
+                this.elements.likeBtn.style.transform = `scale(1)`;
+            }
         }
     }
 
@@ -469,51 +489,50 @@ class MatchHandler {
             return;
         }
 
-        this.elements.matchCard.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
-        this.elements.matchScrollableContent.style.transition = 'transform 0.4s ease-out';
+        this.elements.matchScrollableContent.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
         this.elements.matchFixedInfo.style.transition = 'opacity 0.4s ease-out';
+        this.elements.matchCardActions.style.transition = 'opacity 0.4s ease-out'; // Анимация для кнопок
 
-        const currentTransformX = new DOMMatrixReadOnly(window.getComputedStyle(this.elements.matchCard).transform).m41;
-        const cardWidth = this.elements.matchCard.offsetWidth;
-        const swipeThresholdX = cardWidth / 3;
+        // Сброс трансформации кнопок
+        this.elements.likeBtn.style.transform = `scale(1)`;
+        this.elements.nopeBtn.style.transform = `scale(1)`;
 
-        // Если анкета раскрыта, свайпы не обрабатываются
-        if (this.isExpanded) {
-            this.elements.matchCard.style.transform = 'translateX(0) rotate(0)';
-            this.elements.matchCard.style.opacity = '1';
-            this.elements.matchLikeIcon.classList.remove('visible');
-            this.elements.matchNopeIcon.classList.remove('visible');
-            return;
-        }
+        const currentTransformY = new DOMMatrixReadOnly(window.getComputedStyle(this.elements.matchScrollableContent).transform).m42;
+        
+        const cardHeight = this.elements.matchCard.offsetHeight;
+        const initialHiddenPosition = cardHeight;
+        const expandedPosition = this.fixedInfoHeight + 30;
 
-        if (Math.abs(currentTransformX) > swipeThresholdX) {
-            if (currentTransformX > 0) {
+        const thresholdVertical = expandedPosition + (initialHiddenPosition - expandedPosition) / 2;
+
+        if (Math.abs(this.currentTranslateX) > this.horizontalSwipeThreshold) {
+            // Горизонтальный свайп
+            if (this.currentTranslateX > 0) {
                 this.handleLike();
             } else {
                 this.handlePass();
             }
         } else {
-            this.elements.matchCard.style.transform = 'translateX(0) rotate(0)';
-            this.elements.matchCard.style.opacity = '1';
-            this.elements.matchLikeIcon.classList.remove('visible');
-            this.elements.matchNopeIcon.classList.remove('visible');
+            // Вертикальный свайп или сброс горизонтального
+            this.elements.matchCard.style.transition = 'transform 0.3s ease-out';
+            this.elements.matchCard.style.transform = 'translateX(0) rotate(0deg)'; // Возвращаем карточку на место
 
-            const currentTransformY = new DOMMatrixReadOnly(window.getComputedStyle(this.elements.matchScrollableContent).transform).m42;
-            const cardHeight = this.elements.matchCard.offsetHeight;
-            const initialVisibleHeight = this.fixedInfoHeight + 30;
-            const thresholdForExpand = initialVisibleHeight + (cardHeight - initialVisibleHeight - this.scrollThreshold) / 2;
-
-            if (currentTransformY < thresholdForExpand) {
+            if (currentTransformY < thresholdVertical) {
                 this.elements.matchScrollableContent.classList.add('expanded');
                 this.isExpanded = true;
                 this.elements.matchFixedInfo.style.opacity = '0';
+                this.elements.matchCardActions.style.opacity = '0'; // Скрываем кнопки
+                this.elements.matchCardActions.style.pointerEvents = 'none'; // Делаем кнопки некликабельными
             } else {
                 this.elements.matchScrollableContent.classList.remove('expanded');
                 this.isExpanded = false;
                 this.elements.matchFixedInfo.style.opacity = '1';
+                this.elements.matchCardActions.style.opacity = '1'; // Показываем кнопки
+                this.elements.matchCardActions.style.pointerEvents = 'auto'; // Делаем кнопки кликабельными
             }
-            this.elements.matchScrollableContent.style.transform = '';
+            this.elements.matchScrollableContent.style.transform = ''; // Сброс трансформации, чтобы класс expanded мог управлять
         }
+        this.currentTranslateX = 0; // Сброс для следующего свайпа
     }
 
     toggleExpand() {
@@ -522,5 +541,7 @@ class MatchHandler {
         this.elements.matchScrollableContent.scrollTop = 0;
         this.elements.matchFixedInfo.style.opacity = this.isExpanded ? '0' : '1';
         this.elements.matchFixedInfo.style.transition = 'opacity 0.4s ease-out';
+        this.elements.matchCardActions.style.opacity = this.isExpanded ? '0' : '1'; // Скрываем/показываем кнопки
+        this.elements.matchCardActions.style.pointerEvents = this.isExpanded ? 'none' : 'auto'; // Делаем кнопки некликабельными/кликабельными
     }
 }

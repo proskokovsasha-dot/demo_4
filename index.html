@@ -8,21 +8,19 @@
     <link rel="stylesheet" href="assets/css/components.css">
     <link rel="stylesheet" href="assets/css/animations.css">
     <link rel="stylesheet" href="assets/css/match.css">
-    <!-- Добавляем ссылку на шрифт Rubik из Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Общие стили для body и app-container */
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Rubik', sans-serif; /* Изменено на Rubik */
+            font-family: 'Rubik', sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Центрируем содержимое по вертикали */
+            justify-content: center;
             align-items: center;
             background-color: var(--background);
-            overflow-x: hidden; /* Предотвращаем горизонтальный скролл */
+            overflow-x: hidden;
         }
         
         .app-container {
@@ -33,12 +31,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* Центрируем содержимое по вертикали */
+            justify-content: center;
             position: relative;
-            min-height: 100vh; /* Занимаем всю высоту */
+            min-height: 100vh;
         }
         
-        /* Стили для экрана загрузки */
         .loading-screen {
             position: fixed;
             top: 0;
@@ -47,7 +44,7 @@
             height: 100%;
             background: white;
             display: flex;
-            flex-direction: column; /* Изменено на column для вертикального расположения */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -55,50 +52,48 @@
             transition: opacity 0.5s ease-out;
         }
 
-        /* Стили для текста на экране загрузки */
         .loading-text {
-            font-family: 'Rubik', sans-serif; /* Изменено на Rubik */
+            font-family: 'Rubik', sans-serif;
             color: var(--text-primary);
             text-align: center;
-            opacity: 0; /* Изначально скрыт */
-            transform: translateY(20px); /* Изначально смещен вниз */
-            animation: fadeInScale 1s ease-out forwards; /* Новая анимация */
-            animation-delay: 1.2s; /* Задержка после анимации логотипа */
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInScale 1s ease-out forwards;
+            animation-delay: 1.2s;
         }
 
         .loading-text.title {
             font-size: 2.8rem;
             font-weight: 800;
             color: var(--primary);
-            margin-bottom: 8px; /* Уменьшен отступ */
+            margin-bottom: 8px;
             line-height: 1.2;
             letter-spacing: -0.03em;
-            animation-delay: 1.5s; /* Задержка для заголовка */
+            animation-delay: 1.5s;
         }
 
         .loading-text.subtitle {
             font-size: 1.2rem;
             color: var(--text-secondary);
-            margin-bottom: 20px; /* Отступ после подзаголовка */
+            margin-bottom: 20px;
             max-width: 360px;
-            animation-delay: 1.8s; /* Задержка для подзаголовка */
+            animation-delay: 1.8s;
         }
         
-        /* Стили для общих экранов */
         .screen {
             width: 100%;
             max-width: 500px;
             display: none;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* Центрируем содержимое по вертикали */
+            justify-content: center;
             flex-grow: 1;
             opacity: 0;
             height: 0;
             overflow: hidden;
             transition: opacity var(--transition-normal) ease, height var(--transition-normal) ease;
-            padding-top: 20px; /* Отступ сверху для контента под навигацией */
-            padding-bottom: 20px; /* Отступ снизу */
+            padding-top: 20px;
+            padding-bottom: 20px;
         }
 
         .screen.active {
@@ -108,7 +103,6 @@
             overflow: visible;
         }
 
-        /* Стили для модального окна геолокации */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -166,7 +160,6 @@
             gap: 10px;
         }
 
-        /* Адаптация для мобильных */
         @media (max-width: 480px) {
             .app-container {
                 padding: 0 16px;
@@ -251,14 +244,11 @@
                     <div class="profile-card-bg" id="myProfileCardBg"></div>
                     <div class="profile-card-overlay"></div>
                     <div class="profile-card-content">
-                        <!-- Верхняя часть: Имя, возраст, описание (фиксированная) -->
-                        <!-- Изменения в стилях profile-fixed-info и profile-scrollable-content будут в components.css -->
                         <div class="profile-fixed-info" id="myProfileFixedInfo">
                             <h1 class="profile-name-age" id="myProfileNameAge"></h1>
                             <p class="profile-description-short" id="myProfileDescriptionShort"></p>
                         </div>
 
-                        <!-- Свайпаемая часть: Полная информация -->
                         <div class="profile-scrollable-content" id="myProfileScrollableContent">
                             <div class="scroll-indicator"></div>
                             <div class="profile-section">
@@ -310,7 +300,6 @@
                     <div class="match-card-bg" id="matchCardBg"></div>
                     <div class="match-card-overlay"></div>
                     <div class="match-card-content">
-                        <!-- Верхняя часть: Заголовок приложения, статус, расстояние, Имя, возраст, краткое описание (фиксированная) -->
                         <div class="match-header">
                             <div class="match-app-title">
                                 <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -329,13 +318,11 @@
                             <div class="match-distance" id="matchDistance">9 км</div>
                         </div>
 
-                        <!-- Фиксированная информация о пользователе (имя, возраст, краткое описание) -->
                         <div class="match-fixed-info" id="matchFixedInfo">
                             <h1 class="match-name-age" id="matchNameAge"></h1>
                             <p class="match-description-short" id="matchDescriptionShort"></p>
                         </div>
 
-                        <!-- Свайпаемая часть: Полная информация -->
                         <div class="match-scrollable-content" id="matchScrollableContent">
                             <div class="match-scroll-indicator"></div>
                             <div class="match-section">
@@ -358,18 +345,26 @@
                                 <div class="match-photos-grid" id="matchPhotosGrid"></div>
                             </div>
                         </div>
-                        
-                        <!-- SVG для лайка (сердечко) -->
-                        <svg class="match-icon like-icon" id="matchLikeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                        </svg>
-
-                        <!-- SVG для пропуска (разбитое сердечко) -->
-                        <svg class="match-icon nope-icon" id="matchNopeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 21.23l-7.78-7.78a5.5 5.5 0 0 1 0-7.78 5.5 5.5 0 0 1 7.78 0L12 5.67l1.06-1.06a5.5 5.5 0 0 1 7.78 7.78l-1.06 1.06L12 21.23z"></path>
-                            <line x1="7" y1="7" x2="17" y2="17"></line>
-                            <line x1="17" y1="7" x2="7" y2="17"></line>
-                        </svg>
+                        <!-- НОВЫЕ КНОПКИ ДЕЙСТВИЙ ВНУТРИ КАРТОЧКИ -->
+                        <div class="match-card-actions">
+                            <button class="action-btn btn-nope" id="nopeBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                            <button class="action-btn btn-view-profile" id="viewProfileBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                            <button class="action-btn btn-like" id="likeBtn">
+                                <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
