@@ -412,10 +412,16 @@
     text-align: left; /* Текст выровнен по левому краю */
 }
 
+/* ИЗМЕНЕНО: Стили для фиксированной информации */
 .profile-fixed-info {
-    margin-top: auto; /* Прижимает к низу родителя */
-    margin-bottom: 20px; /* Отступ от свайпаемой части */
+    position: absolute; /* Делаем позиционирование абсолютным */
+    top: 30px; /* Отступ сверху */
+    left: 30px; /* Отступ слева */
+    right: 30px; /* Отступ справа */
+    margin-bottom: 20px;
     flex-shrink: 0;
+    z-index: 4; /* Убедимся, что поверх всего */
+    pointer-events: none; /* Чтобы не блокировать свайп */
 }
 
 .profile-name-age {
@@ -439,19 +445,22 @@
     text-overflow: ellipsis;
 }
 
+/* ИЗМЕНЕНО: Стили для свайпаемой части */
 .profile-scrollable-content {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%; /* Изначально занимает всю высоту, но будет сдвигаться */
+    /* Изначально занимает всю высоту, но будет сдвигаться */
+    height: 100%; 
     background-color: var(--surface); /* Фон для свайпаемой части */
     border-top-left-radius: var(--radius-lg);
     border-top-right-radius: var(--radius-lg);
     padding: 30px;
     padding-top: 50px; /* Отступ для индикатора свайпа */
     box-shadow: var(--shadow-lg);
-    transform: translateY(calc(100% - 150px)); /* Изначально скрыта, видна только часть */
+    /* ИЗМЕНЕНО: Изначально скрыта, видна только часть, но теперь учитываем высоту фиксированной информации */
+    transform: translateY(calc(100% - 150px)); 
     transition: transform 0.4s ease-out;
     overflow-y: auto; /* Позволяем прокрутку контента внутри */
     -webkit-overflow-scrolling: touch; /* Для плавного скролла на iOS */
@@ -470,7 +479,8 @@
 }
 
 .profile-scrollable-content.expanded {
-    transform: translateY(0); /* Полностью раскрыта */
+    /* ИЗМЕНЕНО: Полностью раскрыта, но теперь с учетом фиксированной информации */
+    transform: translateY(var(--profile-fixed-info-height, 150px)); 
 }
 
 .scroll-indicator {
@@ -554,7 +564,7 @@
     padding: 10px 14px; /* Уменьшен паддинг для более компактного вида */
     background-color: var(--surface);
     border-radius: var(--radius-md);
-    transition: all var(--transition-fast) ease;
+    transition: all var(--transition-normal) ease;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border);
     text-align: center;
@@ -690,10 +700,14 @@
         font-size: 1rem;
     }
 
+    /* ИЗМЕНЕНО: Адаптация для мобильных для свайпаемой части */
     .profile-scrollable-content {
         padding: 20px;
         padding-top: 40px;
         transform: translateY(calc(100% - 120px)); /* Адаптация для мобильных */
+    }
+    .profile-scrollable-content.expanded {
+        transform: translateY(var(--profile-fixed-info-height-mobile, 120px));
     }
 
     .profile-section .section-title {
@@ -782,11 +796,16 @@
     .profile-description-short {
         font-size: 0.9rem;
     }
+    /* ИЗМЕНЕНО: Адаптация для мобильных для свайпаемой части */
     .profile-scrollable-content {
         padding: 15px;
         padding-top: 35px;
         transform: translateY(calc(100% - 100px));
     }
+    .profile-scrollable-content.expanded {
+        transform: translateY(var(--profile-fixed-info-height-mobile-sm, 100px));
+    }
+
     .profile-photos-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 5px;

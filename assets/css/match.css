@@ -242,22 +242,18 @@
     font-weight: 500;
     flex-shrink: 0;
 }
-
 .match-interest-item:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
     border-color: var(--primary-light);
 }
-
 .match-interest-item .emoji {
     font-size: 1.2rem;
     line-height: 1;
 }
-
 .match-interest-item .text {
     white-space: nowrap;
 }
-
 /* Общие стили для пустых разделов */
 .no-data {
     color: var(--text-secondary);
@@ -270,9 +266,7 @@
     border: 1px dashed var(--border);
     font-size: 0.9rem;
 }
-
 /* Удалены стили для .match-actions и кнопок лайка/пропуска */
-
 .no-profiles-message {
     font-size: 1.1rem;
     color: var(--text-secondary);
@@ -286,7 +280,6 @@
     border: 1px solid var(--border);
     flex-shrink: 0;
 }
-
 /* Стили для текста "LIKE" / "NOPE" при свайпе */
 .match-status-text {
     position: absolute;
@@ -303,25 +296,20 @@
     pointer-events: none; /* Чтобы не блокировать касания */
     text-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
-
 .match-status-text.like {
     color: var(--success);
     border: 4px solid var(--success);
     transform: translate(-50%, -50%) rotate(-45deg) scale(0.8);
 }
-
 .match-status-text.nope {
     color: var(--error);
     border: 4px solid var(--error);
     transform: translate(-50%, -50%) rotate(45deg) scale(0.8);
 }
-
 .match-status-text.visible {
     opacity: 1;
     transform: translate(-50%, -50%) rotate(0deg) scale(1);
 }
-
-
 /* Адаптация для мобильных */
 @media (max-width: 480px) {
     .match-card-wrapper {
@@ -330,11 +318,9 @@
         height: calc(100vh - var(--top-nav-height, 60px) - 40px); /* Занимаем почти всю высоту экрана, учитывая навигацию и паддинги */
         margin: 20px auto; /* Центрируем и добавляем отступы */
     }
-
     .match-card-content {
         padding: 20px;
     }
-
     .match-app-title {
         font-size: 1.2rem;
     }
@@ -342,39 +328,31 @@
         width: 25px;
         height: 25px;
     }
-
     .match-status, .match-distance {
         font-size: 0.8rem;
     }
-
     .match-name-age {
         font-size: 2rem;
     }
-
     .match-description-short {
         font-size: 1rem;
     }
-
     .match-scrollable-content {
         padding: 20px;
         padding-top: 40px;
         transform: translateY(calc(100% - 120px)); /* Адаптация для мобильных */
     }
-
     .match-section .section-title {
         font-size: 1.1rem;
     }
-    
     .match-description-full {
         padding: 12px;
         font-size: 0.9rem;
     }
-
     .match-interests .interest-item {
         padding: 7px 12px;
         font-size: 0.85rem;
     }
-
     .match-photos-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
@@ -382,9 +360,6 @@
     .match-photo-item {
         height: 80px;
     }
-
-    /* Удалены стили для .match-actions */
-
     .no-profiles-message {
         padding: 25px;
         font-size: 1rem;
@@ -393,8 +368,6 @@
     .match-status-text {
         font-size: 3rem;
     }
-
-    /* Адаптация для мобильных для "Ищу" и "Интересы" */
     .match-looking-for-item {
         padding: 10px 16px;
         font-size: 0.85rem;
@@ -411,7 +384,6 @@
         font-size: 1.1rem;
     }
 }
-
 @media (max-width: 360px) {
     .match-card-wrapper {
         height: calc(100vh - var(--top-nav-height, 60px) - 30px); /* Еще немного уменьшаем паддинг */
@@ -437,12 +409,9 @@
     .match-photo-item {
         height: 60px;
     }
-    /* Удалены стили для .match-actions */
     .match-status-text {
         font-size: 2.5rem;
     }
-
-    /* Адаптация для мобильных для "Ищу" и "Интересы" */
     .match-looking-for-item {
         padding: 8px 14px;
         font-size: 0.8rem;

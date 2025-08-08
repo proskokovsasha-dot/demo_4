@@ -1,235 +1,54 @@
-:root {
-    --primary: #FF6B6B; /* Более мягкий красный */
-    --primary-dark: #E04F4F; /* Темнее для ховера */
-    --primary-light: #FFDCDC; /* Светлее для акцентов */
-    --text-primary: #2C3E50; /* Темный сине-серый для основного текста */
-    --text-secondary: #7F8C8D; /* Средний серый для второстепенного текста */
-    --background: #F8F9FA; /* Очень светлый серый фон */
-    --surface: #FFFFFF; /* Белый для карточек и элементов */
-    --border: #E0E0E0; /* Легкий серый для границ */
-    --success: #2ECC71; /* Зеленый */
-    --error: #E74C3C; /* Красный */
-    --warning: #F39C12; /* Оранжевый */
-
-    /* Новые переменные для Tinder-подобного дизайна */
-    --match-overlay-color: rgba(0, 0, 0, 0.7); /* Полупрозрачный темный оверлей */
-    --match-text-color: #FFFFFF; /* Белый текст на карточке подбора */
-    --match-active-dot: #2ECC71; /* Зеленая точка активности */
-    --match-shadow-strong: 0 15px 40px rgba(0,0,0,0.3); /* Более сильная тень для карточки */
-
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 20px; /* Увеличенный радиус для более мягкого вида */
-    --shadow-sm: 0 4px 12px rgba(0,0,0,0.08); /* Более выраженная, но мягкая тень */
-    --shadow-md: 0 8px 20px rgba(0,0,0,0.12);
-    --shadow-lg: 0 12px 30px rgba(0,0,0,0.15);
-    --transition-fast: 0.2s;
-    --transition-normal: 0.4s; /* Немного медленнее для плавности */
-
-    --top-nav-height: 70px; /* Увеличиваем высоту навигации */
+:root{
+  --primary:#FF6B6B;--primary-dark:#E04F4F;--primary-light:#FFDCDC;--text-primary:#2C3E50;--text-secondary:#7F8C8D;--background:#F8F9FA;--surface:#fff;--border:#E0E0E0;--success:#2ECC71;--error:#E74C3C;--warning:#F39C12;--match-overlay-color:rgba(0,0,0,.7);--match-text-color:#fff;--match-active-dot:#2ECC71;--match-shadow-strong:0 15px 40px rgba(0,0,0,.3);--radius-sm:8px;--radius-md:12px;--radius-lg:20px;--shadow-sm:0 4px 12px rgba(0,0,0,.08);--shadow-md:0 8px 20px rgba(0,0,0,.12);--shadow-lg:0 12px 30px rgba(0,0,0,.15);--transition-fast:.2s;--transition-normal:.4s;--top-nav-height:70px
 }
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'Rubik',sans-serif;background-color:var(--background);color:var(--text-primary);line-height:1.6;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow-x:hidden
 }
-
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--background);
-    color: var(--text-primary);
-    line-height: 1.6;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Центрируем содержимое по вертикали */
-    align-items: center;
-    overflow-x: hidden;
+.app-container{
+  width:100%;max-width:500px;margin:0 auto;padding:0 20px 20px;display:flex;flex-direction:column;align-items:center;flex-grow:1;position:relative;min-height:100vh;justify-content:center
 }
-
-.app-container {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 0 20px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-grow: 1;
-    position: relative;
-    min-height: 100vh; /* Занимаем всю высоту */
-    justify-content: center; /* Центрируем содержимое по вертикали */
+.loading-screen{transition:opacity .5s ease-out}
+.screen{
+  width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;transition:all var(--transition-normal) ease;opacity:0;height:0;overflow:hidden;padding:20px 0;flex-grow:1;justify-content:center
 }
-
-.loading-screen {
-    transition: opacity 0.5s ease-out; 
+.screen.active{opacity:1;height:auto;overflow:visible}
+.app-title{
+  font-size:2.8rem;font-weight:800;color:var(--primary);margin-bottom:16px;line-height:1.2;letter-spacing:-.03em
 }
-
-.screen {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    transition: all var(--transition-normal) ease;
-    opacity: 0;
-    height: 0;
-    overflow: hidden;
-    padding-top: 20px;
-    padding-bottom: 20px; /* Добавляем паддинг снизу */
-    flex-grow: 1;
-    justify-content: center; /* Центрируем содержимое по вертикали */
+.app-subtitle{
+  font-size:1.2rem;color:var(--text-secondary);margin-bottom:40px;max-width:360px
 }
-
-.screen.active {
-    opacity: 1;
-    height: auto;
-    overflow: visible;
+.section-title{
+  font-size:1.8rem;font-weight:700;margin-bottom:15px;color:var(--text-primary);text-align:center
 }
-
-.app-title {
-    font-size: 2.8rem;
-    font-weight: 800;
-    color: var(--primary);
-    margin-bottom: 16px;
-    line-height: 1.2;
-    letter-spacing: -0.03em;
+.section-description{
+  font-size:1rem;color:var(--text-secondary);margin-bottom:20px;text-align:center
 }
-
-.app-subtitle {
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    margin-bottom: 40px;
-    max-width: 360px;
+.top-navigation{
+  width:100%;background-color:var(--surface);box-shadow:var(--shadow-sm);display:flex;justify-content:space-around;padding:10px 0;border-bottom-left-radius:var(--radius-lg);border-bottom-right-radius:var(--radius-lg);position:sticky;top:0;z-index:999;flex-shrink:0;height:var(--top-nav-height);align-items:center
 }
-
-.section-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 15px; /* Уменьшен отступ */
-    color: var(--text-primary);
-    text-align: center;
+.nav-btn{
+  background:none;border:none;color:var(--text-secondary);font-weight:600;padding:8px 15px;border-radius:var(--radius-md);cursor:pointer;transition:all var(--transition-fast) ease;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.85rem
 }
-
-.section-description {
-    font-size: 1rem;
-    color: var(--text-secondary);
-    margin-bottom: 20px; /* Уменьшен отступ */
-    text-align: center;
+.nav-icon{
+  width:30px;height:30px;stroke:var(--text-secondary);transition:stroke var(--transition-fast) ease;margin-bottom:2px
 }
-
-/* Стили для верхнего навигационного меню */
-.top-navigation {
-    width: 100%;
-    background-color: var(--surface);
-    box-shadow: var(--shadow-sm);
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    border-bottom-left-radius: var(--radius-lg);
-    border-bottom-right-radius: var(--radius-lg);
-    position: sticky;
-    top: 0;
-    z-index: 999;
-    flex-shrink: 0;
-    height: var(--top-nav-height); /* Используем переменную */
-    align-items: center; /* Центрируем элементы по вертикали */
+.nav-btn:hover,.nav-btn.active{color:var(--primary)}
+.nav-btn:hover .nav-icon,.nav-btn.active .nav-icon{stroke:var(--primary)}
+.nav-btn.active{background-color:var(--primary-light)}
+@media (max-width:480px){
+  body{padding:0}
+  .app-container{padding:0 16px 16px}
+  .app-title{font-size:2.2rem}
+  .section-title{font-size:1.6rem;margin-bottom:10px}
+  .section-description{font-size:.95rem;margin-bottom:15px}
+  .top-navigation{padding:8px 0;height:var(--top-nav-height,70px)}
+  .nav-btn{font-size:.75rem;padding:8px 10px}
+  .nav-icon{width:26px;height:26px}
+  .screen{padding:16px 0}
 }
-
-.nav-btn {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-weight: 600;
-    padding: 8px 15px; /* Уменьшаем паддинг, чтобы дать место иконке и тексту */
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: all var(--transition-fast) ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.85rem; /* Добавляем размер шрифта для текста */
-}
-
-.nav-icon { /* Новый класс для SVG иконок */
-    width: 30px; /* Увеличиваем размер иконок */
-    height: 30px;
-    stroke: var(--text-secondary);
-    transition: stroke var(--transition-fast) ease;
-    margin-bottom: 2px; /* Небольшой отступ между иконкой и текстом */
-}
-
-.nav-btn:hover {
-    color: var(--primary);
-}
-
-.nav-btn:hover .nav-icon { /* Изменено на .nav-icon */
-    stroke: var(--primary);
-}
-
-.nav-btn.active {
-    color: var(--primary);
-    background-color: var(--primary-light);
-}
-
-.nav-btn.active .nav-icon { /* Изменено на .nav-icon */
-    stroke: var(--primary);
-}
-
-
-@media (max-width: 480px) {
-    body {
-        padding: 0;
-    }
-    
-    .app-container {
-        padding: 0 16px 16px;
-    }
-
-    .app-title {
-        font-size: 2.2rem;
-    }
-    
-    .section-title {
-        font-size: 1.6rem;
-        margin-bottom: 10px; /* Еще уменьшен отступ */
-    }
-
-    .section-description {
-        font-size: 0.95rem;
-        margin-bottom: 15px; /* Еще уменьшен отступ */
-    }
-
-    .top-navigation {
-        padding: 8px 0;
-        height: var(--top-nav-height, 70px); /* Убедимся, что высота применяется */
-    }
-
-    .nav-btn {
-        font-size: 0.75rem; /* Уменьшаем шрифт для мобильных */
-        padding: 8px 10px;
-    }
-    .nav-icon { /* Изменено на .nav-icon */
-        width: 26px; /* Адаптивный размер иконок */
-        height: 26px;
-    }
-
-    .screen {
-        padding-top: 16px;
-        padding-bottom: 16px;
-    }
-}
-
-@media (max-width: 360px) {
-    .app-title {
-        font-size: 2rem;
-    }
-    
-    .app-subtitle,
-    .section-description {
-        font-size: 0.9rem;
-    }
+@media (max-width:360px){
+  .app-title{font-size:2rem}
+  .app-subtitle,.section-description{font-size:.9rem}
 }

@@ -6,6 +6,7 @@ class ProfileHandler {
         this.startY = 0;
         this.currentTranslateY = 0;
         this.isScrollingContent = false; // Новый флаг
+        this.fixedInfoHeight = 0; // Добавляем свойство для хранения высоты фиксированной информации
     }
 
     initElements() {
@@ -38,6 +39,7 @@ class ProfileHandler {
         this.updatePhotos(userData.photos);
         this.bindEvents();
         this.resetScrollState();
+        this.measureFixedInfoHeight(); // Измеряем высоту после рендеринга
     }
 
     applyProfileColor(color) {
@@ -232,10 +234,34 @@ class ProfileHandler {
         this.app.switchScreen('registration');
     }
 
+    // НОВОЕ: Измерение высоты фиксированной информации
+    measureFixedInfoHeight() {
+        // Убедимся, что элемент виден для корректного измерения
+        this.elements.profileFixedInfo.style.position = 'relative';
+        this.elements.profileFixedInfo.style.visibility = 'hidden'; // Скрываем, чтобы не мелькало
+        this.elements.profileFixedInfo.style.display = 'block'; // Делаем блочным для измерения
+
+        this.fixedInfoHeight = this.elements.profileFixedInfo.offsetHeight;
+        
+        // Возвращаем исходные стили
+        this.elements.profileFixedInfo.style.position = 'absolute';
+        this.elements.profileFixedInfo.style.visibility = 'visible';
+        this.elements.profileFixedInfo.style.display = ''; // Сбрасываем display
+
+        // Устанавливаем CSS-переменные для использования в стилях
+        document.documentElement.style.setProperty('--profile-fixed-info-height', `${this.fixedInfoHeight + 30}px`); // +30px для отступа сверху
+        // Адаптация для мобильных, если нужно
+        document.documentElement.style.setProperty('--profile-fixed-info-height-mobile', `${this.fixedInfoHeight + 20}px`); // +20px для отступа сверху на мобильных
+        document.documentElement.style.setProperty('--profile-fixed-info-height-mobile-sm', `${this.fixedInfoHeight + 15}px`); // +15px для отступа сверху на маленьких мобильных
+
+        this.resetScrollState(); // Сбрасываем состояние с учетом новой высоты
+    }
+
     resetScrollState() {
         this.isExpanded = false;
         this.elements.profileScrollableContent.classList.remove('expanded');
-        this.elements.profileScrollableContent.style.transform = 'translateY(calc(100% - 150px))'; 
+        // Используем вычисленную высоту для начального положения
+        this.elements.profileScrollableContent.style.transform = `translateY(calc(100% - ${this.fixedInfoHeight + 30}px))`; 
         this.elements.profileScrollableContent.scrollTop = 0;
     }
 
@@ -277,12 +303,13 @@ class ProfileHandler {
         const deltaY = e.touches[0].clientY - this.startY;
         
         const cardHeight = this.elements.profileCard.offsetHeight;
-        const initialVisibleHeight = 150;
+        // Используем динамическую высоту фиксированной информации
+        const initialVisibleHeight = this.fixedInfoHeight + 30; 
         const maxScrollUp = cardHeight - initialVisibleHeight; 
 
         let newTranslateY = this.currentTranslateY + deltaY;
 
-        newTranslateY = Math.max(0, Math.min(maxScrollUp, newTranslateY));
+        newTranslateY = Math.max(this.fixedInfoHeight + 30, Math.min(cardHeight - 50, newTranslateY)); // Ограничиваем движение
 
         this.elements.profileScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
 
@@ -300,11 +327,11 @@ class ProfileHandler {
         const currentTransformY = parseFloat(this.elements.profileScrollableContent.style.transform.replace('translateY(', '').replace('px)', '')) || 0;
         
         const cardHeight = this.elements.profileCard.offsetHeight;
-        const initialVisibleHeight = 150;
+        const initialVisibleHeight = this.fixedInfoHeight + 30;
         const maxScrollUp = cardHeight - initialVisibleHeight;
 
         // Определяем, должна ли карточка быть полностью раскрыта или свернута
-        if (currentTransformY < maxScrollUp / 2) {
+        if (currentTransformY < initialVisibleHeight + (maxScrollUp - initialVisibleHeight) / 2) {
             this.elements.profileScrollableContent.classList.add('expanded');
             this.isExpanded = true;
         } else {
