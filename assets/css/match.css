@@ -71,9 +71,16 @@
 
 /* НОВЫЕ СТИЛИ ДЛЯ ФИКСИРОВАННОЙ ИНФОРМАЦИИ В АНКЕТЕ */
 .match-fixed-info {
-    margin-top: auto; /* Прижимает к низу родителя */
-    margin-bottom: 20px; /* Отступ от свайпаемой части */
+    position: absolute; /* Делаем позиционирование абсолютным */
+    top: 30px; /* Отступ сверху */
+    left: 30px; /* Отступ слева */
+    right: 30px; /* Отступ справа */
+    margin-bottom: 20px;
     flex-shrink: 0;
+    z-index: 4; /* Убедимся, что поверх всего */
+    pointer-events: none; /* Чтобы не блокировать свайп */
+    opacity: 1; /* Изначально виден */
+    transition: opacity 0.4s ease-out; /* Добавляем плавный переход для opacity */
 }
 
 .match-name-age {
@@ -110,7 +117,8 @@
     padding: 30px;
     padding-top: 50px; /* Отступ для индикатора свайпа */
     box-shadow: var(--shadow-lg);
-    transform: translateY(calc(100% - 150px)); /* Изначально скрыта, видна только часть */
+    /* ИЗМЕНЕНО: Изначально скрыта, видна только часть, но теперь учитываем высоту фиксированной информации */
+    transform: translateY(calc(100% - 150px)); 
     transition: transform 0.4s ease-out;
     overflow-y: auto; /* Позволяем прокрутку контента внутри */
     -webkit-overflow-scrolling: touch; /* Для плавного скролла на iOS */
@@ -129,7 +137,8 @@
 }
 
 .match-scrollable-content.expanded {
-    transform: translateY(0); /* Полностью раскрыта */
+    /* ИЗМЕНЕНО: Полностью раскрыта, но теперь с учетом фиксированной информации */
+    transform: translateY(var(--match-fixed-info-height-mobile, 120px)); /* Используем новую переменную */
 }
 
 .match-scroll-indicator {
@@ -342,6 +351,9 @@
         padding-top: 40px;
         transform: translateY(calc(100% - 120px)); /* Адаптация для мобильных */
     }
+    .match-scrollable-content.expanded {
+        transform: translateY(var(--match-fixed-info-height-mobile-sm, 100px)); /* Используем новую переменную */
+    }
     .match-section .section-title {
         font-size: 1.1rem;
     }
@@ -401,6 +413,9 @@
         padding: 15px;
         padding-top: 35px;
         transform: translateY(calc(100% - 100px));
+    }
+    .match-scrollable-content.expanded {
+        transform: translateY(var(--match-fixed-info-height-mobile-sm, 100px)); /* Используем новую переменную */
     }
     .match-photos-grid {
         grid-template-columns: repeat(2, 1fr);

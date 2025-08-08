@@ -8,6 +8,7 @@ class MatchHandler {
         this.currentTranslateY = 0;
         this.currentTranslateX = 0;
         this.isScrollingContent = false; // Новый флаг
+        this.fixedInfoHeight = 0; // Добавляем свойство для хранения высоты фиксированной информации
         this.init();
     }
 
@@ -203,6 +204,7 @@ class MatchHandler {
 
         const profile = this.app.state.suggestedProfiles[this.currentIndex];
         this.renderProfile(profile);
+        this.measureFixedInfoHeight(); // Измеряем высоту после рендеринга
         this.resetScrollState();
     }
 
@@ -349,11 +351,38 @@ class MatchHandler {
         card.style.opacity = '0';
     }
 
+    // НОВОЕ: Измерение высоты фиксированной информации
+    measureFixedInfoHeight() {
+        // Убедимся, что элемент виден для корректного измерения
+        this.elements.matchFixedInfo.style.position = 'relative';
+        this.elements.matchFixedInfo.style.visibility = 'hidden'; // Скрываем, чтобы не мелькало
+        this.elements.matchFixedInfo.style.display = 'block'; // Делаем блочным для измерения
+
+        this.fixedInfoHeight = this.elements.matchFixedInfo.offsetHeight;
+        
+        // Возвращаем исходные стили
+        this.elements.matchFixedInfo.style.position = 'absolute';
+        this.elements.matchFixedInfo.style.visibility = 'visible';
+        this.elements.matchFixedInfo.style.display = ''; // Сбрасываем display
+
+        // Устанавливаем CSS-переменные для использования в стилях
+        document.documentElement.style.setProperty('--match-fixed-info-height', `${this.fixedInfoHeight + 30}px`); // +30px для отступа сверху
+        // Адаптация для мобильных, если нужно
+        document.documentElement.style.setProperty('--match-fixed-info-height-mobile', `${this.fixedInfoHeight + 20}px`); // +20px для отступа сверху на мобильных
+        document.documentElement.style.setProperty('--match-fixed-info-height-mobile-sm', `${this.fixedInfoHeight + 15}px`); // +15px для отступа сверху на маленьких мобильных
+
+        this.resetScrollState(); // Сбрасываем состояние с учетом новой высоты
+    }
+
     resetScrollState() {
         this.isExpanded = false;
         this.elements.matchScrollableContent.classList.remove('expanded');
-        this.elements.matchScrollableContent.style.transform = 'translateY(calc(100% - 150px))'; 
+        // Используем вычисленную высоту для начального положения
+        this.elements.matchScrollableContent.style.transform = `translateY(calc(100% - ${this.fixedInfoHeight + 30}px))`; 
         this.elements.matchScrollableContent.scrollTop = 0;
+        // Убедимся, что фиксированная информация видна при свернутом состоянии
+        this.elements.matchFixedInfo.style.opacity = '1';
+        this.elements.matchFixedInfo.style.pointerEvents = 'none';
     }
 
     handleTouchStart(e) {
@@ -387,6 +416,7 @@ class MatchHandler {
         
         this.elements.matchScrollableContent.style.transition = 'none';
         this.elements.matchCard.style.transition = 'none';
+        this.elements.matchFixedInfo.style.transition = 'opacity 0.3s ease-out'; // Добавляем переход для opacity
     }
 
     handleTouchMove(e) {
@@ -429,14 +459,22 @@ class MatchHandler {
             e.preventDefault();
             
             const cardHeight = this.elements.matchCard.offsetHeight;
-            const initialVisibleHeight = 150;
+            // Используем динамическую высоту фиксированной информации
+            const initialVisibleHeight = this.fixedInfoHeight + 30; 
             const maxScrollUp = cardHeight - initialVisibleHeight; 
 
             let newTranslateY = this.currentTranslateY + deltaY;
 
-            newTranslateY = Math.max(0, Math.min(maxScrollUp, newTranslateY));
+            // Ограничиваем движение, чтобы свайпаемая часть не уходила слишком далеко вниз
+            newTranslateY = Math.max(initialVisibleHeight, Math.min(cardHeight - 50, newTranslateY)); 
 
             this.elements.matchScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
+
+            // Рассчитываем прозрачность фиксированной информации
+            // Когда newTranslateY приближается к initialVisibleHeight (полностью раскрыто), opacity должно быть 0
+            // Когда newTranslateY приближается к cardHeight - 150px (свернуто), opacity должно быть 1
+            const opacity = Math.min(1, Math.max(0, (newTranslateY - initialVisibleHeight) / (maxScrollUp - initialVisibleHeight)));
+            this.elements.matchFixedInfo.style.opacity = 1 - opacity; // Инвертируем, чтобы пропадало при раскрытии
         }
     }
 
@@ -448,6 +486,7 @@ class MatchHandler {
 
         this.elements.matchCard.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
         this.elements.matchScrollableContent.style.transition = 'transform 0.4s ease-out';
+        this.elements.matchFixedInfo.style.transition = 'opacity 0.4s ease-out'; // Устанавливаем переход для opacity
 
         const currentTransformX = new DOMMatrixReadOnly(window.getComputedStyle(this.elements.matchCard).transform).m41;
         const cardWidth = this.elements.matchCard.offsetWidth;
@@ -468,16 +507,18 @@ class MatchHandler {
         // Логика для вертикального свайпа контента
         const currentTransformY = parseFloat(this.elements.matchScrollableContent.style.transform.replace('translateY(', '').replace('px)', '')) || 0;
         const cardHeight = this.elements.matchCard.offsetHeight;
-        const initialVisibleHeight = 150;
+        const initialVisibleHeight = this.fixedInfoHeight + 30;
         const maxScrollUp = cardHeight - initialVisibleHeight;
 
         // Определяем, должна ли карточка быть полностью раскрыта или свернута
-        if (currentTransformY < maxScrollUp / 2) {
+        if (currentTransformY < initialVisibleHeight + (maxScrollUp - initialVisibleHeight) / 2) {
             this.elements.matchScrollableContent.classList.add('expanded');
             this.isExpanded = true;
+            this.elements.matchFixedInfo.style.opacity = '0'; // Скрываем при полном раскрытии
         } else {
             this.elements.matchScrollableContent.classList.remove('expanded');
             this.isExpanded = false;
+            this.elements.matchFixedInfo.style.opacity = '1'; // Показываем при сворачивании
         }
         // Сброс трансформации, чтобы класс expanded мог управлять
         this.elements.matchScrollableContent.style.transform = '';
@@ -487,5 +528,8 @@ class MatchHandler {
         this.isExpanded = !this.isExpanded;
         this.elements.matchScrollableContent.classList.toggle('expanded', this.isExpanded);
         this.elements.matchScrollableContent.scrollTop = 0;
+        // Управляем видимостью фиксированной информации при клике на индикатор
+        this.elements.matchFixedInfo.style.opacity = this.isExpanded ? '0' : '1';
+        this.elements.matchFixedInfo.style.transition = 'opacity 0.4s ease-out';
     }
 }
