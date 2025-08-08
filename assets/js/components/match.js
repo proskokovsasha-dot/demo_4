@@ -7,8 +7,9 @@ class MatchHandler {
         this.startX = 0;
         this.currentTranslateY = 0;
         this.currentTranslateX = 0;
-        this.isScrollingContent = false; // Новый флаг
+        this.isScrollingContent = false; // Флаг, указывающий, что пользователь прокручивает контент внутри
         this.fixedInfoHeight = 0; // Добавляем свойство для хранения высоты фиксированной информации
+        this.scrollThreshold = 50; // Порог для определения свайпа вверх/вниз
         this.init();
     }
 
@@ -51,8 +52,8 @@ class MatchHandler {
         this.handleTouchEndBound = this.handleTouchEnd.bind(this);
         this.toggleExpandBound = this.toggleExpand.bind(this);
 
-        this.elements.matchCard.addEventListener('touchstart', this.handleTouchStartBound);
-        this.elements.matchCard.addEventListener('touchmove', this.handleTouchMoveBound);
+        this.elements.matchCard.addEventListener('touchstart', this.handleTouchStartBound, { passive: false });
+        this.elements.matchCard.addEventListener('touchmove', this.handleTouchMoveBound, { passive: false });
         this.elements.matchCard.addEventListener('touchend', this.handleTouchEndBound);
         this.elements.matchScrollIndicator.addEventListener('click', this.toggleExpandBound);
     }
@@ -205,7 +206,7 @@ class MatchHandler {
         const profile = this.app.state.suggestedProfiles[this.currentIndex];
         this.renderProfile(profile);
         this.measureFixedInfoHeight(); // Измеряем высоту после рендеринга
-        this.resetScrollState();
+        this.resetScrollState(); // Сбрасываем состояние после измерения
     }
 
     renderProfile(profile) {
@@ -255,18 +256,17 @@ class MatchHandler {
         this.elements.matchCard.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out'; // Возвращаем плавный переход
     }
 
-    // ОБНОВЛЕННЫЙ МЕТОД updateLookingFor
     updateLookingFor(lookingFor, options, container) {
         if (!container) return;
         container.innerHTML = '';
         if (lookingFor && lookingFor.length > 0) {
             const lookingForContainer = document.createElement('div');
-            lookingForContainer.className = 'match-looking-for-container'; // Новый класс контейнера
+            lookingForContainer.className = 'match-looking-for-container';
             lookingFor.forEach(optionId => {
                 const option = options.find(o => o.id === optionId);
                 if (option) {
                     const el = document.createElement('div');
-                    el.className = 'match-looking-for-item'; // Новый класс элемента
+                    el.className = 'match-looking-for-item';
                     el.innerHTML = `
                         <span class="emoji">${option.emoji}</span>
                         <span class="text">${option.name}</span>
@@ -280,18 +280,17 @@ class MatchHandler {
         }
     }
 
-    // ОБНОВЛЕННЫЙ МЕТОД updateInterests
     updateInterests(userInterests, configInterests, container) {
         if (!container) return;
         container.innerHTML = '';
         if (userInterests && userInterests.length > 0) {
             const interestsContainer = document.createElement('div');
-            interestsContainer.className = 'match-interests-container'; // Новый класс контейнера
+            interestsContainer.className = 'match-interests-container';
             userInterests.forEach(interestId => {
                 const interest = configInterests.find(i => i.id === interestId);
                 if (interest) {
                     const el = document.createElement('div');
-                    el.className = 'match-interest-item'; // Новый класс элемента
+                    el.className = 'match-interest-item';
                     el.innerHTML = `
                         <span class="emoji">${interest.emoji}</span>
                         <span class="text">${interest.name}</span>
@@ -324,63 +323,54 @@ class MatchHandler {
         const profile = this.app.state.suggestedProfiles[this.currentIndex];
         this.app.state.likedProfiles.push(profile);
         console.log('Liked:', profile.name);
-        this.app.playSound('like'); // Воспроизвести звук лайка
-        this.app.vibrate(100); // Виброотклик на 100 мс
+        this.app.playSound('like');
+        this.app.vibrate(100);
         this.animateCard('like');
         this.currentIndex++;
-        setTimeout(() => this.showNextProfile(), 300); // Уменьшено время для более быстрого перехода
+        setTimeout(() => this.showNextProfile(), 300);
     }
 
     handlePass() {
         const profile = this.app.state.suggestedProfiles[this.currentIndex];
         this.app.state.passedProfiles.push(profile);
         console.log('Passed:', profile.name);
-        this.app.playSound('nope'); // Воспроизвести звук пропуска
-        this.app.vibrate(50); // Виброотклик на 50 мс
+        this.app.playSound('nope');
+        this.app.vibrate(50);
         this.animateCard('pass');
         this.currentIndex++;
-        setTimeout(() => this.showNextProfile(), 300); // Уменьшено время для более быстрого перехода
+        setTimeout(() => this.showNextProfile(), 300);
     }
 
     animateCard(action) {
         const card = this.elements.matchCard;
         card.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
         card.style.transform = action === 'like' 
-            ? 'translateX(150%) rotate(30deg)' // Увеличено смещение и поворот
-            : 'translateX(-150%) rotate(-30deg)'; // Увеличено смещение и поворот
+            ? 'translateX(150%) rotate(30deg)'
+            : 'translateX(-150%) rotate(-30deg)';
         card.style.opacity = '0';
     }
 
-    // НОВОЕ: Измерение высоты фиксированной информации
     measureFixedInfoHeight() {
-        // Убедимся, что элемент виден для корректного измерения
         this.elements.matchFixedInfo.style.position = 'relative';
-        this.elements.matchFixedInfo.style.visibility = 'hidden'; // Скрываем, чтобы не мелькало
-        this.elements.matchFixedInfo.style.display = 'block'; // Делаем блочным для измерения
+        this.elements.matchFixedInfo.style.visibility = 'hidden';
+        this.elements.matchFixedInfo.style.display = 'block';
 
         this.fixedInfoHeight = this.elements.matchFixedInfo.offsetHeight;
         
-        // Возвращаем исходные стили
         this.elements.matchFixedInfo.style.position = 'absolute';
         this.elements.matchFixedInfo.style.visibility = 'visible';
-        this.elements.matchFixedInfo.style.display = ''; // Сбрасываем display
+        this.elements.matchFixedInfo.style.display = '';
 
-        // Устанавливаем CSS-переменные для использования в стилях
-        document.documentElement.style.setProperty('--match-fixed-info-height', `${this.fixedInfoHeight + 30}px`); // +30px для отступа сверху
-        // Адаптация для мобильных, если нужно
-        document.documentElement.style.setProperty('--match-fixed-info-height-mobile', `${this.fixedInfoHeight + 20}px`); // +20px для отступа сверху на мобильных
-        document.documentElement.style.setProperty('--match-fixed-info-height-mobile-sm', `${this.fixedInfoHeight + 15}px`); // +15px для отступа сверху на маленьких мобильных
-
-        this.resetScrollState(); // Сбрасываем состояние с учетом новой высоты
+        document.documentElement.style.setProperty('--match-fixed-info-height', `${this.fixedInfoHeight + 30}px`);
+        document.documentElement.style.setProperty('--match-fixed-info-height-mobile', `${this.fixedInfoHeight + 20}px`);
+        document.documentElement.style.setProperty('--match-fixed-info-height-mobile-sm', `${this.fixedInfoHeight + 15}px`);
     }
 
     resetScrollState() {
         this.isExpanded = false;
         this.elements.matchScrollableContent.classList.remove('expanded');
-        // Используем вычисленную высоту для начального положения
         this.elements.matchScrollableContent.style.transform = `translateY(calc(100% - ${this.fixedInfoHeight + 30}px))`; 
         this.elements.matchScrollableContent.scrollTop = 0;
-        // Убедимся, что фиксированная информация видна при свернутом состоянии
         this.elements.matchFixedInfo.style.opacity = '1';
         this.elements.matchFixedInfo.style.pointerEvents = 'none';
     }
@@ -398,41 +388,35 @@ class MatchHandler {
         const isInsideScrollableContent = scrollable.contains(target) && target !== this.elements.matchScrollIndicator;
 
         if (isInsideScrollableContent && this.isExpanded) {
-            const atTop = scrollable.scrollTop === 0;
-            const atBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight;
-
-            // Если пользователь пытается прокрутить вниз, когда уже внизу, или вверх, когда уже вверху,
-            // то мы можем перехватить событие для свайпа карточки.
-            // В противном случае, позволяем прокрутке контента.
-            if ((atTop && e.touches[0].clientY > this.startY) || (atBottom && e.touches[0].clientY < this.startY)) {
-                this.isScrollingContent = false; // Переключаем на свайп карточки
-            } else {
-                this.isScrollingContent = true; // Позволяем прокрутке контента
-                return; // Выходим, чтобы не обрабатывать как свайп карточки
-            }
+            this.isScrollingContent = true;
         } else {
             this.isScrollingContent = false;
         }
         
         this.elements.matchScrollableContent.style.transition = 'none';
         this.elements.matchCard.style.transition = 'none';
-        this.elements.matchFixedInfo.style.transition = 'opacity 0.3s ease-out'; // Добавляем переход для opacity
+        this.elements.matchFixedInfo.style.transition = 'opacity 0.3s ease-out';
     }
 
     handleTouchMove(e) {
         const deltaY = e.touches[0].clientY - this.startY;
         const deltaX = e.touches[0].clientX - this.startX;
 
-        // Определяем, является ли жест вертикальным или горизонтальным
         const isVerticalSwipe = Math.abs(deltaY) > Math.abs(deltaX);
 
-        if (this.isScrollingContent && isVerticalSwipe) {
-            // Если мы прокручиваем контент и жест вертикальный, не перехватываем событие
-            return;
+        if (this.isScrollingContent) {
+            const scrollable = this.elements.matchScrollableContent;
+            const atTop = scrollable.scrollTop === 0;
+            const atBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight;
+
+            if ((atTop && deltaY > 0) || (atBottom && deltaY < 0)) {
+                this.isScrollingContent = false;
+            } else {
+                return;
+            }
         }
 
         if (!this.isScrollingContent && !isVerticalSwipe) {
-            // Если мы не скроллим контент и жест горизонтальный, обрабатываем свайп карточки
             e.preventDefault();
             
             const cardWidth = this.elements.matchCard.offsetWidth;
@@ -440,7 +424,6 @@ class MatchHandler {
 
             this.elements.matchCard.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
 
-            // Показываем текст "LIKE" или "NOPE"
             if (deltaX > 0) {
                 this.elements.matchLikeText.classList.add('visible');
                 this.elements.matchNopeText.classList.remove('visible');
@@ -455,26 +438,20 @@ class MatchHandler {
             }
 
         } else if (!this.isScrollingContent && isVerticalSwipe) {
-            // Если мы не скроллим контент и жест вертикальный, обрабатываем свайп контента карточки
             e.preventDefault();
             
             const cardHeight = this.elements.matchCard.offsetHeight;
-            // Используем динамическую высоту фиксированной информации
             const initialVisibleHeight = this.fixedInfoHeight + 30; 
             const maxScrollUp = cardHeight - initialVisibleHeight; 
 
             let newTranslateY = this.currentTranslateY + deltaY;
 
-            // Ограничиваем движение, чтобы свайпаемая часть не уходила слишком далеко вниз
-            newTranslateY = Math.max(initialVisibleHeight, Math.min(cardHeight - 50, newTranslateY)); 
+            newTranslateY = Math.max(initialVisibleHeight, Math.min(cardHeight - this.scrollThreshold, newTranslateY)); 
 
             this.elements.matchScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
 
-            // Рассчитываем прозрачность фиксированной информации
-            // Когда newTranslateY приближается к initialVisibleHeight (полностью раскрыто), opacity должно быть 0
-            // Когда newTranslateY приближается к cardHeight - 150px (свернуто), opacity должно быть 1
             const opacity = Math.min(1, Math.max(0, (newTranslateY - initialVisibleHeight) / (maxScrollUp - initialVisibleHeight)));
-            this.elements.matchFixedInfo.style.opacity = 1 - opacity; // Инвертируем, чтобы пропадало при раскрытии
+            this.elements.matchFixedInfo.style.opacity = 1 - opacity;
         }
     }
 
@@ -486,49 +463,46 @@ class MatchHandler {
 
         this.elements.matchCard.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
         this.elements.matchScrollableContent.style.transition = 'transform 0.4s ease-out';
-        this.elements.matchFixedInfo.style.transition = 'opacity 0.4s ease-out'; // Устанавливаем переход для opacity
+        this.elements.matchFixedInfo.style.transition = 'opacity 0.4s ease-out';
 
         const currentTransformX = new DOMMatrixReadOnly(window.getComputedStyle(this.elements.matchCard).transform).m41;
         const cardWidth = this.elements.matchCard.offsetWidth;
-        const swipeThreshold = cardWidth / 3;
+        const swipeThresholdX = cardWidth / 3;
 
-        if (currentTransformX > swipeThreshold) {
-            this.handleLike();
-        } else if (currentTransformX < -swipeThreshold) {
-            this.handlePass();
+        if (Math.abs(currentTransformX) > swipeThresholdX) {
+            if (currentTransformX > 0) {
+                this.handleLike();
+            } else {
+                this.handlePass();
+            }
         } else {
-            // Возвращаем карточку в исходное положение
             this.elements.matchCard.style.transform = 'translateX(0) rotate(0)';
             this.elements.matchCard.style.opacity = '1';
             this.elements.matchLikeText.classList.remove('visible');
             this.elements.matchNopeText.classList.remove('visible');
-        }
 
-        // Логика для вертикального свайпа контента
-        const currentTransformY = parseFloat(this.elements.matchScrollableContent.style.transform.replace('translateY(', '').replace('px)', '')) || 0;
-        const cardHeight = this.elements.matchCard.offsetHeight;
-        const initialVisibleHeight = this.fixedInfoHeight + 30;
-        const maxScrollUp = cardHeight - initialVisibleHeight;
+            const currentTransformY = new DOMMatrixReadOnly(window.getComputedStyle(this.elements.matchScrollableContent).transform).m42;
+            const cardHeight = this.elements.matchCard.offsetHeight;
+            const initialVisibleHeight = this.fixedInfoHeight + 30;
+            const thresholdForExpand = initialVisibleHeight + (cardHeight - initialVisibleHeight - this.scrollThreshold) / 2;
 
-        // Определяем, должна ли карточка быть полностью раскрыта или свернута
-        if (currentTransformY < initialVisibleHeight + (maxScrollUp - initialVisibleHeight) / 2) {
-            this.elements.matchScrollableContent.classList.add('expanded');
-            this.isExpanded = true;
-            this.elements.matchFixedInfo.style.opacity = '0'; // Скрываем при полном раскрытии
-        } else {
-            this.elements.matchScrollableContent.classList.remove('expanded');
-            this.isExpanded = false;
-            this.elements.matchFixedInfo.style.opacity = '1'; // Показываем при сворачивании
+            if (currentTransformY < thresholdForExpand) {
+                this.elements.matchScrollableContent.classList.add('expanded');
+                this.isExpanded = true;
+                this.elements.matchFixedInfo.style.opacity = '0';
+            } else {
+                this.elements.matchScrollableContent.classList.remove('expanded');
+                this.isExpanded = false;
+                this.elements.matchFixedInfo.style.opacity = '1';
+            }
+            this.elements.matchScrollableContent.style.transform = '';
         }
-        // Сброс трансформации, чтобы класс expanded мог управлять
-        this.elements.matchScrollableContent.style.transform = '';
     }
 
     toggleExpand() {
         this.isExpanded = !this.isExpanded;
         this.elements.matchScrollableContent.classList.toggle('expanded', this.isExpanded);
         this.elements.matchScrollableContent.scrollTop = 0;
-        // Управляем видимостью фиксированной информации при клике на индикатор
         this.elements.matchFixedInfo.style.opacity = this.isExpanded ? '0' : '1';
         this.elements.matchFixedInfo.style.transition = 'opacity 0.4s ease-out';
     }
