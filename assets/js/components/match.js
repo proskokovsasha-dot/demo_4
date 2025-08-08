@@ -38,7 +38,8 @@ class MatchHandler {
             nopeBtn: document.getElementById('nopeBtn'),
             viewProfileBtn: document.getElementById('viewProfileBtn'),
             likeBtn: document.getElementById('likeBtn'),
-            matchCardActions: document.querySelector('.match-card-actions') // Новый элемент
+            matchCardActions: document.querySelector('.match-card-actions'), // Новый элемент
+            matchActiveDot: document.querySelector('.match-active-dot') // Новый элемент
         };
     }
 
@@ -189,6 +190,7 @@ class MatchHandler {
 
     getRandomLastActiveStatus() {
         const statuses = ['Была сегодня', 'Была вчера', 'Была на этой неделе', 'Была недавно'];
+        // Для демонстрации, пусть "Была сегодня" будет означать "онлайн"
         return statuses[Math.floor(Math.random() * statuses.length)];
     }
 
@@ -249,7 +251,15 @@ class MatchHandler {
         
         this.elements.matchDescriptionFull.textContent = fullDescription;
 
+        // Обновление статуса активности
         this.elements.matchLastActive.textContent = profile.lastActive;
+        if (profile.lastActive === 'Была сегодня') {
+            this.elements.matchActiveDot.classList.remove('offline');
+            this.elements.matchActiveDot.style.backgroundColor = 'var(--match-active-dot)'; // Зеленый
+        } else {
+            this.elements.matchActiveDot.classList.add('offline');
+            this.elements.matchActiveDot.style.backgroundColor = 'var(--text-secondary)'; // Серый
+        }
 
         if (this.app.state.userData.location?.lat && profile.location?.lat) {
             const distance = this.app.calculateDistance(
@@ -385,9 +395,11 @@ class MatchHandler {
         this.elements.matchFixedInfo.style.visibility = 'visible';
         this.elements.matchFixedInfo.style.display = '';
 
-        document.documentElement.style.setProperty('--match-fixed-info-height', `${this.fixedInfoHeight + 30}px`);
-        document.documentElement.style.setProperty('--match-fixed-info-height-mobile', `${this.fixedInfoHeight + 20}px`);
-        document.documentElement.style.setProperty('--match-fixed-info-height-mobile-sm', `${this.fixedInfoHeight + 15}px`);
+        // Учитываем высоту match-header при расчете --match-fixed-info-height
+        const matchHeaderHeight = document.querySelector('.match-header').offsetHeight;
+        document.documentElement.style.setProperty('--match-fixed-info-height', `${this.fixedInfoHeight + matchHeaderHeight + 30}px`);
+        document.documentElement.style.setProperty('--match-fixed-info-height-mobile', `${this.fixedInfoHeight + matchHeaderHeight + 20}px`);
+        document.documentElement.style.setProperty('--match-fixed-info-height-mobile-sm', `${this.fixedInfoHeight + matchHeaderHeight + 15}px`);
     }
 
     resetScrollState() {
@@ -454,7 +466,8 @@ class MatchHandler {
             // Обработка вертикального свайпа (открытие/закрытие информации)
             const cardHeight = this.elements.matchCard.offsetHeight;
             const initialHiddenPosition = cardHeight;
-            const expandedPosition = this.fixedInfoHeight + 30;
+            // Используем CSS-переменную для expandedPosition
+            const expandedPosition = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--match-fixed-info-height-mobile').replace('px', ''));
 
             let newTranslateY = this.currentTranslateY + deltaY;
 
@@ -472,7 +485,7 @@ class MatchHandler {
             this.elements.matchCard.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
             
             // Визуальная обратная связь для лайка/пропуска
-            const opacity = Math.min(1, Math.abs(deltaX) / this.horizontalSwipeThreshold);
+            // const opacity = Math.min(1, Math.abs(deltaX) / this.horizontalSwipeThreshold); // Можно использовать для изменения прозрачности иконок
             if (deltaX > 0) { // Свайп вправо (лайк)
                 this.elements.likeBtn.style.transform = `scale(1.1) translateX(-5px)`;
                 this.elements.nopeBtn.style.transform = `scale(1)`;
@@ -501,7 +514,7 @@ class MatchHandler {
         
         const cardHeight = this.elements.matchCard.offsetHeight;
         const initialHiddenPosition = cardHeight;
-        const expandedPosition = this.fixedInfoHeight + 30;
+        const expandedPosition = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--match-fixed-info-height-mobile').replace('px', ''));
 
         const thresholdVertical = expandedPosition + (initialHiddenPosition - expandedPosition) / 2;
 

@@ -1,3 +1,5 @@
+/* assets/css/match.css */
+
 /* Стили для экрана подборки (Match Screen) */
 .match-screen {
     display: flex;
@@ -73,10 +75,62 @@
     text-align: left;
 }
 
+/* НОВЫЕ СТИЛИ ДЛЯ ШАПКИ КАРТОЧКИ АНКЕТЫ */
+.match-header {
+    position: absolute;
+    top: 0; /* Прижимаем к верху */
+    left: 0;
+    right: 0;
+    padding: 15px 20px; /* Уменьшаем паддинг */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%); /* Градиент для читаемости */
+    z-index: 4;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.match-app-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.match-app-title .logo {
+    width: 30px;
+    height: 30px;
+}
+
+.match-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+}
+
+.match-active-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--match-active-dot); /* Зеленый по умолчанию */
+    flex-shrink: 0;
+}
+
+.match-active-dot.offline {
+    background-color: var(--text-secondary); /* Серый для оффлайн */
+}
+
+.match-distance {
+    font-weight: 500;
+}
+
+
 /* НОВЫЕ СТИЛИ ДЛЯ ФИКСИРОВАННОЙ ИНФОРМАЦИИ В АНКЕТЕ */
 .match-fixed-info {
     position: absolute;
-    top: 30px;
+    top: 70px; /* Отступ сверху, чтобы не перекрывать match-header */
     left: 30px;
     right: 30px;
     margin-bottom: 20px;

@@ -310,6 +310,7 @@ class DatingApp {
             } else {
                 alert('Геолокация не поддерживается вашим браузером. Вы можете указать местоположение позже.');
                 this.state.userData.location = { lat: null, lng: null }; // Сбрасываем
+                alert('Доступ к геолокации пропущен.'); // Добавлено для ясности
                 this.formHandler.nextStep(); // Все равно переходим к следующему шагу
             }
         } else {

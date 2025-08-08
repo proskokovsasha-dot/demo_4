@@ -308,20 +308,29 @@ class ProfileHandler {
 
         const cardHeight = this.elements.profileCard.offsetHeight;
         const initialVisibleHeight = this.fixedInfoHeight + 30; 
-        const maxScrollUp = cardHeight - initialVisibleHeight; 
+        // const maxScrollUp = cardHeight - initialVisibleHeight; // Это не совсем корректно для expanded state
 
         let newTranslateY = this.currentTranslateY + deltaY;
 
         // Ограничиваем движение:
         // - Нельзя свайпнуть ниже начального свернутого положения
         // - Нельзя свайпнуть выше, чем полностью раскрытое положение (с небольшим отступом сверху)
-        newTranslateY = Math.max(initialVisibleHeight, Math.min(cardHeight - this.scrollThreshold, newTranslateY)); 
+        const expandedPosition = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--profile-fixed-info-height-mobile').replace('px', ''));
+        newTranslateY = Math.max(expandedPosition, Math.min(cardHeight - this.scrollThreshold, newTranslateY)); 
 
         this.elements.profileScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
 
         // Рассчитываем прозрачность фиксированной информации
-        const opacity = Math.min(1, Math.max(0, (newTranslateY - initialVisibleHeight) / (maxScrollUp - initialVisibleHeight)));
-        this.elements.profileFixedInfo.style.opacity = 1 - opacity;
+        // Определение диапазона для изменения прозрачности
+        const opacityRangeStart = expandedPosition;
+        const opacityRangeEnd = initialVisibleHeight; // Когда фиксированная инфо полностью видна
+
+        let opacity = 1; // По умолчанию полностью видна
+        if (newTranslateY < opacityRangeEnd) {
+            opacity = (newTranslateY - opacityRangeStart) / (opacityRangeEnd - opacityRangeStart);
+            opacity = Math.max(0, Math.min(1, opacity)); // Ограничиваем от 0 до 1
+        }
+        this.elements.profileFixedInfo.style.opacity = opacity;
     }
 
     handleTouchEnd(e) {
@@ -337,7 +346,9 @@ class ProfileHandler {
         
         const cardHeight = this.elements.profileCard.offsetHeight;
         const initialVisibleHeight = this.fixedInfoHeight + 30;
-        const thresholdForExpand = initialVisibleHeight + (cardHeight - initialVisibleHeight - this.scrollThreshold) / 2;
+        const expandedPosition = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--profile-fixed-info-height-mobile').replace('px', ''));
+
+        const thresholdForExpand = expandedPosition + (initialVisibleHeight - expandedPosition) / 2;
 
         // Определяем, должна ли карточка быть полностью раскрыта или свернута
         if (currentTransformY < thresholdForExpand) {
