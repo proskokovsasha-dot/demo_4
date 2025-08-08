@@ -263,6 +263,9 @@ class ProfileHandler {
         // Используем вычисленную высоту для начального положения
         this.elements.profileScrollableContent.style.transform = `translateY(calc(100% - ${this.fixedInfoHeight + 30}px))`; 
         this.elements.profileScrollableContent.scrollTop = 0;
+        // Убедимся, что фиксированная информация видна при свернутом состоянии
+        this.elements.profileFixedInfo.style.opacity = '1';
+        this.elements.profileFixedInfo.style.pointerEvents = 'none';
     }
 
     handleTouchStart(e) {
@@ -292,6 +295,7 @@ class ProfileHandler {
         }
         
         this.elements.profileScrollableContent.style.transition = 'none';
+        this.elements.profileFixedInfo.style.transition = 'opacity 0.3s ease-out'; // Добавляем переход для opacity
     }
 
     handleTouchMove(e) {
@@ -309,9 +313,16 @@ class ProfileHandler {
 
         let newTranslateY = this.currentTranslateY + deltaY;
 
-        newTranslateY = Math.max(this.fixedInfoHeight + 30, Math.min(cardHeight - 50, newTranslateY)); // Ограничиваем движение
+        // Ограничиваем движение, чтобы свайпаемая часть не уходила слишком далеко вниз
+        newTranslateY = Math.max(this.fixedInfoHeight + 30, Math.min(cardHeight - 50, newTranslateY)); 
 
         this.elements.profileScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
+
+        // Рассчитываем прозрачность фиксированной информации
+        // Когда newTranslateY приближается к 0 (полностью раскрыто), opacity должно быть 0
+        // Когда newTranslateY приближается к initialVisibleHeight (свернуто), opacity должно быть 1
+        const opacity = Math.min(1, Math.max(0, (newTranslateY - (this.fixedInfoHeight + 30)) / (maxScrollUp - (this.fixedInfoHeight + 30))));
+        this.elements.profileFixedInfo.style.opacity = 1 - opacity; // Инвертируем, чтобы пропадало при раскрытии
 
         e.preventDefault(); // Предотвращаем прокрутку страницы
     }
@@ -323,6 +334,7 @@ class ProfileHandler {
         }
 
         this.elements.profileScrollableContent.style.transition = 'transform 0.4s ease-out';
+        this.elements.profileFixedInfo.style.transition = 'opacity 0.4s ease-out'; // Устанавливаем переход для opacity
 
         const currentTransformY = parseFloat(this.elements.profileScrollableContent.style.transform.replace('translateY(', '').replace('px)', '')) || 0;
         
@@ -334,9 +346,11 @@ class ProfileHandler {
         if (currentTransformY < initialVisibleHeight + (maxScrollUp - initialVisibleHeight) / 2) {
             this.elements.profileScrollableContent.classList.add('expanded');
             this.isExpanded = true;
+            this.elements.profileFixedInfo.style.opacity = '0'; // Скрываем при полном раскрытии
         } else {
             this.elements.profileScrollableContent.classList.remove('expanded');
             this.isExpanded = false;
+            this.elements.profileFixedInfo.style.opacity = '1'; // Показываем при сворачивании
         }
         // Сброс трансформации, чтобы класс expanded мог управлять
         this.elements.profileScrollableContent.style.transform = ''; 
@@ -346,5 +360,8 @@ class ProfileHandler {
         this.isExpanded = !this.isExpanded;
         this.elements.profileScrollableContent.classList.toggle('expanded', this.isExpanded);
         this.elements.profileScrollableContent.scrollTop = 0;
+        // Управляем видимостью фиксированной информации при клике на индикатор
+        this.elements.profileFixedInfo.style.opacity = this.isExpanded ? '0' : '1';
+        this.elements.profileFixedInfo.style.transition = 'opacity 0.4s ease-out';
     }
 }

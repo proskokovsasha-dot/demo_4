@@ -422,6 +422,8 @@
     flex-shrink: 0;
     z-index: 4; /* Убедимся, что поверх всего */
     pointer-events: none; /* Чтобы не блокировать свайп */
+    opacity: 1; /* Изначально виден */
+    transition: opacity 0.4s ease-out; /* Добавляем плавный переход для opacity */
 }
 
 .profile-name-age {
@@ -475,12 +477,14 @@
 }
 
 .profile-scrollable-content::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+        padding: 20px;
+        padding-top: 40px;
+        transform: translateY(calc(100% - 120px)); /* Адаптация для мобильных */
 }
 
 .profile-scrollable-content.expanded {
     /* ИЗМЕНЕНО: Полностью раскрыта, но теперь с учетом фиксированной информации */
-    transform: translateY(var(--profile-fixed-info-height, 150px)); 
+     transform: translateY(var(--profile-fixed-info-height-mobile, 120px))
 }
 
 .scroll-indicator {
@@ -702,12 +706,12 @@
 
     /* ИЗМЕНЕНО: Адаптация для мобильных для свайпаемой части */
     .profile-scrollable-content {
-        padding: 20px;
-        padding-top: 40px;
-        transform: translateY(calc(100% - 120px)); /* Адаптация для мобильных */
+         padding: 15px;
+        padding-top: 35px;
+        transform: translateY(calc(100% - 100px));
     }
     .profile-scrollable-content.expanded {
-        transform: translateY(var(--profile-fixed-info-height-mobile, 120px));
+        transform: translateY(var(--profile-fixed-info-height-mobile-sm, 100px));
     }
 
     .profile-section .section-title {
