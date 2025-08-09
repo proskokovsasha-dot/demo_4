@@ -176,7 +176,8 @@
     padding: 30px;
     padding-top: 50px;
     box-shadow: var(--shadow-lg);
-    transform: translateY(100%); /* Изначально полностью скрыта */
+    /* Изначально скрыта, видна только часть, но теперь учитываем высоту фиксированной информации */
+    transform: translateY(calc(100% - 150px)); /* Начальное положение: 150px видимой части снизу */
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Более плавная анимация */
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -193,7 +194,8 @@
 }
 
 .match-scrollable-content.expanded {
-    transform: translateY(var(--match-fixed-info-height-mobile, 120px));
+    /* Полностью раскрыта, но теперь с учетом фиксированной информации */
+    transform: translateY(var(--match-expanded-top-position)); /* Новая переменная для верхней позиции */
 }
 
 .match-scroll-indicator {
@@ -349,7 +351,7 @@
     display: none;
 }
 
-/* НОВЫЕ СТИЛИ ДЛЯ КОНТЕЙНЕРА КНОПОК ДЕЙСТВИЙ ВНУТРИ КАРТОЧКИ */
+/* НОВЫЕ КНОПКИ ДЕЙСТВИЙ ВНУТРИ КАРТОЧКИ */
 .match-card-actions {
     position: absolute;
     bottom: calc(20px + var(--safe-area-inset-bottom)); /* Отступ от низа карточки + safe area */
@@ -393,10 +395,12 @@
     .match-scrollable-content {
         padding: 20px;
         padding-top: 40px;
-        transform: translateY(100%);
+        /* Изначальное положение для мобильных */
+        transform: translateY(calc(100% - 100px)); /* 100px видимой части снизу */
     }
     .match-scrollable-content.expanded {
-        transform: translateY(var(--match-fixed-info-height-mobile-sm, 100px));
+        /* Полностью раскрыта для мобильных */
+        transform: translateY(var(--match-expanded-top-position-mobile));
     }
     .match-section .section-title {
         font-size: 1.1rem;
@@ -469,10 +473,12 @@
     .match-scrollable-content {
         padding: 15px;
         padding-top: 35px;
-        transform: translateY(100%);
+        /* Изначальное положение для очень маленьких экранов */
+        transform: translateY(calc(100% - 80px)); /* 80px видимой части снизу */
     }
     .match-scrollable-content.expanded {
-        transform: translateY(var(--match-fixed-info-height-mobile-sm, 100px));
+        /* Полностью раскрыта для очень маленьких экранов */
+        transform: translateY(var(--match-expanded-top-position-mobile-sm));
     }
     .match-photos-grid {
         grid-template-columns: repeat(2, 1fr);
