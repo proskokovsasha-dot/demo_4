@@ -37,9 +37,26 @@
     display: flex;
     flex-direction: column;
     color: var(--match-text-color);
-    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    /* Изменено: убраны прямые переходы, теперь управляется JS */
     transform-origin: bottom center;
 }
+
+.match-card.animate-like {
+    animation: swipeRight 0.5s forwards;
+}
+
+.match-card.animate-nope {
+    animation: swipeLeft 0.5s forwards;
+}
+
+.match-card.animate-superlike {
+    animation: swipeUp 0.5s forwards;
+}
+
+.match-card.appear {
+    animation: cardAppear 0.5s ease-out forwards;
+}
+
 
 .match-card-bg {
     position: absolute;
@@ -337,6 +354,17 @@
     z-index: 5;
     padding: 10px;
 }
+
+/* Добавлен новый стиль для кнопки суперлайка */
+.btn-superlike {
+    background-color: var(--primary); /* Можно выбрать другой цвет, например, фиолетовый */
+    color: white;
+}
+
+.btn-superlike:hover {
+    background-color: var(--primary-dark); /* Затемненный вариант */
+}
+
 
 @media (max-width: 480px) {
     .match-card-wrapper {

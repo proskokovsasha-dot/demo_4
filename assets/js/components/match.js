@@ -27,22 +27,89 @@ class MatchHandler {
             matchFixedInfo: document.getElementById('matchFixedInfo'),
             nopeBtn: document.getElementById('nopeBtn'),
             likeBtn: document.getElementById('likeBtn'),
+            superLikeBtn: document.getElementById('superLikeBtn'), // Добавлена кнопка суперлайка
             matchCardActions: document.querySelector('.match-card-actions'),
             matchActiveDot: document.querySelector('.match-active-dot'),
         };
     }
 
     setupEventListeners() {
+        // Удаляем предыдущие слушатели, чтобы избежать дублирования
         if (this.nopeBtnHandler) {
             this.elements.nopeBtn.removeEventListener('click', this.nopeBtnHandler);
             this.elements.likeBtn.removeEventListener('click', this.likeBtnHandler);
+            if (this.elements.superLikeBtn) {
+                this.elements.superLikeBtn.removeEventListener('click', this.superLikeBtnHandler);
+            }
         }
 
-        this.nopeBtnHandler = () => this.handlePass();
+        this.nopeBtnHandler = () => this.handleSwipe('nope');
         this.elements.nopeBtn.addEventListener('click', this.nopeBtnHandler);
         
-        this.likeBtnHandler = () => this.handleLike();
+        this.likeBtnHandler = () => this.handleSwipe('like');
         this.elements.likeBtn.addEventListener('click', this.likeBtnHandler);
+
+        // Добавляем слушатель для суперлайка
+        if (this.elements.superLikeBtn) {
+            this.superLikeBtnHandler = () => this.handleSwipe('superlike');
+            this.elements.superLikeBtn.addEventListener('click', this.superLikeBtnHandler);
+        }
+
+        // Добавляем обработку свайпов на самой карточке
+        this.addSwipeGestureRecognition();
+    }
+
+    addSwipeGestureRecognition() {
+        let startX, startY, endX, endY;
+        const card = this.elements.matchCard;
+
+        card.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+            card.style.transition = 'none'; // Отключаем CSS transition для плавного перетаскивания
+        });
+
+        card.addEventListener('touchmove', (e) => {
+            endX = e.touches[0].clientX;
+            endY = e.touches[0].clientY;
+            const deltaX = endX - startX;
+            const deltaY = endY - startY;
+
+            // Перемещаем карточку
+            card.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${deltaX / 20}deg)`;
+            card.style.opacity = 1 - Math.abs(deltaX / card.offsetWidth * 1.5) - Math.abs(deltaY / card.offsetHeight * 1.5);
+        });
+
+        card.addEventListener('touchend', () => {
+            const deltaX = endX - startX;
+            const deltaY = endY - startY;
+            const thresholdX = card.offsetWidth / 4; // Порог для свайпа влево/вправо
+            const thresholdY = card.offsetHeight / 4; // Порог для свайпа вверх
+
+            card.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out'; // Включаем transition обратно
+
+            if (Math.abs(deltaX) > thresholdX && Math.abs(deltaX) > Math.abs(deltaY)) {
+                // Свайп влево или вправо
+                if (deltaX > 0) {
+                    this.handleSwipe('like');
+                } else {
+                    this.handleSwipe('nope');
+                }
+            } else if (Math.abs(deltaY) > thresholdY && Math.abs(deltaY) > Math.abs(deltaX)) {
+                // Свайп вверх (суперлайк)
+                if (deltaY < 0) {
+                    this.handleSwipe('superlike');
+                } else {
+                    // Если свайп вниз, возвращаем карточку на место
+                    card.style.transform = 'translate(0, 0) rotate(0deg)';
+                    card.style.opacity = '1';
+                }
+            } else {
+                // Возвращаем карточку на место, если свайп недостаточен
+                card.style.transform = 'translate(0, 0) rotate(0deg)';
+                card.style.opacity = '1';
+            }
+        });
     }
 
     generateRandomProfiles(count = 30) {
@@ -166,6 +233,10 @@ class MatchHandler {
 
         const profile = this.app.state.suggestedProfiles[this.currentIndex];
         this.renderProfile(profile);
+        this.elements.matchCard.classList.add('appear'); // Добавляем анимацию появления
+        this.elements.matchCard.addEventListener('animationend', () => {
+            this.elements.matchCard.classList.remove('appear');
+        }, { once: true });
     }
 
     renderProfile(profile) {
@@ -210,11 +281,9 @@ class MatchHandler {
         this.updateInterests(profile.interests, this.app.config.interests, this.elements.matchInterests);
         this.updatePhotos(profile.photos, this.elements.matchPhotosGrid);
 
-        this.elements.matchCard.style.transition = 'none';
+        // Сбрасываем стили, которые могли быть изменены при перетаскивании
         this.elements.matchCard.style.transform = 'translateX(0) rotate(0)';
         this.elements.matchCard.style.opacity = '1';
-        void this.elements.matchCard.offsetWidth;
-        this.elements.matchCard.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
     }
 
     updateLookingFor(lookingFor, options, container) {
@@ -280,34 +349,30 @@ class MatchHandler {
         }
     }
 
-    handleLike() {
+    handleSwipe(action) {
         const profile = this.app.state.suggestedProfiles[this.currentIndex];
-        console.log('Liked:', profile.name);
-        this.app.chatHandler.addChat(profile);
-        this.animateCard('like');
-        this.currentIndex++;
-        setTimeout(() => this.showNextProfile(), 300);
-    }
-
-    handlePass() {
-        const profile = this.app.state.suggestedProfiles[this.currentIndex];
-        console.log('Passed:', profile.name);
-        this.animateCard('pass');
-        this.currentIndex++;
-        setTimeout(() => this.showNextProfile(), 300);
-    }
-
-    animateCard(action) {
         const card = this.elements.matchCard;
-        card.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
-        card.style.animation = '';
+
+        card.classList.remove('animate-like', 'animate-nope', 'animate-superlike'); // Удаляем предыдущие классы анимации
+        void card.offsetWidth; // Trigger reflow
+        
         if (action === 'like') {
-            card.style.animation = 'swipeRight 0.3s forwards';
-        } else if (action === 'pass') {
-            card.style.animation = 'swipeLeft 0.3s forwards';
+            console.log('Liked:', profile.name);
+            this.app.chatHandler.addChat(profile);
+            card.classList.add('animate-like');
+        } else if (action === 'nope') {
+            console.log('Passed:', profile.name);
+            card.classList.add('animate-nope');
+        } else if (action === 'superlike') {
+            console.log('Superliked:', profile.name);
+            this.app.chatHandler.addChat(profile); // Суперлайк тоже создает чат
+            card.classList.add('animate-superlike');
         }
+
         card.addEventListener('animationend', () => {
-            card.style.animation = '';
+            card.classList.remove('animate-like', 'animate-nope', 'animate-superlike');
+            this.currentIndex++;
+            this.showNextProfile();
         }, { once: true });
     }
 }
