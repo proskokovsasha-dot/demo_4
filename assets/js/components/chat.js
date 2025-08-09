@@ -57,6 +57,8 @@ class ChatHandler {
         this.elements.activeChatContainer.classList.remove('active');
         this.elements.chatListContainer.style.display = 'flex';
         this.elements.noChatsMessage.style.display = Object.keys(this.chats).length === 0 ? 'block' : 'none';
+        // Убедимся, что верхнее меню видно при просмотре списка чатов
+        this.app.elements.topNavigation.style.display = 'flex';
     }
 
     // Метод для рендеринга списка чатов
@@ -108,6 +110,8 @@ class ChatHandler {
         this.elements.activeChatContainer.classList.add('active');
         this.renderMessages();
         this.scrollToBottom();
+        // Скрываем верхнее навигационное меню при входе в чат
+        this.app.elements.topNavigation.style.display = 'none';
     }
 
     // Метод для рендеринга сообщений в активном чате
@@ -198,6 +202,8 @@ class ChatHandler {
         this.activeChatPartner = null;
         this.elements.activeChatContainer.classList.remove('active');
         this.showChatListScreen(); // Показываем список чатов
+        // Убедимся, что верхнее меню видно при возврате к списку чатов
+        this.app.elements.topNavigation.style.display = 'flex';
     }
 
     // Прокрутка сообщений вниз
