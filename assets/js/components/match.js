@@ -343,15 +343,33 @@ class MatchHandler {
         this.app.state.profileStats.likesReceived++;
         this.app.saveProfileStats();
 
-        if (Math.random() < 0.3) {
+        // Имитация совпадения или нового лайка
+        const randomChance = Math.random();
+        if (randomChance < 0.3) { // 30% шанс на совпадение
             this.app.state.profileStats.matches++;
             this.app.saveProfileStats();
             this.app.addChatAfterLike(profile);
-            alert(`У вас новое совпадение с ${profile.name}!`);
+            // Показываем уведомление о совпадении
+            this.app.showNotificationModal('match', profile);
+        } else if (randomChance < 0.6) { // 30% шанс на новый лайк (если не совпадение)
+            // Имитируем, что кто-то другой лайкнул вас
+            const dummyProfile = {
+                name: 'Незнакомец',
+                age: Math.floor(Math.random() * (35 - 20 + 1)) + 20,
+                avatar: 'https://picsum.photos/seed/newlike/100/100'
+            };
+            this.app.showNotificationModal('newLike', dummyProfile);
+        } else {
+            // Если нет ни совпадения, ни нового лайка, просто переходим к следующему профилю
+            setTimeout(() => this.showNextProfile(), 300);
         }
 
         this.currentIndex++;
-        setTimeout(() => this.showNextProfile(), 300);
+        // Если уведомление было показано, переход к следующему профилю будет осуществлен из колбэков кнопок уведомления.
+        // Если уведомление не показано, то переход уже сделан выше.
+        if (randomChance >= 0.6) { // Только если не было уведомления
+            setTimeout(() => this.showNextProfile(), 300);
+        }
     }
 
     handlePass() {

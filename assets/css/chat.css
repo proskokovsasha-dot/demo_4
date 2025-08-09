@@ -100,7 +100,6 @@
 .chat-header-bar {
     display: flex;
     align-items: center;
-    margin-top: 80px;
     padding: 10px 15px;
     background-color: var(--surface);
     box-shadow: var(--shadow-sm);

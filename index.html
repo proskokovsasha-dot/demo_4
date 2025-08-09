@@ -543,9 +543,27 @@
         </div>
     </div>
 
+    <!-- НОВОЕ: Модальное окно для уведомлений о лайках/совпадениях -->
+    <div class="modal-overlay" id="notificationModal">
+        <div class="modal-content notification-content">
+            <h3 id="notificationTitle"></h3>
+            <p id="notificationMessage"></p>
+            <div class="notification-avatar-container">
+                <img id="notificationAvatar" src="" alt="Аватар" class="notification-avatar">
+            </div>
+            <div class="modal-actions">
+                <button class="btn" id="notificationPrimaryBtn"></button>
+                <button class="btn btn-secondary" id="notificationSecondaryBtn"></button>
+            </div>
+        </div>
+    </div>
+
     <!-- Аудио элементы для звуковых эффектов -->
     <audio id="likeSound" src="assets/audio/like.mp3" preload="auto"></audio>
     <audio id="nopeSound" src="assets/audio/nope.mp3" preload="auto"></audio>
+    <!-- НОВЫЕ ЗВУКИ -->
+    <audio id="matchSound" src="assets/audio/match.mp3" preload="auto"></audio>
+    <audio id="newLikeSound" src="assets/audio/new_like.mp3" preload="auto"></audio>
 
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/components/ui.js"></script>

@@ -136,7 +136,16 @@ class DatingApp {
             swipeTutorialModal: document.getElementById('swipeTutorialModal'), // Новый элемент
             modalGotItBtn: document.getElementById('modalGotItBtn'), // Новый элемент
             likeSound: document.getElementById('likeSound'), // Новый элемент
-            nopeSound: document.getElementById('nopeSound') // Новый элемент
+            nopeSound: document.getElementById('nopeSound'), // Новый элемент
+            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ УВЕДОМЛЕНИЙ
+            notificationModal: document.getElementById('notificationModal'),
+            notificationTitle: document.getElementById('notificationTitle'),
+            notificationMessage: document.getElementById('notificationMessage'),
+            notificationAvatar: document.getElementById('notificationAvatar'),
+            notificationPrimaryBtn: document.getElementById('notificationPrimaryBtn'),
+            notificationSecondaryBtn: document.getElementById('notificationSecondaryBtn'),
+            matchSound: document.getElementById('matchSound'), // Новый звук
+            newLikeSound: document.getElementById('newLikeSound') // Новый звук
         };
     }
 
@@ -371,6 +380,70 @@ class DatingApp {
         this.elements.swipeTutorialModal.classList.remove('active');
     }
 
+    // НОВЫЕ МЕТОДЫ ДЛЯ УВЕДОМЛЕНИЙ
+    showNotificationModal(type, profile) {
+        let title = '';
+        let message = '';
+        let primaryBtnText = '';
+        let secondaryBtnText = '';
+        let primaryBtnAction = () => this.hideNotificationModal();
+        let secondaryBtnAction = () => this.hideNotificationModal();
+
+        this.elements.notificationAvatar.src = profile.avatar;
+        this.elements.notificationAvatar.alt = profile.name;
+
+        if (type === 'match') {
+            title = 'Это совпадение!';
+            message = `Вы понравились ${profile.name}! Теперь вы можете начать общаться.`;
+            primaryBtnText = 'Написать сообщение';
+            secondaryBtnText = 'Продолжить анкеты';
+            primaryBtnAction = () => {
+                this.hideNotificationModal();
+                this.switchScreen('chat');
+                this.chatHandler.openChat(profile.id); // Открываем чат с новым совпадением
+            };
+            secondaryBtnAction = () => {
+                this.hideNotificationModal();
+                this.matchHandler.showNextProfile(); // Продолжаем показ анкет
+            };
+            this.playSound('match');
+            this.vibrate([200, 100, 200]);
+        } else if (type === 'newLike') {
+            title = 'Новый лайк!';
+            message = `${profile.name} поставил(а) вам лайк! Посмотрите его/её профиль в анкетах.`;
+            primaryBtnText = 'Посмотреть профиль';
+            secondaryBtnText = 'Отлично!';
+            primaryBtnAction = () => {
+                this.hideNotificationModal();
+                this.switchScreen('match');
+                // В реальном приложении здесь можно было бы показать профиль того, кто лайкнул
+                // Для демо просто переходим на экран анкет
+            };
+            secondaryBtnAction = () => this.hideNotificationModal();
+            this.playSound('newLike');
+            this.vibrate(150);
+        }
+
+        this.elements.notificationTitle.textContent = title;
+        this.elements.notificationMessage.textContent = message;
+        this.elements.notificationPrimaryBtn.textContent = primaryBtnText;
+        this.elements.notificationSecondaryBtn.textContent = secondaryBtnText;
+
+        // Очищаем старые обработчики, чтобы избежать их дублирования
+        this.elements.notificationPrimaryBtn.onclick = null;
+        this.elements.notificationSecondaryBtn.onclick = null;
+
+        // Привязываем новые обработчики
+        this.elements.notificationPrimaryBtn.addEventListener('click', primaryBtnAction, { once: true });
+        this.elements.notificationSecondaryBtn.addEventListener('click', secondaryBtnAction, { once: true });
+
+        this.elements.notificationModal.classList.add('active');
+    }
+
+    hideNotificationModal() {
+        this.elements.notificationModal.classList.remove('active');
+    }
+
     // Методы для звуковых эффектов и виброотклика
     playSound(type) {
         if (type === 'like' && this.elements.likeSound) {
@@ -379,6 +452,12 @@ class DatingApp {
         } else if (type === 'nope' && this.elements.nopeSound) {
             this.elements.nopeSound.currentTime = 0;
             this.elements.nopeSound.play();
+        } else if (type === 'match' && this.elements.matchSound) { // НОВЫЙ ЗВУК
+            this.elements.matchSound.currentTime = 0;
+            this.elements.matchSound.play();
+        } else if (type === 'newLike' && this.elements.newLikeSound) { // НОВЫЙ ЗВУК
+            this.elements.newLikeSound.currentTime = 0;
+            this.elements.newLikeSound.play();
         }
     }
 
