@@ -70,7 +70,13 @@ class DatingApp {
             },
             suggestedProfiles: [],
             likedProfiles: [],
-            passedProfiles: []
+            passedProfiles: [],
+            // НОВОЕ: Статистика профиля
+            profileStats: {
+                views: 0,
+                likesReceived: 0,
+                matches: 0
+            }
         };
 
         this.initElements();
@@ -172,6 +178,8 @@ class DatingApp {
 
     checkSavedProfile() {
         const savedProfile = localStorage.getItem('datingProfile');
+        const savedStats = localStorage.getItem('profileStats'); // НОВОЕ: Загрузка статистики
+
         if (savedProfile) {
             try {
                 this.state.userData = JSON.parse(savedProfile);
@@ -198,6 +206,20 @@ class DatingApp {
         } else {
             this.state.currentScreen = 'registration'; // Если профиля нет, начинаем регистрацию
         }
+
+        // НОВОЕ: Загрузка статистики
+        if (savedStats) {
+            try {
+                this.state.profileStats = JSON.parse(savedStats);
+            } catch (e) {
+                console.error('Ошибка при загрузке статистики профиля:', e);
+                localStorage.removeItem('profileStats');
+            }
+        }
+    }
+
+    saveProfileStats() {
+        localStorage.setItem('profileStats', JSON.stringify(this.state.profileStats));
     }
 
     showProfile() {
@@ -221,6 +243,7 @@ class DatingApp {
     clearAllData() {
         localStorage.removeItem('datingProfile');
         localStorage.removeItem('swipeTutorialShown'); // Очищаем флаг подсказки
+        localStorage.removeItem('profileStats'); // НОВОЕ: Очистка статистики
         this.state.userData = {
             name: '',
             gender: '',
@@ -236,6 +259,11 @@ class DatingApp {
             avatar: null,
             photos: [],
             location: { lat: null, lng: null }
+        };
+        this.state.profileStats = { // НОВОЕ: Сброс статистики
+            views: 0,
+            likesReceived: 0,
+            matches: 0
         };
         // НОВОЕ: Очистка чатов при сбросе данных
         this.chatHandler.chats = {}; 

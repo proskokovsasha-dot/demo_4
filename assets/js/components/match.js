@@ -232,6 +232,10 @@ class MatchHandler {
         this.renderProfile(profile);
         this.measureFixedInfoHeight();
         this.resetScrollState();
+
+        // НОВОЕ: Увеличиваем счетчик просмотров профиля пользователя
+        this.app.state.profileStats.views++;
+        this.app.saveProfileStats();
     }
 
     renderProfile(profile) {
@@ -355,6 +359,19 @@ class MatchHandler {
         this.app.playSound('like');
         this.app.vibrate(100);
         this.animateCard('like');
+        
+        // НОВОЕ: Увеличиваем счетчик полученных лайков
+        this.app.state.profileStats.likesReceived++;
+        this.app.saveProfileStats();
+
+        // Имитация совпадения (match)
+        if (Math.random() < 0.3) { // 30% шанс на совпадение
+            this.app.state.profileStats.matches++;
+            this.app.saveProfileStats();
+            this.app.addChatAfterLike(profile); // Добавляем чат при совпадении
+            alert(`У вас новое совпадение с ${profile.name}!`);
+        }
+
         this.currentIndex++;
         setTimeout(() => this.showNextProfile(), 300);
     }

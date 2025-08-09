@@ -25,12 +25,16 @@ class ProfileHandler {
             newProfileBtn: document.getElementById('newProfileBtn'),
             scrollIndicator: document.querySelector('#myProfileScrollableContent .scroll-indicator'),
             profileFixedInfo: document.getElementById('myProfileFixedInfo'),
-            toggleProfileInfoBtn: document.getElementById('toggleProfileInfoBtn') // НОВЫЙ ЭЛЕМЕНТ
+            toggleProfileInfoBtn: document.getElementById('toggleProfileInfoBtn'), // НОВЫЙ ЭЛЕМЕНТ
+            // НОВОЕ: Элементы для статистики
+            profileViews: document.getElementById('profileViews'),
+            profileLikesReceived: document.getElementById('profileLikesReceived'),
+            profileMatches: document.getElementById('profileMatches')
         };
     }
 
     showProfile() {
-        const { userData } = this.app.state;
+        const { userData, profileStats } = this.app.state; // Получаем статистику
         const profileColor = userData.profileColor || '#FF6B6B';
         
         this.applyProfileColor(profileColor);
@@ -39,6 +43,7 @@ class ProfileHandler {
         this.updateLookingFor(userData.lookingFor, this.app.config.lookingForOptions);
         this.updateInterests(userData.interests, this.app.config.interests);
         this.updatePhotos(userData.photos);
+        this.updateProfileStats(profileStats); // НОВОЕ: Обновляем статистику
         this.bindEvents();
         this.measureFixedInfoHeight(); // Измеряем высоту после рендеринга
         this.resetScrollState(); // Сбрасываем состояние после измерения
@@ -181,6 +186,19 @@ class ProfileHandler {
         }
     }
 
+    // НОВОЕ: Метод для обновления статистики профиля
+    updateProfileStats(stats) {
+        if (this.elements.profileViews) {
+            this.elements.profileViews.textContent = stats.views;
+        }
+        if (this.elements.profileLikesReceived) {
+            this.elements.profileLikesReceived.textContent = stats.likesReceived;
+        }
+        if (this.elements.profileMatches) {
+            this.elements.profileMatches.textContent = stats.matches;
+        }
+    }
+
     bindEvents() {
         // Удаляем старые обработчики, чтобы избежать дублирования
         this.elements.editBtn.removeEventListener('click', this.editProfileHandler);
@@ -238,8 +256,15 @@ class ProfileHandler {
             photos: [],
             location: { lat: null, lng: null }
         };
+        // НОВОЕ: Сброс статистики при создании нового профиля
+        this.app.state.profileStats = {
+            views: 0,
+            likesReceived: 0,
+            matches: 0
+        };
         
         localStorage.removeItem('datingProfile');
+        localStorage.removeItem('profileStats'); // НОВОЕ: Удаление статистики из localStorage
         this.app.switchScreen('registration');
     }
 
