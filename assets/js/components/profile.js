@@ -24,7 +24,8 @@ class ProfileHandler {
             editBtn: document.getElementById('editBtn'),
             newProfileBtn: document.getElementById('newProfileBtn'),
             scrollIndicator: document.querySelector('#myProfileScrollableContent .scroll-indicator'),
-            profileFixedInfo: document.getElementById('myProfileFixedInfo')
+            profileFixedInfo: document.getElementById('myProfileFixedInfo'),
+            toggleProfileInfoBtn: document.getElementById('toggleProfileInfoBtn') // НОВЫЙ ЭЛЕМЕНТ
         };
     }
 
@@ -188,6 +189,11 @@ class ProfileHandler {
         this.elements.profileCard.removeEventListener('touchmove', this.handleTouchMoveBound);
         this.elements.profileCard.removeEventListener('touchend', this.handleTouchEndBound);
         this.elements.scrollIndicator.removeEventListener('click', this.toggleExpandBound);
+        // Удаляем старый обработчик для кнопки "Подробнее", если он был
+        if (this.elements.toggleProfileInfoBtn) {
+            this.elements.toggleProfileInfoBtn.removeEventListener('click', this.toggleExpandBound);
+        }
+
 
         // Привязываем новые обработчики
         this.editProfileHandler = () => this.app.switchScreen('registration');
@@ -200,16 +206,20 @@ class ProfileHandler {
         };
         this.elements.newProfileBtn.addEventListener('click', this.newProfileHandler);
 
-        // Привязываем методы свайпа к this
+        // Привязываем методы свайпа и кнопки к this
         this.handleTouchStartBound = this.handleTouchStart.bind(this);
         this.handleTouchMoveBound = this.handleTouchMove.bind(this);
         this.handleTouchEndBound = this.handleTouchEnd.bind(this);
-        this.toggleExpandBound = this.toggleExpand.bind(this);
+        this.toggleExpandBound = this.toggleExpand.bind(this); // Используем один и тот же метод для свайпа и кнопки
 
         this.elements.profileCard.addEventListener('touchstart', this.handleTouchStartBound, { passive: false });
         this.elements.profileCard.addEventListener('touchmove', this.handleTouchMoveBound, { passive: false });
         this.elements.profileCard.addEventListener('touchend', this.handleTouchEndBound);
         this.elements.scrollIndicator.addEventListener('click', this.toggleExpandBound);
+        // Привязываем обработчик к новой кнопке
+        if (this.elements.toggleProfileInfoBtn) {
+            this.elements.toggleProfileInfoBtn.addEventListener('click', this.toggleExpandBound);
+        }
     }
 
     resetProfile() {
@@ -261,9 +271,24 @@ class ProfileHandler {
         // Убедимся, что фиксированная информация видна при свернутом состоянии
         this.elements.profileFixedInfo.style.opacity = '1';
         this.elements.profileFixedInfo.style.pointerEvents = 'none';
+        // Обновляем текст и иконку кнопки
+        if (this.elements.toggleProfileInfoBtn) {
+            this.elements.toggleProfileInfoBtn.innerHTML = `
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+                Подробнее
+            `;
+            this.elements.toggleProfileInfoBtn.querySelector('svg').style.animation = 'rotateArrowUp 0.3s forwards';
+        }
     }
 
     handleTouchStart(e) {
+        // Игнорируем свайп, если касание началось на кнопке "Подробнее"
+        if (e.target.closest('#toggleProfileInfoBtn')) {
+            return;
+        }
+
         this.startY = e.touches[0].clientY;
         const style = window.getComputedStyle(this.elements.profileScrollableContent);
         this.currentTranslateY = new DOMMatrixReadOnly(style.transform).m42;
@@ -273,7 +298,7 @@ class ProfileHandler {
         const isInsideScrollableContent = scrollable.contains(target) && target !== this.elements.scrollIndicator;
 
         if (isInsideScrollableContent && this.isExpanded) {
-            // Если пользователь уже прокручивает контент, позволяем ему это делать
+            // Если пользователь уже прокручивает контент внутри, позволяем ему это делать
             this.isScrollingContent = true;
         } else {
             this.isScrollingContent = false;
@@ -339,7 +364,7 @@ class ProfileHandler {
             return;
         }
 
-        this.elements.profileScrollableContent.style.transition = 'transform 0.4s ease-out';
+        this.elements.profileScrollableContent.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; // Более плавная анимация
         this.elements.profileFixedInfo.style.transition = 'opacity 0.4s ease-out';
 
         const currentTransformY = new DOMMatrixReadOnly(window.getComputedStyle(this.elements.profileScrollableContent).transform).m42;
@@ -355,10 +380,32 @@ class ProfileHandler {
             this.elements.profileScrollableContent.classList.add('expanded');
             this.isExpanded = true;
             this.elements.profileFixedInfo.style.opacity = '0';
+            // Обновляем текст и иконку кнопки
+            if (this.elements.toggleProfileInfoBtn) {
+                this.elements.toggleProfileInfoBtn.innerHTML = `
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 15 12 9 18 15"></polyline>
+                    </svg>
+                    Свернуть
+                `;
+                // Применяем анимацию после обновления innerHTML
+                this.elements.toggleProfileInfoBtn.querySelector('svg').style.animation = 'rotateArrowDown 0.3s forwards';
+            }
         } else {
             this.elements.profileScrollableContent.classList.remove('expanded');
             this.isExpanded = false;
             this.elements.profileFixedInfo.style.opacity = '1';
+            // Обновляем текст и иконку кнопки
+            if (this.elements.toggleProfileInfoBtn) {
+                this.elements.toggleProfileInfoBtn.innerHTML = `
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                    Подробнее
+                `;
+                // Применяем анимацию после обновления innerHTML
+                this.elements.toggleProfileInfoBtn.querySelector('svg').style.animation = 'rotateArrowUp 0.3s forwards';
+            }
         }
         // Сброс трансформации, чтобы класс expanded мог управлять
         this.elements.profileScrollableContent.style.transform = ''; 
@@ -370,5 +417,29 @@ class ProfileHandler {
         this.elements.profileScrollableContent.scrollTop = 0;
         this.elements.profileFixedInfo.style.opacity = this.isExpanded ? '0' : '1';
         this.elements.profileFixedInfo.style.transition = 'opacity 0.4s ease-out';
+
+        // Обновляем текст и иконку кнопки
+        if (this.elements.toggleProfileInfoBtn) {
+            const svgElement = this.elements.toggleProfileInfoBtn.querySelector('svg');
+            if (this.isExpanded) {
+                this.elements.toggleProfileInfoBtn.innerHTML = `
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 15 12 9 18 15"></polyline>
+                    </svg>
+                    Свернуть
+                `;
+                // Применяем анимацию после обновления innerHTML
+                this.elements.toggleProfileInfoBtn.querySelector('svg').style.animation = 'rotateArrowDown 0.3s forwards';
+            } else {
+                this.elements.toggleProfileInfoBtn.innerHTML = `
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                    Подробнее
+                `;
+                // Применяем анимацию после обновления innerHTML
+                this.elements.toggleProfileInfoBtn.querySelector('svg').style.animation = 'rotateArrowUp 0.3s forwards';
+            }
+        }
     }
 }

@@ -543,9 +543,7 @@
 }
 
 .profile-scrollable-content::-webkit-scrollbar {
-        padding: 20px;
-        padding-top: 40px;
-        transform: translateY(calc(100% - 120px)); /* Адаптация для мобильных */
+    display: none; /* Скрываем стандартный скроллбар для Webkit */
 }
 
 .profile-scrollable-content.expanded {
