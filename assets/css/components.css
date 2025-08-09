@@ -1,8 +1,5 @@
 /* assets/css/components.css */
 
-/* Основные переменные - ПЕРЕНЕСЕНЫ В main.css для централизации */
-
-/* Логотип */
 .logo-container {
     width: 120px;
     height: 120px;
@@ -17,7 +14,6 @@
     height: 100%;
 }
 
-/* Кнопки */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -25,17 +21,17 @@
     background-color: var(--primary);
     color: white;
     border: none;
-    padding: 14px 28px; /* Уменьшен паддинг */
+    padding: 14px 28px;
     border-radius: var(--radius-md);
-    font-size: 0.95rem; /* Чуть уменьшен шрифт */
+    font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-normal) ease;
     box-shadow: var(--shadow-sm);
-    min-width: 180px; /* Уменьшена мин. ширина */
+    min-width: 180px;
     position: relative;
     overflow: hidden;
-    margin: 6px 0; /* Уменьшен отступ */
+    margin: 6px 0;
     text-align: center;
     line-height: 1;
 }
@@ -73,7 +69,6 @@
     box-shadow: var(--shadow-md);
 }
 
-/* НОВЫЕ СТИЛИ ДЛЯ КРУГЛЫХ КНОПОК ДЕЙСТВИЙ */
 .action-btn {
     width: 60px;
     height: 60px;
@@ -85,7 +80,7 @@
     cursor: pointer;
     box-shadow: var(--shadow-md);
     transition: all var(--transition-fast) ease;
-    flex-shrink: 0; /* Предотвращаем сжатие */
+    flex-shrink: 0;
 }
 
 .action-btn svg {
@@ -115,18 +110,6 @@
     border-color: var(--error);
 }
 
-.btn-view-profile {
-    background-color: var(--primary-light);
-    color: var(--primary);
-    border: 1px solid var(--primary-light);
-}
-
-.btn-view-profile:hover {
-    background-color: var(--primary);
-    color: white;
-    border-color: var(--primary);
-}
-
 .btn-like {
     background-color: var(--primary);
     color: white;
@@ -136,8 +119,6 @@
     background-color: var(--primary-dark);
 }
 
-
-/* Формы */
 .form-container {
     width: 100%;
     padding: 0;
@@ -145,8 +126,8 @@
     flex-direction: column;
     align-items: center;
     flex-grow: 1;
-    justify-content: center; /* Центрируем содержимое по вертикали */
-    min-height: 100%; /* Занимаем всю доступную высоту */
+    justify-content: center;
+    min-height: 100%;
 }
 
 .form-step {
@@ -155,10 +136,10 @@
     animation: fadeIn 0.6s ease-out;
     padding: 0;
     flex-grow: 1;
-    justify-content: center; /* Центрируем содержимое по вертикали */
-    flex-direction: column; /* Для вертикального расположения элементов */
+    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    min-height: 100%; /* Занимаем всю доступную высоту */
+    min-height: 100%;
 }
 
 .form-step.active {
@@ -167,11 +148,11 @@
 
 .input-field {
     width: 100%;
-    padding: 14px; /* Уменьшен паддинг */
-    margin: 10px 0; /* Уменьшен отступ */
+    padding: 14px;
+    margin: 10px 0;
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
-    font-size: 0.95rem; /* Чуть уменьшен шрифт */
+    font-size: 0.95rem;
     transition: all var(--transition-normal) ease;
     background-color: var(--surface);
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
@@ -190,32 +171,31 @@
     opacity: 0.7;
 }
 
-/* Теги выбора (пол, ищу, интересы) */
 .tags-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* Уменьшен зазор */
+    gap: 10px;
     justify-content: center;
-    margin: 15px 0; /* Уменьшен отступ */
+    margin: 15px 0;
     width: 100%;
 }
 
 .tag {
     background: var(--surface);
-    padding: 12px 20px; /* Уменьшен паддинг */
+    padding: 12px 20px;
     border-radius: var(--radius-md);
     cursor: pointer;
     transition: all var(--transition-normal) ease;
-    font-size: 0.9rem; /* Чуть уменьшен шрифт */
+    font-size: 0.9rem;
     display: flex;
     align-items: center;
-    gap: 8px; /* Уменьшен отступ */
+    gap: 8px;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border);
     text-align: center;
     flex-grow: 1;
     justify-content: center;
-    min-width: 100px; /* Уменьшена мин. ширина */
+    min-width: 100px;
 }
 
 .tag:hover {
@@ -232,18 +212,17 @@
     border-color: var(--primary);
 }
 
-/* Палитра цветов */
 .color-palette {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* Уменьшен зазор */
+    gap: 10px;
     justify-content: center;
-    margin: 15px 0; /* Уменьшен отступ */
+    margin: 15px 0;
     width: 100%;
 }
 
 .color-option {
-    width: 40px; /* Уменьшен размер */
+    width: 40px;
     height: 40px;
     border-radius: var(--radius-md);
     cursor: pointer;
@@ -267,7 +246,7 @@
     transform: translate(-50%, -50%);
     color: white;
     font-weight: bold;
-    font-size: 1.1rem; /* Чуть уменьшен размер галочки */
+    font-size: 1.1rem;
     text-shadow: 0 0 4px rgba(0,0,0,0.6);
 }
 
@@ -275,11 +254,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 15px; /* Уменьшен отступ */
+    margin-top: 15px;
 }
 
 .color-custom input[type="color"] {
-    width: 60px; /* Уменьшен размер */
+    width: 60px;
     height: 60px;
     border: 3px solid var(--border);
     border-radius: 50%;
@@ -296,46 +275,14 @@
 }
 
 .color-custom label {
-    margin-top: 8px; /* Уменьшен отступ */
+    margin-top: 8px;
     font-size: 0.9rem;
     color: var(--text-secondary);
 }
 
-/* Аватар */
-.avatar-upload {
-    margin: 15px 0; /* Уменьшен отступ */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-}
-
-.avatar-preview {
-    width: 120px; /* Уменьшен размер */
-    height: 120px;
-    border-radius: var(--radius-lg);
-    margin: 12px auto; /* Уменьшен отступ */
-    background-color: var(--surface);
-    background-size: cover;
-    background-position: center;
-    box-shadow: var(--shadow-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border: 2px solid var(--border);
-}
-
-.avatar-placeholder {
-    font-size: 2.5rem; /* Уменьшен размер */
-    color: var(--primary);
-    opacity: 0.5;
-}
-
-/* Контейнер для фото в форме */
 .photos-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); /* Адаптивная сетка */
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
     gap: 10px;
     width: 100%;
     margin-top: 15px;
@@ -345,7 +292,7 @@
 .photo-preview {
     position: relative;
     width: 100%;
-    padding-bottom: 100%; /* Соотношение сторон 1:1 */
+    padding-bottom: 100%;
     background-color: var(--border);
     background-size: cover;
     background-position: center;
@@ -359,7 +306,7 @@
 }
 
 .photo-preview.main-avatar {
-    border: 2px solid var(--primary); /* Выделение основной аватарки */
+    border: 2px solid var(--primary);
     box-shadow: var(--shadow-md);
 }
 
@@ -405,30 +352,27 @@
     background-color: var(--primary);
 }
 
-
-/* Навигация внутри формы (кнопки Далее/Назад) */
 .navigation {
     display: flex;
-    gap: 10px; /* Уменьшен зазор */
+    gap: 10px;
     justify-content: center;
-    margin-top: 30px; /* Уменьшен отступ */
+    margin-top: 30px;
     width: 100%;
     flex-wrap: wrap;
     flex-shrink: 0;
 }
 
-/* Профиль - НОВЫЕ СТИЛИ */
 .profile-card-wrapper {
     position: relative;
     width: 100%;
-    max-width: 380px; /* Уменьшена максимальная ширина */
-    height: 550px; /* Фиксированная высота для карточки */
+    max-width: 380px;
+    height: 550px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    perspective: 1000px; /* Для 3D-трансформаций */
-    padding-bottom: var(--safe-area-inset-bottom); /* Добавляем отступ снизу */
+    perspective: 1000px;
+    padding-bottom: var(--safe-area-inset-bottom);
 }
 
 .profile-card {
@@ -437,12 +381,12 @@
     height: 100%;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: var(--match-shadow-strong); /* Более сильная тень */
+    box-shadow: var(--match-shadow-strong);
     display: flex;
     flex-direction: column;
     color: var(--match-text-color);
     transition: transform 0.5s ease-out, opacity 0.5s ease-out;
-    transform-origin: bottom center; /* Точка вращения для свайпа */
+    transform-origin: bottom center;
 }
 
 .profile-card-bg {
@@ -453,8 +397,8 @@
     height: 100%;
     background-size: cover;
     background-position: center;
-    filter: blur(8px); /* Размытие фонового фото */
-    transform: scale(1.05); /* Увеличиваем для скрытия краев после размытия */
+    filter: blur(8px);
+    transform: scale(1.05);
     z-index: 1;
 }
 
@@ -464,112 +408,93 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 100%); /* Градиент для читаемости текста */
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 100%);
     z-index: 2;
 }
 
 .profile-card-content {
     position: relative;
     z-index: 3;
-    padding: 30px; /* Увеличен паддинг */
+    padding: 30px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end; /* Прижимаем контент к низу */
+    justify-content: flex-end;
     height: 100%;
-    text-align: left; /* Текст выровнен по левому краю */
+    text-align: left;
 }
 
-/* ИЗМЕНЕНО: Стили для фиксированной информации */
 .profile-fixed-info {
-    position: absolute; /* Делаем позиционирование абсолютным */
-    top: 30px; /* Отступ сверху */
-    left: 30px; /* Отступ слева */
-    right: 30px; /* Отступ справа */
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    right: 30px;
     margin-bottom: 20px;
     flex-shrink: 0;
-    z-index: 4; /* Убедимся, что поверх всего */
-    pointer-events: none; /* Чтобы не блокировать свайп */
-    opacity: 1; /* Изначально виден */
-    transition: opacity 0.4s ease-out; /* Добавляем плавный переход для opacity */
+    z-index: 4;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.4s ease-out;
 }
 
 .profile-name-age {
-    font-size: 2.5rem; /* Крупный шрифт для имени и возраста */
+    font-size: 2.5rem;
     font-weight: 700;
     line-height: 1.1;
     margin-bottom: 8px;
-    text-shadow: var(--shadow-sm); /* Легкая тень для читаемости */
+    text-shadow: var(--shadow-sm);
     color: white;
 }
 
 .profile-description-short {
-    font-size: 1.1rem; /* Размер для описания */
+    font-size: 1.1rem;
     line-height: 1.4;
     color: rgba(255, 255, 255, 0.9);
     text-shadow: var(--shadow-sm);
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Ограничиваем 3 строками */
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-/* ИЗМЕНЕНО: Стили для свайпаемой части */
 .profile-scrollable-content {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    /* Изначально занимает всю высоту, но будет сдвигаться */
-    height: 100%; 
-    background-color: var(--surface); /* Фон для свайпаемой части */
+    height: 100%;
+    background-color: var(--surface);
     border-top-left-radius: var(--radius-lg);
     border-top-right-radius: var(--radius-lg);
     padding: 30px;
-    padding-top: 50px; /* Отступ для индикатора свайпа */
+    padding-top: 50px;
     box-shadow: var(--shadow-lg);
-    /* ИЗМЕНЕНО: Изначально скрыта, видна только часть, но теперь учитываем высоту фиксированной информации */
-    transform: translateY(calc(100% - 150px)); 
+    transform: translateY(calc(100% - 150px));
     transition: transform 0.4s ease-out;
-    overflow-y: auto; /* Позволяем прокрутку контента внутри */
-    -webkit-overflow-scrolling: touch; /* Для плавного скролла на iOS */
-    color: var(--text-primary); /* Цвет текста для свайпаемой части */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    color: var(--text-primary);
     display: flex;
     flex-direction: column;
     gap: 20px;
-
-    /* Скрываем стандартный скроллбар */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .profile-scrollable-content::-webkit-scrollbar {
-    display: none; /* Скрываем стандартный скроллбар для Webkit */
+    display: none;
 }
 
 .profile-scrollable-content.expanded {
-    /* ИЗМЕНЕНО: Полностью раскрыта, но теперь с учетом фиксированной информации */
-     transform: translateY(var(--profile-fixed-info-height-mobile, 120px))
-}
-
-.scroll-indicator {
-    width: 40px;
-    height: 5px;
-    background-color: var(--border);
-    border-radius: 5px;
-    position: absolute;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    cursor: pointer;
+     transform: translateY(var(--profile-expanded-top-position));
 }
 
 .profile-section {
-    margin-bottom: 20px; /* Отступ между секциями */
+    margin-bottom: 20px;
 }
 
 .profile-section:last-child {
-    margin-bottom: 0; /* Убираем отступ у последней секции */
+    margin-bottom: 0;
 }
 
 .profile-section .section-title {
@@ -617,20 +542,21 @@
     flex-shrink: 0;
 }
 
-/* Стили для раздела "Ищу" (повторяются из match.css, но для профиля) */
-.profile-looking-for {
-    display: flex; /* Изменено на flex */
-    flex-wrap: wrap; /* Разрешаем перенос на новую строку */
-    gap: 8px; /* Увеличен зазор между элементами */
-    justify-content: flex-start; /* Выравнивание по левому краю */
+.profile-looking-for,
+.profile-interests {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
     width: 100%;
 }
 
-.profile-looking-for .looking-for-item {
+.profile-looking-for .looking-for-item,
+.profile-interests .interest-item {
     display: flex;
     align-items: center;
-    gap: 8px; /* Уменьшен зазор между эмодзи и текстом */
-    padding: 10px 14px; /* Уменьшен паддинг для более компактного вида */
+    gap: 8px;
+    padding: 10px 14px;
     background-color: var(--surface);
     border-radius: var(--radius-md);
     transition: all var(--transition-normal) ease;
@@ -640,103 +566,42 @@
     color: var(--text-primary);
     font-weight: 500;
     position: relative;
-    flex-shrink: 0; /* Предотвращаем сжатие элементов */
+    flex-shrink: 0;
 }
 
-.profile-looking-for .looking-for-item:hover {
-    transform: translateY(-2px); /* Менее выраженный подъем */
+.profile-looking-for .looking-for-item:hover,
+.profile-interests .interest-item:hover {
+    transform: translateY(-2px);
     box-shadow: var(--shadow-md);
     border-color: var(--primary-light);
 }
-.looking-for-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to right, 
-                rgba(var(--primary-rgb), 0.1) 0%, 
-                rgba(var(--primary-rgb), 0) 100%);
-    opacity: 0;
-    transition: opacity var(--transition-fast) ease;
-}
-.profile-looking-for .looking-for-emoji {
-    font-size: 1.3rem; /* Чуть уменьшен размер эмодзи */
+
+.profile-looking-for .looking-for-emoji,
+.profile-interests .interest-emoji {
+    font-size: 1.3rem;
     line-height: 1;
-    transition: transform var(--transition-fast) ease;
 }
-.looking-for-item:hover .looking-for-emoji {
-    transform: scale(1.05); /* Менее выраженное увеличение */
-}
-.profile-looking-for .looking-for-text {
-    font-size: 0.88rem; /* Чуть уменьшен размер шрифта */
+
+.profile-looking-for .looking-for-text,
+.profile-interests .interest-text {
+    font-size: 0.88rem;
     color: var(--text-primary);
     font-weight: 500;
     white-space: nowrap;
-    transition: color var(--transition-fast) ease;
-}
-.looking-for-item:hover .looking-for-text {
-    color: var(--primary-dark);
 }
 
-/* Стили для раздела "Интересы" (повторяются из match.css, но для профиля) */
-.profile-interests {
-    display: flex; /* Изменено на flex */
-    flex-wrap: wrap; /* Разрешаем перенос на новую строку */
-    gap: 8px; /* Увеличен зазор между элементами */
-    justify-content: flex-start; /* Выравнивание по левому краю */
-    width: 100%;
-}
-
-.profile-interests .interest-item {
-    display: flex;
-    align-items: center; /* Выравнивание по центру */
-    gap: 6px; /* Уменьшен зазор между эмодзи и текстом */
-    padding: 8px 12px; /* Уменьшен паддинг для более компактного вида */
-    background-color: var(--surface);
-    border-radius: var(--radius-md);
-    transition: all var(--transition-fast) ease;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
-    text-align: center;
-    color: var(--text-primary);
-    flex-shrink: 0; /* Предотвращаем сжатие элементов */
-}
-
-.profile-interests .interest-item:hover {
-    transform: translateY(-2px); /* Менее выраженный подъем */
-    box-shadow: var(--shadow-md);
-    border-color: var(--primary-light);
-}
-
-.profile-interests .interest-emoji {
-    font-size: 1.1rem; /* Чуть уменьшен размер эмодзи */
-    margin-bottom: 0; /* Убираем отступ */
-    line-height: 1; /* Убираем лишний интервал */
-}
-
-.profile-interests .interest-text {
-    font-size: 0.8rem; /* Чуть уменьшен размер шрифта */
-    color: var(--text-primary);
-    font-weight: 500;
-    white-space: nowrap; /* Предотвращаем перенос текста */
-}
-
-/* Общие стили для пустых разделов */
 .no-data {
     color: var(--text-secondary);
     font-style: italic;
-    padding: 15px; /* Уменьшен паддинг */
+    padding: 15px;
     text-align: center;
     background-color: var(--surface);
     border-radius: var(--radius-md);
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
     border: 1px dashed var(--border);
-    font-size: 0.9rem; /* Уменьшен шрифт */
+    font-size: 0.9rem;
 }
 
-/* Адаптация для мобильных */
 @media (max-width: 480px) {
     .btn {
         padding: 12px 20px;
@@ -751,10 +616,10 @@
     }
     
     .profile-card-wrapper {
-        width: 100%; /* Растягиваем на всю ширину */
-        max-width: unset; /* Снимаем ограничение max-width */
-        height: calc(100vh - var(--top-nav-height, 60px) - 40px - var(--safe-area-inset-bottom)); /* Занимаем почти всю высоту экрана, учитывая навигацию, паддинги и safe area */
-        margin: 20px auto; /* Центрируем и добавляем отступы */
+        width: 100%;
+        max-width: unset;
+        height: calc(100vh - var(--top-nav-height, 60px) - 40px - var(--safe-area-inset-bottom));
+        margin: 20px auto;
     }
 
     .profile-card-content {
@@ -769,14 +634,13 @@
         font-size: 1rem;
     }
 
-    /* ИЗМЕНЕНО: Адаптация для мобильных для свайпаемой части */
     .profile-scrollable-content {
          padding: 15px;
         padding-top: 35px;
         transform: translateY(calc(100% - 100px));
     }
     .profile-scrollable-content.expanded {
-        transform: translateY(var(--profile-fixed-info-height-mobile-sm, 100px));
+        transform: translateY(var(--profile-expanded-top-position-mobile));
     }
 
     .profile-section .section-title {
@@ -822,10 +686,6 @@
         min-width: 90px;
     }
 
-    /* Адаптация для мобильных для "Ищу" и "Интересы" */
-    .profile-looking-for {
-        gap: 6px;
-    }
     .profile-looking-for .looking-for-item {
         padding: 8px 12px;
         font-size: 0.8rem;
@@ -837,9 +697,6 @@
         font-size: 0.75rem;
     }
 
-    .profile-interests {
-        gap: 6px;
-    }
     .profile-interests .interest-item {
         padding: 6px 10px;
         font-size: 0.75rem;
@@ -854,7 +711,7 @@
 
 @media (max-width: 360px) {
     .profile-card-wrapper {
-        height: calc(100vh - var(--top-nav-height, 60px) - 30px - var(--safe-area-inset-bottom)); /* Еще немного уменьшаем паддинг */
+        height: calc(100vh - var(--top-nav-height, 60px) - 30px - var(--safe-area-inset-bottom));
     }
     .profile-card-content {
         padding: 15px;
@@ -865,14 +722,13 @@
     .profile-description-short {
         font-size: 0.9rem;
     }
-    /* ИЗМЕНЕНО: Адаптация для мобильных для свайпаемой части */
     .profile-scrollable-content {
         padding: 15px;
         padding-top: 35px;
         transform: translateY(calc(100% - 100px));
     }
     .profile-scrollable-content.expanded {
-        transform: translateY(var(--profile-fixed-info-height-mobile-sm, 100px));
+        transform: translateY(var(--profile-expanded-top-position-mobile-sm));
     }
 
     .profile-photos-grid {
@@ -884,7 +740,6 @@
     }
 }
 
-/* Стили для выбранных элементов "Ищу" */
 .looking-for-item.selected {
     background-color: var(--primary);
     color: white;
@@ -894,127 +749,4 @@
 
 .looking-for-item.selected .looking-for-text {
     color: white;
-}
-
-.looking-for-item.selected::before {
-    background: linear-gradient(to right, 
-                rgba(255, 255, 255, 0.2) 0%, 
-                rgba(255, 255, 255, 0) 100%);
-    opacity: 1;
-}
-
-/* НОВЫЕ СТИЛИ ДЛЯ БЛОКОВ "ИЩУ" И "ИНТЕРЕСЫ" */
-
-/* Общий контейнер для элементов "Ищу" и "Интересы" */
-.profile-looking-for-container,
-.profile-interests-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px; /* Отступ между элементами */
-    margin-top: 10px; /* Отступ сверху от заголовка секции */
-    justify-content: flex-start; /* Выравнивание по левому краю */
-    width: 100%;
-}
-
-/* Стили для отдельных элементов "Ищу" */
-.profile-looking-for-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 18px;
-    background-color: var(--surface);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
-    transition: all var(--transition-fast) ease;
-    font-size: 0.9rem;
-    color: var(--text-primary);
-    font-weight: 500;
-    flex-shrink: 0;
-    cursor: default; /* Убираем курсор-указатель, так как это не интерактивные элементы в профиле */
-}
-
-.profile-looking-for-item:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--primary-light);
-}
-
-.profile-looking-for-item .emoji {
-    font-size: 1.4rem;
-    line-height: 1;
-}
-
-.profile-looking-for-item .text {
-    white-space: nowrap;
-}
-
-/* Стили для отдельных элементов "Интересы" */
-.profile-interest-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
-    background-color: var(--surface);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
-    transition: all var(--transition-fast) ease;
-    font-size: 0.85rem;
-    color: var(--text-primary);
-    font-weight: 500;
-    flex-shrink: 0;
-    cursor: default; /* Убираем курсор-указатель */
-}
-
-.profile-interest-item:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--primary-light);
-}
-
-.profile-interest-item .emoji {
-    font-size: 1.2rem;
-    line-height: 1;
-}
-
-.profile-interest-item .text {
-    white-space: nowrap;
-}
-
-/* Адаптация для мобильных */
-@media (max-width: 480px) {
-    .profile-looking-for-item {
-        padding: 10px 16px;
-        font-size: 0.85rem;
-    }
-    .profile-looking-for-item .emoji {
-        font-size: 1.2rem;
-    }
-
-    .profile-interest-item {
-        padding: 7px 12px;
-        font-size: 0.8rem;
-    }
-    .profile-interest-item .emoji {
-        font-size: 1.1rem;
-    }
-}
-
-@media (max-width: 360px) {
-    .profile-looking-for-item {
-        padding: 8px 14px;
-        font-size: 0.8rem;
-    }
-    .profile-looking-for-item .emoji {
-        font-size: 1.1rem;
-    }
-
-    .profile-interest-item {
-        padding: 6px 10px;
-        font-size: 0.75rem;
-    }
-    .profile-interest-item .emoji {
-        font-size: 1rem;
-    }
 }

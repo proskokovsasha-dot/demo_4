@@ -5,7 +5,6 @@ class DatingApp {
             maxInterests: 5,
             minAge: 18,
             maxAge: 100,
-            maxPhotos: 6,
             interests: [
                 { id: 'music', name: 'Музыка', emoji: '🎵' },
                 { id: 'sports', name: 'Спорт', emoji: '⚽' },
@@ -19,20 +18,6 @@ class DatingApp {
                 { id: 'nature', name: 'Природа', emoji: '🌳' },
                 { id: 'technology', name: 'Технологии', emoji: '💻' },
                 { id: 'fashion', name: 'Мода', emoji: '👗' }
-            ],
-            zodiacSigns: [
-                { id: 'aries', name: 'Овен ♈', dates: '21.03 - 19.04' },
-                { id: 'taurus', name: 'Телец ♉', dates: '20.04 - 20.05' },
-                { id: 'gemini', name: 'Близнецы ♊', dates: '21.05 - 20.06' },
-                { id: 'cancer', name: 'Рак ♋', dates: '21.06 - 22.07' },
-                { id: 'leo', name: 'Лев ♌', dates: '23.07 - 22.08' },
-                { id: 'virgo', name: 'Дева ♍', dates: '23.08 - 22.09' },
-                { id: 'libra', name: 'Весы ♎', dates: '23.09 - 22.10' },
-                { id: 'scorpio', name: 'Скорпион ♏', dates: '23.10 - 21.11' },
-                { id: 'sagittarius', name: 'Стрелец ♐', dates: '22.11 - 21.12' },
-                { id: 'capricorn', name: 'Козерог ♑', dates: '22.12 - 19.01' },
-                { id: 'aquarius', name: 'Водолей ♒', dates: '20.01 - 18.02' },
-                { id: 'pisces', name: 'Рыбы ♓', dates: '19.02 - 20.03' }
             ],
             lookingForOptions: [
                 { id: 'friendship', name: 'Дружба', emoji: '🤝' },
@@ -49,15 +34,11 @@ class DatingApp {
         };
 
         this.state = {
-            currentScreen: 'main', // Это будет изменено на 'registration' или 'profile' после проверки localStorage
-            currentStep: 1,
-            totalSteps: 10, // ИЗМЕНЕНО: Уменьшено количество шагов на 1 (было 11, теперь 10)
+            currentScreen: 'main',
             userData: {
                 name: '',
                 gender: '',
-                dateOfBirth: '', // НОВОЕ: для хранения даты рождения
                 age: '',
-                zodiacSign: '',
                 city: '',
                 description: '',
                 interests: [],
@@ -66,17 +47,8 @@ class DatingApp {
                 profileColor: '#FF6B6B',
                 avatar: null,
                 photos: [],
-                location: { lat: null, lng: null }
             },
             suggestedProfiles: [],
-            likedProfiles: [],
-            passedProfiles: [],
-            // НОВОЕ: Статистика профиля
-            profileStats: {
-                views: 0,
-                likesReceived: 0,
-                matches: 0
-            }
         };
 
         this.initElements();
@@ -84,28 +56,27 @@ class DatingApp {
         this.profileHandler = new ProfileHandler(this);
         this.uiHandler = new UIHandler(this);
         this.matchHandler = new MatchHandler(this); 
-        this.chatHandler = new ChatHandler(this); // НОВОЕ: Инициализация ChatHandler
+        this.chatHandler = new ChatHandler(this);
 
         this.bindEvents();
-        this.checkSavedProfile(); // Определяет начальный экран
+        this.checkSavedProfile();
         this.showLoadingScreen();
     }
 
     showLoadingScreen() {
         this.uiHandler.initLogoAnimation();
 
-        // Анимация текста после логотипа
         const loadingTextElements = document.querySelectorAll('.loading-text');
         loadingTextElements.forEach(el => {
-            el.style.opacity = '0'; // Убедимся, что они скрыты перед анимацией
-            el.style.transform = 'translateY(20px) scale(0.95)'; // Начальное состояние для fadeInScale
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px) scale(0.95)';
         });
 
         setTimeout(() => {
             loadingTextElements.forEach(el => {
-                el.style.animationPlayState = 'running'; // Запускаем анимацию текста
+                el.style.animationPlayState = 'running';
             });
-        }, 1500); // Задержка перед появлением текста (после завершения анимации логотипа)
+        }, 1500);
 
         setTimeout(() => {
             const loadingScreen = document.getElementById('loadingScreen');
@@ -116,9 +87,9 @@ class DatingApp {
             loadingScreen.addEventListener('transitionend', () => {
                 loadingScreen.style.display = 'none';
                 appContainer.style.display = 'flex';
-                this.switchScreen(this.state.currentScreen); // Переключаемся на определенный экран
+                this.switchScreen(this.state.currentScreen);
             }, { once: true });
-        }, 3500); // Общая задержка перед скрытием экрана загрузки (лого + текст)
+        }, 3500);
     }
 
     initElements() {
@@ -126,26 +97,12 @@ class DatingApp {
             registrationForm: document.getElementById('registrationForm'),
             profileView: document.getElementById('profileView'),
             matchScreen: document.getElementById('matchScreen'), 
-            chatScreen: document.getElementById('chatScreen'), // НОВОЕ: Элемент экрана чата
+            chatScreen: document.getElementById('chatScreen'),
             settingsScreen: document.getElementById('settingsScreen'),
             topNavigation: document.getElementById('topNavigation'),
             navButtons: document.querySelectorAll('.nav-btn'),
-            locationModal: document.getElementById('locationModal'), 
-            modalAllowLocationBtn: document.getElementById('modalAllowLocationBtn'),
-            modalSkipLocationBtn: document.getElementById('modalSkipLocationBtn'),
-            swipeTutorialModal: document.getElementById('swipeTutorialModal'), // Новый элемент
-            modalGotItBtn: document.getElementById('modalGotItBtn'), // Новый элемент
-            likeSound: document.getElementById('likeSound'), // Новый элемент
-            nopeSound: document.getElementById('nopeSound'), // Новый элемент
-            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ УВЕДОМЛЕНИЙ
-            notificationModal: document.getElementById('notificationModal'),
-            notificationTitle: document.getElementById('notificationTitle'),
-            notificationMessage: document.getElementById('notificationMessage'),
-            notificationAvatar: document.getElementById('notificationAvatar'),
-            notificationPrimaryBtn: document.getElementById('notificationPrimaryBtn'),
-            notificationSecondaryBtn: document.getElementById('notificationSecondaryBtn'),
-            matchSound: document.getElementById('matchSound'), // Новый звук
-            newLikeSound: document.getElementById('newLikeSound') // Новый звук
+            swipeTutorialModal: document.getElementById('swipeTutorialModal'),
+            modalGotItBtn: document.getElementById('modalGotItBtn'),
         };
     }
 
@@ -171,15 +128,6 @@ class DatingApp {
             });
         }
 
-        // Обработчики для кнопок модального окна геолокации
-        if (this.elements.modalAllowLocationBtn) {
-            this.elements.modalAllowLocationBtn.addEventListener('click', () => this.handleLocationPermission(true));
-        }
-        if (this.elements.modalSkipLocationBtn) {
-            this.elements.modalSkipLocationBtn.addEventListener('click', () => this.handleLocationPermission(false));
-        }
-
-        // Обработчик для кнопки "Понятно!" в модальном окне подсказок
         if (this.elements.modalGotItBtn) {
             this.elements.modalGotItBtn.addEventListener('click', () => this.hideSwipeTutorialModal());
         }
@@ -187,12 +135,10 @@ class DatingApp {
 
     checkSavedProfile() {
         const savedProfile = localStorage.getItem('datingProfile');
-        const savedStats = localStorage.getItem('profileStats'); // НОВОЕ: Загрузка статистики
 
         if (savedProfile) {
             try {
                 this.state.userData = JSON.parse(savedProfile);
-                // Убедимся, что массивы и предпочтения инициализированы, если они отсутствуют в старых данных
                 if (!Array.isArray(this.state.userData.interests)) {
                     this.state.userData.interests = [];
                 }
@@ -202,33 +148,15 @@ class DatingApp {
                 if (!this.state.userData.preference) {
                     this.state.userData.preference = 'both';
                 }
-                // НОВОЕ: Инициализация dateOfBirth, если его нет
-                if (!this.state.userData.dateOfBirth) {
-                    this.state.userData.dateOfBirth = '';
-                }
-                this.state.currentScreen = 'profile'; // Если профиль есть, показываем профиль
+                this.state.currentScreen = 'profile';
             } catch (e) {
                 console.error('Ошибка при загрузке профиля:', e);
-                localStorage.removeItem('datingProfile'); // Очищаем некорректные данные
-                this.state.currentScreen = 'registration'; // Перенаправляем на регистрацию
+                localStorage.removeItem('datingProfile');
+                this.state.currentScreen = 'registration';
             }
         } else {
-            this.state.currentScreen = 'registration'; // Если профиля нет, начинаем регистрацию
+            this.state.currentScreen = 'registration';
         }
-
-        // НОВОЕ: Загрузка статистики
-        if (savedStats) {
-            try {
-                this.state.profileStats = JSON.parse(savedStats);
-            } catch (e) {
-                console.error('Ошибка при загрузке статистики профиля:', e);
-                localStorage.removeItem('profileStats');
-            }
-        }
-    }
-
-    saveProfileStats() {
-        localStorage.setItem('profileStats', JSON.stringify(this.state.profileStats));
     }
 
     showProfile() {
@@ -237,28 +165,19 @@ class DatingApp {
 
     startMatch() { 
         this.matchHandler.startMatch(); 
-        // Показываем подсказку по свайпу, если пользователь видит экран анкет впервые
         if (!localStorage.getItem('swipeTutorialShown')) {
             this.showSwipeTutorialModal();
             localStorage.setItem('swipeTutorialShown', 'true');
         }
     }
 
-    // НОВОЕ: Метод для добавления чата после лайка
-    addChatAfterLike(profile) {
-        this.chatHandler.addChat(profile);
-    }
-
     clearAllData() {
         localStorage.removeItem('datingProfile');
-        localStorage.removeItem('swipeTutorialShown'); // Очищаем флаг подсказки
-        localStorage.removeItem('profileStats'); // НОВОЕ: Очистка статистики
+        localStorage.removeItem('swipeTutorialShown');
         this.state.userData = {
             name: '',
             gender: '',
-            dateOfBirth: '', // НОВОЕ: сброс даты рождения
             age: '',
-            zodiacSign: '',
             city: '',
             description: '',
             interests: [],
@@ -267,35 +186,25 @@ class DatingApp {
             profileColor: '#FF6B6B',
             avatar: null,
             photos: [],
-            location: { lat: null, lng: null }
         };
-        this.state.profileStats = { // НОВОЕ: Сброс статистики
-            views: 0,
-            likesReceived: 0,
-            matches: 0
-        };
-        // НОВОЕ: Очистка чатов при сбросе данных
         this.chatHandler.chats = {}; 
         alert('Все данные профиля очищены. Вы будете перенаправлены на экран регистрации.');
         this.switchScreen('registration');
     }
 
     switchScreen(screenName) {
-        // Скрываем все экраны и удаляем класс 'active'
         document.querySelectorAll('.screen').forEach(screen => {
             screen.classList.remove('active');
-            screen.style.display = 'none'; // Убедимся, что они скрыты
+            screen.style.display = 'none';
         });
 
-        // Деактивируем все кнопки навигации
         this.elements.navButtons.forEach(button => button.classList.remove('active'));
 
-        // Показываем нужный экран
         let targetScreenElement;
         if (screenName === 'registration') {
             targetScreenElement = this.elements.registrationForm;
             this.elements.topNavigation.style.display = 'none';
-            this.formHandler.renderForm(); // Рендерим форму при переходе на экран регистрации
+            this.formHandler.renderForm();
         } else if (screenName === 'profile') {
             targetScreenElement = this.elements.profileView;
             document.querySelector('.nav-btn[data-screen="profile"]').classList.add('active');
@@ -306,11 +215,11 @@ class DatingApp {
             document.querySelector('.nav-btn[data-screen="match"]').classList.add('active'); 
             this.elements.topNavigation.style.display = 'flex';
             this.matchHandler.startMatch(); 
-        } else if (screenName === 'chat') { // НОВОЕ: Переключение на экран чата
+        } else if (screenName === 'chat') {
             targetScreenElement = this.elements.chatScreen;
             document.querySelector('.nav-btn[data-screen="chat"]').classList.add('active');
             this.elements.topNavigation.style.display = 'flex';
-            this.chatHandler.showChatListScreen(); // Показываем список чатов
+            this.chatHandler.showChatListScreen();
         } else if (screenName === 'settings') {
             targetScreenElement = this.elements.settingsScreen;
             document.querySelector('.nav-btn[data-screen="settings"]').classList.add('active');
@@ -318,8 +227,7 @@ class DatingApp {
         }
 
         if (targetScreenElement) {
-            targetScreenElement.style.display = 'flex'; // Устанавливаем display: flex перед добавлением active
-            // Небольшая задержка для применения display: flex перед анимацией opacity/height
+            targetScreenElement.style.display = 'flex';
             setTimeout(() => {
                 targetScreenElement.classList.add('active');
             }, 10); 
@@ -328,50 +236,6 @@ class DatingApp {
         this.state.currentScreen = screenName;
     }
 
-    // Методы для работы с модальным окном геолокации
-    showLocationModal() {
-        this.elements.locationModal.classList.add('active');
-    }
-
-    hideLocationModal() {
-        this.elements.locationModal.classList.remove('active');
-    }
-
-    handleLocationPermission(allow) {
-        this.hideLocationModal();
-        if (allow) {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        this.state.userData.location = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude
-                        };
-                        alert('Местоположение определено!');
-                        // После определения местоположения, можно перейти к следующему шагу формы
-                        this.formHandler.nextStep(); 
-                    },
-                    (error) => {
-                        alert('Не удалось определить местоположение. Вы можете указать его позже.');
-                        console.error(error);
-                        this.state.userData.location = { lat: null, lng: null }; // Сбрасываем, если ошибка
-                        this.formHandler.nextStep(); // Все равно переходим к следующему шагу
-                    }
-                );
-            } else {
-                alert('Геолокация не поддерживается вашим браузером. Вы можете указать местоположение позже.');
-                this.state.userData.location = { lat: null, lng: null }; // Сбрасываем
-                alert('Доступ к геолокации пропущен.'); // Добавлено для ясности
-                this.formHandler.nextStep(); // Все равно переходим к следующему шагу
-            }
-        } else {
-            this.state.userData.location = { lat: null, lng: null }; // Пропускаем
-            alert('Доступ к геолокации пропущен.');
-            this.formHandler.nextStep(); // Переходим к следующему шагу
-        }
-    }
-
-    // Методы для работы с модальным окном подсказок по свайпу
     showSwipeTutorialModal() {
         this.elements.swipeTutorialModal.classList.add('active');
     }
@@ -380,97 +244,10 @@ class DatingApp {
         this.elements.swipeTutorialModal.classList.remove('active');
     }
 
-    // НОВЫЕ МЕТОДЫ ДЛЯ УВЕДОМЛЕНИЙ
-    showNotificationModal(type, profile) {
-        let title = '';
-        let message = '';
-        let primaryBtnText = '';
-        let secondaryBtnText = '';
-        let primaryBtnAction = () => this.hideNotificationModal();
-        let secondaryBtnAction = () => this.hideNotificationModal();
-
-        this.elements.notificationAvatar.src = profile.avatar;
-        this.elements.notificationAvatar.alt = profile.name;
-
-        if (type === 'match') {
-            title = 'Это совпадение!';
-            message = `Вы понравились ${profile.name}! Теперь вы можете начать общаться.`;
-            primaryBtnText = 'Написать сообщение';
-            secondaryBtnText = 'Продолжить анкеты';
-            primaryBtnAction = () => {
-                this.hideNotificationModal();
-                this.switchScreen('chat');
-                this.chatHandler.openChat(profile.id); // Открываем чат с новым совпадением
-            };
-            secondaryBtnAction = () => {
-                this.hideNotificationModal();
-                this.matchHandler.showNextProfile(); // Продолжаем показ анкет
-            };
-            this.playSound('match');
-            this.vibrate([200, 100, 200]);
-        } else if (type === 'newLike') {
-            title = 'Новый лайк!';
-            message = `${profile.name} поставил(а) вам лайк! Посмотрите его/её профиль в анкетах.`;
-            primaryBtnText = 'Посмотреть профиль';
-            secondaryBtnText = 'Отлично!';
-            primaryBtnAction = () => {
-                this.hideNotificationModal();
-                this.switchScreen('match');
-                // В реальном приложении здесь можно было бы показать профиль того, кто лайкнул
-                // Для демо просто переходим на экран анкет
-            };
-            secondaryBtnAction = () => this.hideNotificationModal();
-            this.playSound('newLike');
-            this.vibrate(150);
-        }
-
-        this.elements.notificationTitle.textContent = title;
-        this.elements.notificationMessage.textContent = message;
-        this.elements.notificationPrimaryBtn.textContent = primaryBtnText;
-        this.elements.notificationSecondaryBtn.textContent = secondaryBtnText;
-
-        // Очищаем старые обработчики, чтобы избежать их дублирования
-        this.elements.notificationPrimaryBtn.onclick = null;
-        this.elements.notificationSecondaryBtn.onclick = null;
-
-        // Привязываем новые обработчики
-        this.elements.notificationPrimaryBtn.addEventListener('click', primaryBtnAction, { once: true });
-        this.elements.notificationSecondaryBtn.addEventListener('click', secondaryBtnAction, { once: true });
-
-        this.elements.notificationModal.classList.add('active');
-    }
-
-    hideNotificationModal() {
-        this.elements.notificationModal.classList.remove('active');
-    }
-
-    // Методы для звуковых эффектов и виброотклика
-    playSound(type) {
-        if (type === 'like' && this.elements.likeSound) {
-            this.elements.likeSound.currentTime = 0;
-            this.elements.likeSound.play();
-        } else if (type === 'nope' && this.elements.nopeSound) {
-            this.elements.nopeSound.currentTime = 0;
-            this.elements.nopeSound.play();
-        } else if (type === 'match' && this.elements.matchSound) { // НОВЫЙ ЗВУК
-            this.elements.matchSound.currentTime = 0;
-            this.elements.matchSound.play();
-        } else if (type === 'newLike' && this.elements.newLikeSound) { // НОВЫЙ ЗВУК
-            this.elements.newLikeSound.currentTime = 0;
-            this.elements.newLikeSound.play();
-        }
-    }
-
-    vibrate(pattern) {
-        if (navigator.vibrate) {
-            navigator.vibrate(pattern);
-        }
-    }
-
     calculateDistance(lat1, lon1, lat2, lon2) {
         if (!lat1 || !lon1 || !lat2 || !lon2) return null;
         
-        const R = 6371; // Радиус Земли в км
+        const R = 6371;
         const dLat = this.deg2rad(lat2-lat1);
         const dLon = this.deg2rad(lon2-lon1);
         const a = 

@@ -1,6 +1,5 @@
 /* assets/css/match.css */
 
-/* Стили для экрана подборки (Match Screen) */
 .match-screen {
     display: flex;
     flex-direction: column;
@@ -25,7 +24,7 @@
     margin-bottom: 0;
     flex-grow: 1;
     margin-top: 20px;
-    padding-bottom: var(--safe-area-inset-bottom); /* Добавляем отступ снизу */
+    padding-bottom: var(--safe-area-inset-bottom);
 }
 
 .match-card {
@@ -76,17 +75,16 @@
     text-align: left;
 }
 
-/* НОВЫЕ СТИЛИ ДЛЯ ШАПКИ КАРТОЧКИ АНКЕТЫ */
 .match-header {
     position: absolute;
-    top: 0; /* Прижимаем к верху */
+    top: 0;
     left: 0;
     right: 0;
-    padding: 15px 20px; /* Уменьшаем паддинг */
+    padding: 15px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%); /* Градиент для читаемости */
+    background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
     z-index: 4;
     color: white;
     font-size: 0.9rem;
@@ -115,29 +113,27 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: var(--match-active-dot); /* Зеленый по умолчанию */
+    background-color: var(--match-active-dot);
     flex-shrink: 0;
 }
 
 .match-active-dot.offline {
-    background-color: var(--text-secondary); /* Серый для оффлайн */
+    background-color: var(--text-secondary);
 }
 
 .match-distance {
     font-weight: 500;
 }
 
-
-/* НОВЫЕ СТИЛИ ДЛЯ ФИКСИРОВАННОЙ ИНФОРМАЦИИ В АНКЕТЕ */
 .match-fixed-info {
     position: absolute;
-    top: 70px; /* Отступ сверху, чтобы не перекрывать match-header */
+    top: 70px;
     left: 30px;
     right: 30px;
     margin-bottom: 20px;
     flex-shrink: 0;
     z-index: 4;
-    pointer-events: auto; /* Разрешаем клики, чтобы кнопка "Подробнее" работала */
+    pointer-events: auto;
     opacity: 1;
     transition: opacity 0.4s ease-out;
 }
@@ -163,7 +159,6 @@
     text-overflow: ellipsis;
 }
 
-/* НОВЫЕ СТИЛИ ДЛЯ СВАЙПАЕМОЙ ЧАСТИ В АНКЕТЕ */
 .match-scrollable-content {
     position: absolute;
     bottom: 0;
@@ -174,9 +169,9 @@
     border-top-left-radius: var(--radius-lg);
     border-top-right-radius: var(--radius-lg);
     padding: 30px;
-    padding-top: 20px; /* Уменьшаем паддинг сверху, так как индикатора не будет */
+    padding-top: 20px;
     box-shadow: var(--shadow-lg);
-    transform: translateY(100%); /* Полностью скрыт по умолчанию */
+    transform: translateY(100%);
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -193,10 +188,8 @@
 }
 
 .match-scrollable-content.expanded {
-    transform: translateY(var(--match-expanded-top-position)); /* Полностью раскрыта */
+    transform: translateY(var(--match-expanded-top-position));
 }
-
-/* match-scroll-indicator удален */
 
 .match-section .section-title {
     font-size: 1.3rem;
@@ -235,9 +228,6 @@
     border: 1px solid var(--border);
 }
 
-/* НОВЫЕ СТИЛИ ДЛЯ БЛОКОВ "ИЩУ" И "ИНТЕРЕСЫ" В MATCH.CSS */
-
-/* Общий контейнер для элементов "Ищу" и "Интересы" */
 .match-looking-for-container,
 .match-interests-container {
     display: flex;
@@ -248,7 +238,6 @@
     width: 100%;
 }
 
-/* Стили для отдельных элементов "Ищу" */
 .match-looking-for-item {
     display: flex;
     align-items: center;
@@ -280,7 +269,6 @@
     white-space: nowrap;
 }
 
-/* Стили для отдельных элементов "Интересы" */
 .match-interest-item {
     display: flex;
     align-items: center;
@@ -308,7 +296,6 @@
 .match-interest-item .text {
     white-space: nowrap;
 }
-/* Общие стили для пустых разделов */
 .no-data {
     color: var(--text-secondary);
     font-style: italic;
@@ -334,76 +321,28 @@
     flex-shrink: 0;
 }
 
-/* Стили для иконок лайка/пропуска - СКРЫТЫ */
 .match-icon {
     display: none;
 }
 
-/* НОВЫЕ КНОПКИ ДЕЙСТВИЙ ВНУТРИ КАРТОЧКИ */
 .match-card-actions {
     position: absolute;
-    bottom: calc(20px + var(--safe-area-inset-bottom)); /* Отступ от низа карточки + safe area */
+    bottom: calc(20px + var(--safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
-    width: 90%; /* Ширина контейнера кнопок */
+    width: 90%;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    z-index: 5; /* Поверх всего контента карточки */
+    z-index: 5;
     padding: 10px;
 }
 
-/* НОВЫЕ СТИЛИ ДЛЯ КНОПКИ ЗАКРЫТИЯ ВЕРХНЕЙ ИНФОРМАЦИИ */
-.match-close-info-btn {
-    position: absolute;
-    top: 90px; /* Отступ сверху */
-    right: 15px; /* Отступ справа */
-    background-color: rgba(0, 0, 0, 0.4); /* Полупрозрачный фон */
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 6; /* Выше других элементов карточки */
-    opacity: 0; /* Изначально скрыта */
-    visibility: hidden; /* Изначально скрыта */
-    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.2s ease;
-    box-shadow: var(--shadow-sm);
-}
-
-.match-close-info-btn svg {
-    width: 24px;
-    height: 24px;
-    stroke: white;
-    stroke-width: 2;
-}
-
-.match-close-info-btn:hover {
-    background-color: rgba(0, 0, 0, 0.6);
-    transform: scale(1.05);
-}
-
-.match-close-info-btn:active {
-    transform: scale(0.95);
-}
-
-/* Показываем кнопку закрытия, когда контент раскрыт */
-.match-scrollable-content.expanded + .match-close-info-btn {
-    opacity: 1;
-    visibility: visible;
-}
-
-
-/* Адаптация для мобильных */
 @media (max-width: 480px) {
     .match-card-wrapper {
         width: 100%;
         max-width: unset;
-        height: calc(100vh - var(--top-nav-height, 60px) - 40px - var(--safe-area-inset-bottom)); /* Убрал -80px, так как кнопки теперь внутри */
+        height: calc(100vh - var(--top-nav-height, 60px) - 40px - var(--safe-area-inset-bottom));
         margin: 20px auto 0;
     }
     .match-card-content {
@@ -427,8 +366,8 @@
     }
     .match-scrollable-content {
         padding: 20px;
-        padding-top: 20px; /* Уменьшаем паддинг сверху */
-        transform: translateY(100%); /* Полностью скрыт по умолчанию */
+        padding-top: 20px;
+        transform: translateY(100%);
     }
     .match-scrollable-content.expanded {
         transform: translateY(var(--match-expanded-top-position-mobile));
@@ -477,7 +416,7 @@
 
     .match-card-actions {
         padding: 5px 10px;
-        bottom: calc(15px + var(--safe-area-inset-bottom)); /* Немного уменьшаем отступ */
+        bottom: calc(15px + var(--safe-area-inset-bottom));
     }
     .action-btn {
         width: 50px;
@@ -487,21 +426,10 @@
         width: 25px;
         height: 25px;
     }
-
-    .match-close-info-btn {
-        width: 36px;
-        height: 36px;
-        top: 10px;
-        right: 10px;
-    }
-    .match-close-info-btn svg {
-        width: 20px;
-        height: 20px;
-    }
 }
 @media (max-width: 360px) {
     .match-card-wrapper {
-        height: calc(100vh - var(--top-nav-height, 60px) - 30px - var(--safe-area-inset-bottom)); /* Убрал -70px */
+        height: calc(100vh - var(--top-nav-height, 60px) - 30px - var(--safe-area-inset-bottom));
     }
     .match-card-content {
         padding: 15px;
@@ -514,8 +442,8 @@
     }
     .match-scrollable-content {
         padding: 15px;
-        padding-top: 15px; /* Уменьшаем паддинг сверху */
-        transform: translateY(100%); /* Полностью скрыт по умолчанию */
+        padding-top: 15px;
+        transform: translateY(100%);
     }
     .match-scrollable-content.expanded {
         transform: translateY(var(--match-expanded-top-position-mobile-sm));

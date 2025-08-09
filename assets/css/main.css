@@ -1,13 +1,13 @@
 :root{
   --primary:#FF6B6B;--primary-dark:#E04F4F;--primary-light:#FFDCDC;--text-primary:#2C3E50;--text-secondary:#7F8C8D;--background:#F8F9FA;--surface:#fff;--border:#E0E0E0;--success:#2ECC71;--error:#E74C3C;--warning:#F39C12;--match-overlay-color:rgba(0,0,0,.7);--match-text-color:#fff;--match-active-dot:#2ECC71;--match-shadow-strong:0 15px 40px rgba(0,0,0,.3);--radius-sm:8px;--radius-md:12px;--radius-lg:20px;--shadow-sm:0 4px 12px rgba(0,0,0,.08);--shadow-md:0 8px 20px rgba(0,0,0,.12);--shadow-lg:0 12px 30px rgba(0,0,0,.15);--transition-fast:.2s;--transition-normal:.4s;--top-nav-height:70px;
-  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px); /* Добавляем переменную для Safe Area */
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{
   font-family:'Rubik',sans-serif;background-color:var(--background);color:var(--text-primary);line-height:1.6;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow-x:hidden
 }
 .app-container{
-  width:100%;max-width:500px;margin:0 auto;padding:0 20px calc(20px + var(--safe-area-inset-bottom)); /* Добавляем отступ снизу */
+  width:100%;max-width:500px;margin:0 auto;padding:0 20px calc(20px + var(--safe-area-inset-bottom));
   display:flex;flex-direction:column;align-items:center;flex-grow:1;position:relative;min-height:100vh;justify-content:center
 }
 .loading-screen{transition:opacity .5s ease-out}
@@ -53,119 +53,4 @@ body{
 @media (max-width:360px){
   .app-title{font-size:2rem}
   .app-subtitle,.section-description{font-size:.9rem}
-}
-/* assets/css/main.css */
-
-/* ... (существующие стили) ... */
-
-/* НОВЫЕ СТИЛИ ДЛЯ МОДАЛЬНОГО ОКНА УВЕДОМЛЕНИЙ */
-.notification-content {
-    padding: 40px 30px; /* Увеличенный паддинг для лучшего вида */
-    background: linear-gradient(to bottom right, var(--surface), var(--background)); /* Градиентный фон */
-    border: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-}
-
-.notification-content::before {
-    content: '';
-    position: absolute;
-    top: -50px;
-    left: -50px;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
-    opacity: 0.3;
-    border-radius: 50%;
-    animation: pulse 3s infinite ease-out;
-    z-index: 0;
-}
-
-.notification-content::after {
-    content: '';
-    position: absolute;
-    bottom: -50px;
-    right: -50px;
-    width: 180px;
-    height: 180px;
-    background: radial-gradient(circle, var(--primary-light) 0%, transparent 70%);
-    opacity: 0.2;
-    border-radius: 50%;
-    animation: pulse 3.5s infinite reverse ease-out;
-    z-index: 0;
-}
-
-.notification-content h3 {
-    font-size: 2rem; /* Крупнее заголовок */
-    font-weight: 800;
-    color: var(--primary);
-    margin-bottom: 15px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: relative;
-    z-index: 1;
-}
-
-.notification-content p {
-    font-size: 1.1rem;
-    color: var(--text-primary);
-    margin-bottom: 25px;
-    position: relative;
-    z-index: 1;
-}
-
-.notification-avatar-container {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 20px auto 30px;
-    border: 5px solid var(--primary); /* Яркая рамка */
-    box-shadow: var(--shadow-md);
-    position: relative;
-    z-index: 1;
-    animation: popIn 0.5s ease-out forwards; /* Анимация появления аватара */
-}
-
-.notification-avatar {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-}
-
-.notification-content .modal-actions {
-    flex-direction: row; /* Кнопки в ряд */
-    justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap;
-    position: relative;
-    z-index: 1;
-}
-
-.notification-content .btn {
-    min-width: 120px; /* Уменьшаем минимальную ширину кнопок */
-    padding: 12px 20px;
-    font-size: 0.9rem;
-}
-
-/* Адаптация для мобильных */
-@media (max-width: 480px) {
-    .notification-content {
-        padding: 30px 20px;
-    }
-    .notification-content h3 {
-        font-size: 1.8rem;
-    }
-    .notification-content p {
-        font-size: 1rem;
-    }
-    .notification-avatar-container {
-        width: 100px;
-        height: 100px;
-        margin: 15px auto 25px;
-    }
-    .notification-content .btn {
-        min-width: unset;
-        flex-grow: 1;
-    }
 }
