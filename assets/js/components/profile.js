@@ -12,6 +12,7 @@ class ProfileHandler {
             profileDescriptionShort: document.getElementById('myProfileDescriptionShort'),
             profileScrollableContent: document.getElementById('myProfileScrollableContent'),
             profileDescriptionFull: document.getElementById('myProfileDescriptionFull'),
+            profileZodiacSign: document.getElementById('myProfileZodiacSign'), // Добавлено
             profileLookingFor: document.getElementById('myProfileLookingFor'),
             profileInterests: document.getElementById('myProfileInterests'),
             profilePhotosGrid: document.getElementById('myProfilePhotosGrid'),
@@ -26,6 +27,7 @@ class ProfileHandler {
         
         this.updateProfileCardBackground(userData.avatar);
         this.updateProfileInfo(userData);
+        this.updateZodiacSign(userData.zodiacSign); // Обновлено
         this.updateLookingFor(userData.lookingFor, this.app.config.lookingForOptions);
         this.updateInterests(userData.interests, this.app.config.interests);
         this.updatePhotos(userData.photos);
@@ -56,6 +58,22 @@ class ProfileHandler {
         }
         
         this.elements.profileDescriptionFull.textContent = fullDescription;
+    }
+
+    updateZodiacSign(zodiacSign) {
+        const container = this.elements.profileZodiacSign;
+        if (!container) return;
+
+        if (zodiacSign) {
+            container.innerHTML = `
+                <div class="zodiac-display">
+                    <span class="emoji">${zodiacSign.emoji}</span>
+                    ${this.app.translate(zodiacSign.id)}
+                </div>
+            `;
+        } else {
+            container.innerHTML = `<div class="no-data">${this.app.translate('noData')}</div>`;
+        }
     }
 
     updateLookingFor(lookingFor, options) {
@@ -149,6 +167,8 @@ class ProfileHandler {
             name: '',
             gender: '',
             age: '',
+            dob: { day: '', month: '', year: '' },
+            zodiacSign: null,
             city: '',
             description: '',
             interests: [],
@@ -165,10 +185,12 @@ class ProfileHandler {
 
     updateProfileTexts() {
         document.querySelector('#myProfileScrollableContent .profile-section:nth-child(1) .section-title').textContent = this.app.translate('aboutYou');
-        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(2) .section-title').textContent = this.app.translate('whatAreYouLookingFor');
-        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(3) .section-title').textContent = this.app.translate('yourInterests');
-        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(4) .section-title').textContent = this.app.translate('yourPhotos');
+        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(2) .section-title').textContent = this.app.translate('yourZodiacSign'); 
+        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(3) .section-title').textContent = this.app.translate('whatAreYouLookingFor');
+        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(4) .section-title').textContent = this.app.translate('yourInterests');
+        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(5) .section-title').textContent = this.app.translate('yourPhotos');
         document.getElementById('editBtn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h 14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>${this.app.translate('edit')}`;
         document.getElementById('newProfileBtn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>${this.app.translate('newProfile')}`;
     }
 }
+    

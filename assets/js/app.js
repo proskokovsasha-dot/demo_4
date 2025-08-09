@@ -30,6 +30,20 @@ class DatingApp {
                 { id: 'male', name: 'Мужчин', emoji: '👨' },
                 { id: 'female', name: 'Женщин', emoji: '👩' },
                 { id: 'both', name: 'Всех', emoji: '🚻' }
+            ],
+            zodiacSigns: [
+                { id: 'aquarius', name: 'Водолей', emoji: '♒', start: '01-20', end: '02-18' },
+                { id: 'pisces', name: 'Рыбы', emoji: '♓', start: '02-19', end: '03-20' },
+                { id: 'aries', name: 'Овен', emoji: '♈', start: '03-21', end: '04-19' },
+                { id: 'taurus', name: 'Телец', emoji: '♉', start: '04-20', end: '05-20' },
+                { id: 'gemini', name: 'Близнецы', emoji: '♊', start: '05-21', end: '06-20' },
+                { id: 'cancer', name: 'Рак', emoji: '♋', start: '06-21', end: '07-22' },
+                { id: 'leo', name: 'Лев', emoji: '♌', start: '07-23', end: '08-22' },
+                { id: 'virgo', name: 'Дева', emoji: '♍', start: '08-23', end: '09-22' },
+                { id: 'libra', name: 'Весы', emoji: '♎', start: '09-23', end: '10-22' },
+                { id: 'scorpio', name: 'Скорпион', emoji: '♏', start: '10-23', end: '11-21' },
+                { id: 'sagittarius', name: 'Стрелец', emoji: '♐', start: '11-22', end: '12-21' },
+                { id: 'capricorn', name: 'Козерог', emoji: '♑', start: '12-22', end: '01-19' }
             ]
         };
 
@@ -39,6 +53,8 @@ class DatingApp {
                 name: '',
                 gender: '',
                 age: '',
+                dob: { day: '', month: '', year: '' }, // Добавлено поле для даты рождения
+                zodiacSign: null, // Добавлено поле для знака зодиака
                 city: '',
                 description: '',
                 interests: [],
@@ -68,6 +84,11 @@ class DatingApp {
                 male: 'Мужчина',
                 female: 'Женщина',
                 yourAge: 'Ваш возраст',
+                yourDob: 'Ваша дата рождения',
+                day: 'День',
+                month: 'Месяц',
+                year: 'Год',
+                yourZodiacSign: 'Ваш знак зодиака',
                 yourCity: 'Где вы живете?',
                 whatAreYouLookingFor: 'Что вы ищете?',
                 yourInterests: 'Ваши интересы',
@@ -136,6 +157,21 @@ class DatingApp {
                 fashion: 'Мода',
                 languageSelection: 'Выбор языка',
                 selectLanguage: 'Выберите язык',
+                next: 'Далее',
+                back: 'Назад',
+                // Zodiac signs
+                aquarius: 'Водолей',
+                pisces: 'Рыбы',
+                aries: 'Овен',
+                taurus: 'Телец',
+                gemini: 'Близнецы',
+                cancer: 'Рак',
+                leo: 'Лев',
+                virgo: 'Дева',
+                libra: 'Весы',
+                scorpio: 'Скорпион',
+                sagittarius: 'Стрелец',
+                capricorn: 'Козерог',
             },
             en: {
                 appName: 'Meeting Point',
@@ -152,6 +188,11 @@ class DatingApp {
                 male: 'Male',
                 female: 'Female',
                 yourAge: 'Your Age',
+                yourDob: 'Your Date of Birth',
+                day: 'Day',
+                month: 'Month',
+                year: 'Year',
+                yourZodiacSign: 'Your Zodiac Sign',
                 yourCity: 'Where do you live?',
                 whatAreYouLookingFor: 'What are you looking for?',
                 yourInterests: 'Your Interests',
@@ -220,6 +261,21 @@ class DatingApp {
                 fashion: 'Fashion',
                 languageSelection: 'Language Selection',
                 selectLanguage: 'Select Language',
+                next: 'Next',
+                back: 'Back',
+                // Zodiac signs
+                aquarius: 'Aquarius',
+                pisces: 'Pisces',
+                aries: 'Aries',
+                taurus: 'Taurus',
+                gemini: 'Gemini',
+                cancer: 'Cancer',
+                leo: 'Leo',
+                virgo: 'Virgo',
+                libra: 'Libra',
+                scorpio: 'Scorpio',
+                sagittarius: 'Sagittarius',
+                capricorn: 'Capricorn',
             }
         };
 
@@ -340,6 +396,8 @@ class DatingApp {
         }
     }
 
+        // assets/js/app.js (фрагмент)
+
     checkSavedProfile() {
         const savedProfile = localStorage.getItem('datingProfile');
         const savedLanguage = localStorage.getItem('appLanguage');
@@ -351,14 +409,25 @@ class DatingApp {
         if (savedProfile) {
             try {
                 this.state.userData = JSON.parse(savedProfile);
+                // Убедимся, что массивы инициализированы, если их нет в старых данных
                 if (!Array.isArray(this.state.userData.interests)) {
                     this.state.userData.interests = [];
                 }
                 if (!Array.isArray(this.state.userData.lookingFor)) {
                     this.state.userData.lookingFor = [];
                 }
+                if (!this.state.userData.photos) { // Добавлено: инициализация photos
+                    this.state.userData.photos = [];
+                }
                 if (!this.state.userData.preference) {
                     this.state.userData.preference = 'both';
+                }
+                // Ensure dob and zodiacSign are initialized if not present in old data
+                if (!this.state.userData.dob) {
+                    this.state.userData.dob = { day: '', month: '', year: '' };
+                }
+                if (!this.state.userData.zodiacSign) {
+                    this.state.userData.zodiacSign = null;
                 }
                 this.state.currentScreen = 'profile';
             } catch (e) {
@@ -370,6 +439,7 @@ class DatingApp {
             this.state.currentScreen = 'registration';
         }
     }
+    
 
     showProfile() {
         this.profileHandler.showProfile();
@@ -391,6 +461,8 @@ class DatingApp {
             name: '',
             gender: '',
             age: '',
+            dob: { day: '', month: '', year: '' },
+            zodiacSign: null,
             city: '',
             description: '',
             interests: [],
@@ -401,7 +473,7 @@ class DatingApp {
             photos: [],
         };
         this.chatHandler.chats = {}; 
-        alert(this.translate('clearProfileData'));
+        alert(this.translate('confirmClearData'));
         this.setLanguage('ru'); // Reset to default language
         this.switchScreen('registration');
     }
@@ -418,7 +490,7 @@ class DatingApp {
         if (screenName === 'registration') {
             targetScreenElement = this.elements.registrationForm;
             this.elements.topNavigation.style.display = 'none';
-            this.formHandler.renderForm();
+            this.formHandler.renderForm(); // Render the first step of the form
         } else if (screenName === 'profile') {
             targetScreenElement = this.elements.profileView;
             document.querySelector('.nav-btn[data-screen="profile"]').classList.add('active');
@@ -433,7 +505,7 @@ class DatingApp {
             targetScreenElement = this.elements.chatScreen;
             document.querySelector('.nav-btn[data-screen="chat"]').classList.add('active');
             this.elements.topNavigation.style.display = 'flex';
-            this.chatHandler.showChatListScreen();
+            this.chatHandler.showChatListScreen(); // Ensure chat list is rendered
         } else if (screenName === 'settings') {
             targetScreenElement = this.elements.settingsScreen;
             document.querySelector('.nav-btn[data-screen="settings"]').classList.add('active');
@@ -501,6 +573,30 @@ class DatingApp {
         return deg * (Math.PI/180);
     }
 
+    // Function to determine zodiac sign
+    getZodiacSign(day, month) {
+        if (!day || !month) return null;
+
+        const date = new Date(2000, month - 1, day); // Use a leap year for consistency
+        const monthDay = (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day;
+
+        for (const sign of this.config.zodiacSigns) {
+            const start = sign.start;
+            const end = sign.end;
+
+            if (start.substring(0, 2) === '12' && end.substring(0, 2) === '01') { // Capricorn special case (Dec-Jan)
+                if (monthDay >= start || monthDay <= end) {
+                    return sign;
+                }
+            } else {
+                if (monthDay >= start && monthDay <= end) {
+                    return sign;
+                }
+            }
+        }
+        return null;
+    }
+
     // Language functions
     translate(key, replacements = {}) {
         let text = this.translations[this.state.currentLanguage][key] || this.translations['en'][key] || key;
@@ -517,7 +613,7 @@ class DatingApp {
             this.updateTextContent();
             // Re-render current screen to apply language changes
             if (this.state.currentScreen === 'registration') {
-                this.formHandler.renderForm();
+                this.formHandler.renderForm(); // Re-render the form to update texts
             } else if (this.state.currentScreen === 'profile') {
                 this.profileHandler.showProfile();
             } else if (this.state.currentScreen === 'match') {
@@ -561,18 +657,14 @@ class DatingApp {
         const settingsScreen = document.getElementById('settingsScreen');
         if (settingsScreen.classList.contains('active')) {
             document.querySelector('#settingsScreen .section-title').textContent = this.translate('settings');
-            document.querySelector('#settingsScreen .section-description').textContent = this.translate('yourChatsDescription'); // Reusing description for now
-            document.getElementById('clearDataBtn').textContent = this.translate('clearProfileData');
+            // Re-render settings content to update language for dynamically added elements
+            this.settingsHandler.renderSettings(); 
         }
 
         // Update chat screen texts
         const chatScreen = document.getElementById('chatScreen');
         if (chatScreen.classList.contains('active')) {
-            document.querySelector('#chatScreen .section-title').textContent = this.translate('yourChats');
-            document.querySelector('#chatScreen .section-description').textContent = this.translate('yourChatsDescription');
-            document.getElementById('noChatsMessage').innerHTML = `<p>${this.translate('noActiveChats')}</p>`;
-            const messageInput = document.getElementById('messageInput');
-            if (messageInput) messageInput.placeholder = this.translate('typeMessage');
+            this.chatHandler.updateChatTexts(); // Call chat handler to update its texts
         }
 
         // Update match screen texts

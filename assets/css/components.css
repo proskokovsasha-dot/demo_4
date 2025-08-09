@@ -130,22 +130,6 @@
     min-height: 100%;
 }
 
-.form-step {
-    display: none;
-    width: 100%;
-    animation: fadeIn 0.6s ease-out;
-    padding: 0;
-    flex-grow: 1;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100%;
-}
-
-.form-step.active {
-    display: flex;
-}
-
 .input-field {
     width: 100%;
     padding: 14px;
@@ -798,5 +782,111 @@
     .language-select {
         padding: 10px 12px;
         font-size: 0.9rem;
+    }
+}
+/* assets/css/components.css */
+
+/* ... (существующие стили) ... */
+
+/* Стили для пошаговой формы */
+.form-step-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center;
+    min-height: 100%;
+    position: relative; /* Для позиционирования кнопок навигации */
+}
+
+.form-step {
+    display: none;
+    width: 100%;
+    animation: fadeIn 0.6s ease-out;
+    padding: 0;
+    flex-grow: 1;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100%;
+    position: absolute; /* Позволяет шагам накладываться друг на друга */
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.4s ease-out;
+}
+
+.form-step.active {
+    display: flex;
+    opacity: 1;
+    position: relative; /* Активный шаг занимает место */
+}
+
+.form-navigation {
+    display: flex;
+    flex-direction: column; /* Кнопки в столбик */
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+    margin-top: 30px;
+    flex-shrink: 0;
+}
+
+.form-navigation .btn {
+    order: 1; /* Кнопка "Далее" будет первой */
+}
+
+.form-navigation .btn-prev {
+    order: 2; /* Кнопка "Назад" будет второй */
+    background-color: var(--border);
+    color: var(--text-secondary);
+}
+
+.form-navigation .btn-prev:hover {
+    background-color: var(--text-secondary);
+    color: white;
+}
+
+/* Стили для поля даты рождения */
+.date-input-group {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.date-input-group input {
+    flex: 1;
+    text-align: center;
+}
+
+.zodiac-display {
+    margin-top: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    padding: 10px 15px;
+    background-color: var(--primary-light);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.zodiac-display .emoji {
+    font-size: 1.5rem;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+    .form-navigation {
+        flex-direction: column;
+    }
+    .date-input-group {
+        flex-direction: row; /* Остается строкой для компактности */
     }
 }

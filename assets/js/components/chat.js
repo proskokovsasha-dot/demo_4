@@ -52,7 +52,8 @@ class ChatHandler {
         this.elements.activeChatContainer.classList.remove('active');
         this.elements.chatListContainer.style.display = 'flex';
         this.elements.noChatsMessage.style.display = Object.keys(this.chats).length === 0 ? 'block' : 'none';
-        this.app.elements.topNavigation.style.display = 'flex';
+        // Ensure top navigation is visible when showing chat list
+        this.app.elements.topNavigation.style.display = 'flex'; 
         this.updateChatTexts(); // Update texts
     }
 
@@ -104,7 +105,8 @@ class ChatHandler {
         this.elements.activeChatContainer.classList.add('active');
         this.renderMessages();
         this.scrollToBottom();
-        this.app.elements.topNavigation.style.display = 'none';
+        // Hide top navigation when active chat is open
+        this.app.elements.topNavigation.style.display = 'none'; 
         this.updateChatTexts(); // Update texts
     }
 
@@ -143,7 +145,8 @@ class ChatHandler {
         this.activeChatPartner = null;
         this.elements.activeChatContainer.classList.remove('active');
         this.showChatListScreen();
-        this.app.elements.topNavigation.style.display = 'flex';
+        // Ensure top navigation is visible when returning to chat list
+        this.app.elements.topNavigation.style.display = 'flex'; 
     }
 
     scrollToBottom() {
@@ -157,6 +160,7 @@ class ChatHandler {
                 messages: []
             };
             console.log(`Новый чат добавлен с ${profile.name}`);
+            // Only re-render chat list if we are currently on the chat screen
             if (this.app.state.currentScreen === 'chat') {
                 this.renderChatList();
             }
@@ -164,10 +168,25 @@ class ChatHandler {
     }
 
     updateChatTexts() {
-        document.querySelector('#chatScreen .section-title').textContent = this.app.translate('yourChats');
-        document.querySelector('#chatScreen .section-description').textContent = this.app.translate('yourChatsDescription');
-        document.getElementById('noChatsMessage').innerHTML = `<p>${this.app.translate('noActiveChats')}</p>`;
-        const messageInput = document.getElementById('messageInput');
-        if (messageInput) messageInput.placeholder = this.app.translate('typeMessage');
+        // Update texts for chat list screen
+        const chatScreen = document.getElementById('chatScreen');
+        if (chatScreen) {
+            const sectionTitle = chatScreen.querySelector('.section-title');
+            if (sectionTitle) sectionTitle.textContent = this.app.translate('yourChats');
+            const sectionDescription = chatScreen.querySelector('.section-description');
+            if (sectionDescription) sectionDescription.textContent = this.app.translate('yourChatsDescription');
+            const noChatsMessage = document.getElementById('noChatsMessage');
+            if (noChatsMessage) noChatsMessage.innerHTML = `<p>${this.app.translate('noActiveChats')}</p>`;
+        }
+
+        // Update texts for active chat screen
+        const activeChatContainer = document.getElementById('activeChatContainer');
+        if (activeChatContainer && activeChatContainer.classList.contains('active')) {
+            const messageInput = document.getElementById('messageInput');
+            if (messageInput) messageInput.placeholder = this.app.translate('typeMessage');
+        }
+        
+        // Re-render chat list items to update their texts (last message, time)
+        this.renderChatList();
     }
 }

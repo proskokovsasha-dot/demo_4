@@ -19,6 +19,7 @@ class MatchHandler {
             matchDescriptionShort: document.getElementById('matchDescriptionShort'),
             matchScrollableContent: document.getElementById('matchScrollableContent'),
             matchDescriptionFull: document.getElementById('matchDescriptionFull'),
+            matchZodiacSign: document.getElementById('matchZodiacSign'), // Добавлено
             matchLookingFor: document.getElementById('matchLookingFor'),
             matchInterests: document.getElementById('matchInterests'),
             matchPhotosGrid: document.getElementById('matchPhotosGrid'),
@@ -170,6 +171,11 @@ class MatchHandler {
 
             const photos = [`https://picsum.photos/seed/${randomName}${randomAge}${randomGender}/400/600`];
 
+            // Generate random DOB for zodiac sign
+            const randomMonth = Math.floor(Math.random() * 12) + 1;
+            const randomDay = Math.floor(Math.random() * 28) + 1; // Simplified for random generation
+            const randomZodiacSign = this.app.getZodiacSign(randomDay, randomMonth);
+
             profiles.push({
                 id: `profile_${i}`,
                 name: randomName,
@@ -182,6 +188,7 @@ class MatchHandler {
                 photos: photos,
                 lookingFor: randomLookingFor,
                 interests: randomInterests,
+                zodiacSign: randomZodiacSign, // Добавлено
                 location: { lat: 55.7558 + (Math.random() - 0.5) * 0.1, lng: 37.6173 + (Math.random() - 0.5) * 0.1 },
                 lastActive: this.getRandomLastActiveStatus()
             });
@@ -275,12 +282,29 @@ class MatchHandler {
             this.elements.matchDistance.textContent = '';
         }
         
+        this.updateZodiacSign(profile.zodiacSign); // Добавлено
         this.updateLookingFor(profile.lookingFor, this.app.config.lookingForOptions, this.elements.matchLookingFor);
         this.updateInterests(profile.interests, this.app.config.interests, this.elements.matchInterests);
         this.updatePhotos(profile.photos, this.elements.matchPhotosGrid);
 
         this.elements.matchCard.style.transform = 'translateX(0) rotate(0)';
         this.elements.matchCard.style.opacity = '1';
+    }
+
+    updateZodiacSign(zodiacSign) {
+        const container = this.elements.matchZodiacSign;
+        if (!container) return;
+
+        if (zodiacSign) {
+            container.innerHTML = `
+                <div class="zodiac-display">
+                    <span class="emoji">${zodiacSign.emoji}</span>
+                    ${this.app.translate(zodiacSign.id)}
+                </div>
+            `;
+        } else {
+            container.innerHTML = `<div class="no-data">${this.app.translate('noData')}</div>`;
+        }
     }
 
     updateLookingFor(lookingFor, options, container) {

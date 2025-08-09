@@ -425,7 +425,9 @@
             </button>
         </nav>
 
-        <div class="screen" id="registrationForm"></div>
+        <div class="screen" id="registrationForm">
+            <!-- Registration steps will be rendered here by FormHandler -->
+        </div>
 
         <div class="screen" id="profileView">
             <div class="profile-card-wrapper">
@@ -442,6 +444,11 @@
                             <div class="profile-section">
                                 <h3 class="section-title">О себе</h3>
                                 <div class="profile-description-full" id="myProfileDescriptionFull"></div>
+                            </div>
+
+                            <div class="profile-section">
+                                <h3 class="section-title">Знак зодиака</h3>
+                                <div class="profile-zodiac-sign" id="myProfileZodiacSign"></div>
                             </div>
 
                             <div class="profile-section">
@@ -514,6 +521,11 @@
                             <div class="match-section">
                                 <h3 class="section-title">О себе</h3>
                                 <div class="match-description-full" id="matchDescriptionFull"></div>
+                            </div>
+
+                            <div class="match-section">
+                                <h3 class="section-title">Знак зодиака</h3>
+                                <div class="match-zodiac-sign" id="matchZodiacSign"></div>
                             </div>
 
                             <div class="match-section">
@@ -635,7 +647,7 @@
     <script src="assets/js/components/profile.js"></script>
     <script src="assets/js/components/match.js"></script>
     <script src="assets/js/components/chat.js"></script>
-    <script src="assets/js/components/settings.js"></script> <!-- NEW: Include settings.js -->
+    <script src="assets/js/components/settings.js"></script>
     <script src="assets/js/app.js"></script>
 </body>
 </html>
