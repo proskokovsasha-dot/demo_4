@@ -30,6 +30,7 @@ class ProfileHandler {
         this.updateInterests(userData.interests, this.app.config.interests);
         this.updatePhotos(userData.photos);
         this.bindEvents();
+        this.updateProfileTexts(); // Update texts after rendering
     }
 
     updateProfileCardBackground(avatar) {
@@ -42,13 +43,13 @@ class ProfileHandler {
     }
 
     updateProfileInfo(userData) {
-        let nameAgeText = userData.name || 'Аноним';
+        let nameAgeText = userData.name || this.app.translate('anonymous');
         if (userData.age) {
             nameAgeText += `, ${userData.age}`;
         }
         this.elements.profileNameAge.textContent = nameAgeText;
         
-        const fullDescription = userData.description || 'Пользователь пока ничего о себе не рассказал.';
+        const fullDescription = userData.description || this.app.translate('noDescription');
         this.elements.profileDescriptionShort.textContent = fullDescription.split('.')[0] + (fullDescription.includes('.') ? '.' : '');
         if (this.elements.profileDescriptionShort.textContent.length > 100) {
             this.elements.profileDescriptionShort.textContent = this.elements.profileDescriptionShort.textContent.substring(0, 97) + '...';
@@ -74,7 +75,7 @@ class ProfileHandler {
                     el.className = 'looking-for-item';
                     el.innerHTML = `
                         <span class="looking-for-emoji">${option.emoji}</span>
-                        <span class="looking-for-text">${option.name}</span>
+                        <span class="looking-for-text">${this.app.translate(option.id)}</span>
                     `;
                     lookingForContainer.appendChild(el);
                 }
@@ -82,7 +83,7 @@ class ProfileHandler {
             
             container.appendChild(lookingForContainer);
         } else {
-            container.innerHTML = '<div class="no-data">Не указано, что ищет</div>';
+            container.innerHTML = `<div class="no-data">${this.app.translate('noLookingFor')}</div>`;
         }
     }
 
@@ -103,7 +104,7 @@ class ProfileHandler {
                     el.className = 'interest-item';
                     el.innerHTML = `
                         <span class="interest-emoji">${interest.emoji}</span>
-                        <span class="interest-text">${interest.name}</span>
+                        <span class="interest-text">${this.app.translate(interest.id)}</span>
                     `;
                     interestsContainer.appendChild(el);
                 }
@@ -111,7 +112,7 @@ class ProfileHandler {
             
             container.appendChild(interestsContainer);
         } else {
-            container.innerHTML = '<div class="no-data">Интересы не выбраны</div>';
+            container.innerHTML = `<div class="no-data">${this.app.translate('noInterests')}</div>`;
         }
     }
 
@@ -124,7 +125,7 @@ class ProfileHandler {
                 <div class="profile-photo-item" style="background-image: url(${photo})"></div>
             `).join('');
         } else {
-            photosContainer.innerHTML = '<div class="no-data">Фотографии не добавлены</div>';
+            photosContainer.innerHTML = `<div class="no-data">${this.app.translate('noPhotos')}</div>`;
         }
     }
 
@@ -136,7 +137,7 @@ class ProfileHandler {
         this.elements.editBtn.addEventListener('click', this.editProfileHandler);
 
         this.newProfileHandler = () => {
-            if (confirm('Вы уверены, что хотите создать новый профиль? Текущие данные будут удалены.')) {
+            if (confirm(this.app.translate('confirmClearData'))) {
                 this.resetProfile();
             }
         };
@@ -160,5 +161,14 @@ class ProfileHandler {
         
         localStorage.removeItem('datingProfile');
         this.app.switchScreen('registration');
+    }
+
+    updateProfileTexts() {
+        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(1) .section-title').textContent = this.app.translate('aboutYou');
+        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(2) .section-title').textContent = this.app.translate('whatAreYouLookingFor');
+        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(3) .section-title').textContent = this.app.translate('yourInterests');
+        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(4) .section-title').textContent = this.app.translate('yourPhotos');
+        document.getElementById('editBtn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h 14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>${this.app.translate('edit')}`;
+        document.getElementById('newProfileBtn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>${this.app.translate('newProfile')}`;
     }
 }

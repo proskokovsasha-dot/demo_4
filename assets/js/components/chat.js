@@ -53,6 +53,7 @@ class ChatHandler {
         this.elements.chatListContainer.style.display = 'flex';
         this.elements.noChatsMessage.style.display = Object.keys(this.chats).length === 0 ? 'block' : 'none';
         this.app.elements.topNavigation.style.display = 'flex';
+        this.updateChatTexts(); // Update texts
     }
 
     renderChatList() {
@@ -61,6 +62,7 @@ class ChatHandler {
         const chatIds = Object.keys(this.chats);
         if (chatIds.length === 0) {
             this.elements.noChatsMessage.style.display = 'block';
+            this.elements.noChatsMessage.innerHTML = `<p>${this.app.translate('noActiveChats')}</p>`;
             return;
         } else {
             this.elements.noChatsMessage.style.display = 'none';
@@ -69,7 +71,7 @@ class ChatHandler {
         chatIds.forEach(chatId => {
             const chatData = this.chats[chatId];
             const lastMessage = chatData.messages.length > 0 ? chatData.messages[chatData.messages.length - 1] : null;
-            const lastMessageText = lastMessage ? lastMessage.text : 'Начните диалог...';
+            const lastMessageText = lastMessage ? lastMessage.text : this.app.translate('typeMessage'); // Use translation
             const lastMessageTime = lastMessage ? new Date(lastMessage.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
 
             const chatItem = document.createElement('div');
@@ -103,6 +105,7 @@ class ChatHandler {
         this.renderMessages();
         this.scrollToBottom();
         this.app.elements.topNavigation.style.display = 'none';
+        this.updateChatTexts(); // Update texts
     }
 
     renderMessages() {
@@ -158,5 +161,13 @@ class ChatHandler {
                 this.renderChatList();
             }
         }
+    }
+
+    updateChatTexts() {
+        document.querySelector('#chatScreen .section-title').textContent = this.app.translate('yourChats');
+        document.querySelector('#chatScreen .section-description').textContent = this.app.translate('yourChatsDescription');
+        document.getElementById('noChatsMessage').innerHTML = `<p>${this.app.translate('noActiveChats')}</p>`;
+        const messageInput = document.getElementById('messageInput');
+        if (messageInput) messageInput.placeholder = this.app.translate('typeMessage');
     }
 }

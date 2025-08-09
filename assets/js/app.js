@@ -49,6 +49,178 @@ class DatingApp {
                 photos: [],
             },
             suggestedProfiles: [],
+            currentLanguage: 'ru', // Default language
+        };
+
+        this.translations = {
+            ru: {
+                appName: 'ТочкаСхода',
+                appSubtitle: 'Место, где сливаются ваши пути',
+                profile: 'Профиль',
+                matches: 'Анкеты',
+                chat: 'Чат',
+                settings: 'Настройки',
+                loadingTitle: 'ТочкаСхода',
+                loadingSubtitle: 'Место, где сливаются ваши пути',
+                registrationTitle: 'Расскажите о себе',
+                registrationDescription: 'Заполните информацию, чтобы создать свой профиль.',
+                yourName: 'Ваше имя',
+                male: 'Мужчина',
+                female: 'Женщина',
+                yourAge: 'Ваш возраст',
+                yourCity: 'Где вы живете?',
+                whatAreYouLookingFor: 'Что вы ищете?',
+                yourInterests: 'Ваши интересы',
+                whoAreYouLookingFor: 'Кого вы ищете?',
+                profileColor: 'Цвет профиля',
+                orChooseYourColor: 'Или выберите свой цвет',
+                yourPhotos: 'Ваши фото',
+                addPhoto: '📸 Добавить фото',
+                addPhotoDescription: 'Добавьте фото для профиля.',
+                aboutYou: 'О себе',
+                aboutYouPlaceholder: 'Я люблю путешествия, книги и...',
+                saveProfile: 'Сохранить профиль',
+                edit: 'Редактировать',
+                newProfile: 'Новый профиль',
+                noData: 'Нет данных',
+                noDescription: 'Пользователь пока ничего о себе не рассказал.',
+                noLookingFor: 'Не указано, что ищет',
+                noInterests: 'Интересы не выбраны',
+                noPhotos: 'Фотографии не добавлены',
+                noNewProfiles: 'Пока нет новых анкет. Попробуйте позже!',
+                backToProfile: 'Вернуться в профиль',
+                yourChats: 'Ваши чаты',
+                yourChatsDescription: 'Здесь будут отображаться ваши диалоги.',
+                noActiveChats: 'У вас пока нет активных чатов. Начните знакомиться в разделе "Анкеты"!',
+                typeMessage: 'Напишите сообщение...',
+                clearProfileData: 'Очистить данные профиля',
+                confirmClearData: 'Вы уверены, что хотите полностью очистить все данные профиля? Это действие необратимо.',
+                swipeTutorialTitle: 'Добро пожаловать в Анкеты!',
+                swipeTutorialText1: 'Здесь вы можете просматривать профили других пользователей.',
+                swipeTutorialText2: '👉 Смахните вправо, чтобы поставить **ЛАЙК**.<br>👈 Смахните влево, чтобы **ПРОПУСТИТЬ** анкету.<br>👆 Смахните вверх, чтобы поставить **СУПЕРЛАЙК**!',
+                gotIt: 'Понятно!',
+                match: 'Это Мэтч!',
+                likeSent: 'Лайк отправлен!',
+                superlikeSent: 'Суперлайк отправлен!',
+                youLiked: 'Вы понравились {name}!',
+                youLikedName: 'Вы лайкнули {name}. Ждем ответа!',
+                youSuperlikedName: 'Вы отправили суперлайк {name}. Надеемся на взаимность!',
+                writeMessage: 'Написать сообщение',
+                continueSwiping: 'Продолжить свайпать',
+                lastActiveToday: 'Была сегодня',
+                lastActiveYesterday: 'Была вчера',
+                lastActiveThisWeek: 'Была на этой неделе',
+                lastActiveRecently: 'Была недавно',
+                km: 'км',
+                maxInterestsAlert: 'Вы можете выбрать не более {maxInterests} интересов.',
+                fillAllFieldsAlert: 'Пожалуйста, заполните все обязательные поля и добавьте фото.',
+                friendship: 'Дружба',
+                dating: 'Романтические отношения',
+                serious: 'Серьёзные отношения',
+                networking: 'Нетворкинг',
+                travelCompanion: 'Спутник для путешествий',
+                men: 'Мужчин',
+                women: 'Женщин',
+                all: 'Всех',
+                music: 'Музыка',
+                sports: 'Спорт',
+                books: 'Книги',
+                travel: 'Путешествия',
+                art: 'Искусство',
+                games: 'Игры',
+                cooking: 'Кулинария',
+                photography: 'Фотография',
+                movies: 'Кино',
+                nature: 'Природа',
+                technology: 'Технологии',
+                fashion: 'Мода',
+                languageSelection: 'Выбор языка',
+                selectLanguage: 'Выберите язык',
+            },
+            en: {
+                appName: 'Meeting Point',
+                appSubtitle: 'Where your paths converge',
+                profile: 'Profile',
+                matches: 'Matches',
+                chat: 'Chat',
+                settings: 'Settings',
+                loadingTitle: 'Meeting Point',
+                loadingSubtitle: 'Where your paths converge',
+                registrationTitle: 'Tell Us About Yourself',
+                registrationDescription: 'Fill in your information to create your profile.',
+                yourName: 'Your Name',
+                male: 'Male',
+                female: 'Female',
+                yourAge: 'Your Age',
+                yourCity: 'Where do you live?',
+                whatAreYouLookingFor: 'What are you looking for?',
+                yourInterests: 'Your Interests',
+                whoAreYouLookingFor: 'Who are you looking for?',
+                profileColor: 'Profile Color',
+                orChooseYourColor: 'Or choose your own color',
+                yourPhotos: 'Your Photos',
+                addPhoto: '📸 Add Photo',
+                addPhotoDescription: 'Add photos for your profile.',
+                aboutYou: 'About You',
+                aboutYouPlaceholder: 'I love traveling, books, and...',
+                saveProfile: 'Save Profile',
+                edit: 'Edit',
+                newProfile: 'New Profile',
+                noData: 'No data',
+                noDescription: 'User has not provided a description yet.',
+                noLookingFor: 'Not specified what they are looking for',
+                noInterests: 'No interests selected',
+                noPhotos: 'No photos added',
+                noNewProfiles: 'No new profiles for now. Try again later!',
+                backToProfile: 'Back to Profile',
+                yourChats: 'Your Chats',
+                yourChatsDescription: 'Your conversations will appear here.',
+                noActiveChats: 'You don\'t have active chats yet. Start meeting people in the "Matches" section!',
+                typeMessage: 'Type a message...',
+                clearProfileData: 'Clear Profile Data',
+                confirmClearData: 'Are you sure you want to completely clear all profile data? This action is irreversible.',
+                swipeTutorialTitle: 'Welcome to Matches!',
+                swipeTutorialText1: 'Here you can view other users\' profiles.',
+                swipeTutorialText2: '👉 Swipe right to **LIKE**.<br>👈 Swipe left to **SKIP**.<br>👆 Swipe up to **SUPERLIKE**!',
+                gotIt: 'Got it!',
+                match: 'It\'s a Match!',
+                likeSent: 'Like Sent!',
+                superlikeSent: 'Superlike Sent!',
+                youLiked: 'You liked {name}!',
+                youLikedName: 'You liked {name}. Waiting for a response!',
+                youSuperlikedName: 'You sent a superlike to {name}. Hoping for a match!',
+                writeMessage: 'Write a message',
+                continueSwiping: 'Continue Swiping',
+                lastActiveToday: 'Online today',
+                lastActiveYesterday: 'Online yesterday',
+                lastActiveThisWeek: 'Online this week',
+                lastActiveRecently: 'Online recently',
+                km: 'km',
+                maxInterestsAlert: 'You can select no more than {maxInterests} interests.',
+                fillAllFieldsAlert: 'Please fill in all required fields and add a photo.',
+                friendship: 'Friendship',
+                dating: 'Dating',
+                serious: 'Serious relationship',
+                networking: 'Networking',
+                travelCompanion: 'Travel companion',
+                men: 'Men',
+                women: 'Women',
+                all: 'All',
+                music: 'Music',
+                sports: 'Sports',
+                books: 'Books',
+                travel: 'Travel',
+                art: 'Art',
+                games: 'Games',
+                cooking: 'Cooking',
+                photography: 'Photography',
+                movies: 'Movies',
+                nature: 'Nature',
+                technology: 'Technology',
+                fashion: 'Fashion',
+                languageSelection: 'Language Selection',
+                selectLanguage: 'Select Language',
+            }
         };
 
         this.initElements();
@@ -57,9 +229,11 @@ class DatingApp {
         this.uiHandler = new UIHandler(this);
         this.matchHandler = new MatchHandler(this); 
         this.chatHandler = new ChatHandler(this);
+        this.settingsHandler = new SettingsHandler(this); // Initialize SettingsHandler
 
         this.bindEvents();
         this.checkSavedProfile();
+        this.setLanguage(this.state.currentLanguage); // Set language on app start
         this.showLoadingScreen();
     }
 
@@ -103,7 +277,6 @@ class DatingApp {
             navButtons: document.querySelectorAll('.nav-btn'),
             swipeTutorialModal: document.getElementById('swipeTutorialModal'),
             modalGotItBtn: document.getElementById('modalGotItBtn'),
-            // НОВОЕ: Элементы для модального окна Match/Like
             matchSuccessModal: document.getElementById('matchSuccessModal'),
             matchModalIcon: document.getElementById('matchModalIcon'),
             matchModalTitle: document.getElementById('matchModalTitle'),
@@ -111,6 +284,16 @@ class DatingApp {
             matchModalAvatar: document.getElementById('matchModalAvatar'),
             matchModalChatBtn: document.getElementById('matchModalChatBtn'),
             matchModalContinueBtn: document.getElementById('matchModalContinueBtn'),
+            // Elements for translation
+            appTitle: document.getElementById('appTitle'),
+            appSubtitle: document.getElementById('appSubtitle'),
+            loadingTitle: document.getElementById('loadingTitle'),
+            loadingSubtitle: document.getElementById('loadingSubtitle'),
+            navProfileText: document.getElementById('navProfileText'),
+            navMatchesText: document.getElementById('navMatchesText'),
+            navChatText: document.getElementById('navChatText'),
+            navSettingsText: document.getElementById('navSettingsText'),
+            // Add other elements that need translation here
         };
     }
 
@@ -130,7 +313,7 @@ class DatingApp {
         const clearDataBtn = document.getElementById('clearDataBtn');
         if (clearDataBtn) {
             clearDataBtn.addEventListener('click', () => {
-                if (confirm('Вы уверены, что хотите полностью очистить все данные профиля? Это действие необратимо.')) {
+                if (confirm(this.translate('confirmClearData'))) {
                     this.clearAllData();
                 }
             });
@@ -140,11 +323,9 @@ class DatingApp {
             this.elements.modalGotItBtn.addEventListener('click', () => this.hideSwipeTutorialModal());
         }
 
-        // НОВОЕ: Обработчики для кнопок модального окна Match/Like
         if (this.elements.matchModalChatBtn) {
             this.elements.matchModalChatBtn.addEventListener('click', () => {
                 this.hideMatchSuccessModal();
-                // Предполагаем, что matchHandler сохраняет последний совпавший профиль
                 if (this.matchHandler.lastMatchedProfile) {
                     this.chatHandler.openChat(this.matchHandler.lastMatchedProfile.id);
                     this.switchScreen('chat');
@@ -154,13 +335,18 @@ class DatingApp {
         if (this.elements.matchModalContinueBtn) {
             this.elements.matchModalContinueBtn.addEventListener('click', () => {
                 this.hideMatchSuccessModal();
-                this.matchHandler.showNextProfile(); // Продолжаем свайпать
+                this.matchHandler.showNextProfile();
             });
         }
     }
 
     checkSavedProfile() {
         const savedProfile = localStorage.getItem('datingProfile');
+        const savedLanguage = localStorage.getItem('appLanguage');
+
+        if (savedLanguage) {
+            this.state.currentLanguage = savedLanguage;
+        }
 
         if (savedProfile) {
             try {
@@ -200,6 +386,7 @@ class DatingApp {
     clearAllData() {
         localStorage.removeItem('datingProfile');
         localStorage.removeItem('swipeTutorialShown');
+        localStorage.removeItem('appLanguage'); // Clear saved language
         this.state.userData = {
             name: '',
             gender: '',
@@ -214,7 +401,8 @@ class DatingApp {
             photos: [],
         };
         this.chatHandler.chats = {}; 
-        alert('Все данные профиля очищены. Вы будете перенаправлены на экран регистрации.');
+        alert(this.translate('clearProfileData'));
+        this.setLanguage('ru'); // Reset to default language
         this.switchScreen('registration');
     }
 
@@ -250,6 +438,7 @@ class DatingApp {
             targetScreenElement = this.elements.settingsScreen;
             document.querySelector('.nav-btn[data-screen="settings"]').classList.add('active');
             this.elements.topNavigation.style.display = 'flex';
+            this.settingsHandler.renderSettings(); // Render settings content
         }
 
         if (targetScreenElement) {
@@ -260,31 +449,32 @@ class DatingApp {
         }
         
         this.state.currentScreen = screenName;
+        this.updateTextContent(); // Update texts on screen switch
     }
 
     showSwipeTutorialModal() {
         this.elements.swipeTutorialModal.classList.add('active');
+        this.updateTextContent(); // Update texts in modal
     }
 
     hideSwipeTutorialModal() {
         this.elements.swipeTutorialModal.classList.remove('active');
     }
 
-    // НОВОЕ: Методы для показа и скрытия модального окна Match/Like
     showMatchSuccessModal(profile, type = 'match') {
         this.elements.matchModalAvatar.style.backgroundImage = `url(${profile.avatar})`;
         if (type === 'match') {
             this.elements.matchModalIcon.textContent = '❤️';
-            this.elements.matchModalTitle.textContent = 'Это Мэтч!';
-            this.elements.matchModalMessage.textContent = `Вы понравились ${profile.name}!`;
+            this.elements.matchModalTitle.textContent = this.translate('match');
+            this.elements.matchModalMessage.textContent = this.translate('youLiked', { name: profile.name });
         } else if (type === 'like') {
             this.elements.matchModalIcon.textContent = '👍';
-            this.elements.matchModalTitle.textContent = 'Лайк отправлен!';
-            this.elements.matchModalMessage.textContent = `Вы лайкнули ${profile.name}. Ждем ответа!`;
+            this.elements.matchModalTitle.textContent = this.translate('likeSent');
+            this.elements.matchModalMessage.textContent = this.translate('youLikedName', { name: profile.name });
         } else if (type === 'superlike') {
             this.elements.matchModalIcon.textContent = '✨';
-            this.elements.matchModalTitle.textContent = 'Суперлайк отправлен!';
-            this.elements.matchModalMessage.textContent = `Вы отправили суперлайк ${profile.name}. Надеемся на взаимность!`;
+            this.elements.matchModalTitle.textContent = this.translate('superlikeSent');
+            this.elements.matchModalMessage.textContent = this.translate('youSuperlikedName', { name: profile.name });
         }
         this.elements.matchSuccessModal.classList.add('active');
     }
@@ -309,6 +499,87 @@ class DatingApp {
 
     deg2rad(deg) {
         return deg * (Math.PI/180);
+    }
+
+    // Language functions
+    translate(key, replacements = {}) {
+        let text = this.translations[this.state.currentLanguage][key] || this.translations['en'][key] || key;
+        for (const placeholder in replacements) {
+            text = text.replace(`{${placeholder}}`, replacements[placeholder]);
+        }
+        return text;
+    }
+
+    setLanguage(lang) {
+        if (this.translations[lang]) {
+            this.state.currentLanguage = lang;
+            localStorage.setItem('appLanguage', lang);
+            this.updateTextContent();
+            // Re-render current screen to apply language changes
+            if (this.state.currentScreen === 'registration') {
+                this.formHandler.renderForm();
+            } else if (this.state.currentScreen === 'profile') {
+                this.profileHandler.showProfile();
+            } else if (this.state.currentScreen === 'match') {
+                this.matchHandler.showNextProfile(); // Re-render current match card
+            } else if (this.state.currentScreen === 'chat') {
+                this.chatHandler.showChatListScreen();
+            } else if (this.state.currentScreen === 'settings') {
+                this.settingsHandler.renderSettings();
+            }
+        } else {
+            console.warn(`Language "${lang}" not supported.`);
+        }
+    }
+
+    updateTextContent() {
+        // Update static texts
+        document.getElementById('loadingTitle').textContent = this.translate('loadingTitle');
+        document.getElementById('loadingSubtitle').textContent = this.translate('loadingSubtitle');
+        document.getElementById('navProfileText').textContent = this.translate('profile');
+        document.getElementById('navMatchesText').textContent = this.translate('matches');
+        document.getElementById('navChatText').textContent = this.translate('chat');
+        document.getElementById('navSettingsText').textContent = this.translate('settings');
+
+        // Update modal texts
+        const swipeTutorialModal = document.getElementById('swipeTutorialModal');
+        if (swipeTutorialModal.classList.contains('active')) {
+            document.querySelector('#swipeTutorialModal h3').textContent = this.translate('swipeTutorialTitle');
+            const paragraphs = document.querySelectorAll('#swipeTutorialModal p');
+            if (paragraphs.length > 0) paragraphs[0].innerHTML = this.translate('swipeTutorialText1');
+            if (paragraphs.length > 1) paragraphs[1].innerHTML = this.translate('swipeTutorialText2');
+            document.getElementById('modalGotItBtn').textContent = this.translate('gotIt');
+        }
+
+        const matchSuccessModal = document.getElementById('matchSuccessModal');
+        if (matchSuccessModal.classList.contains('active')) {
+            document.getElementById('matchModalChatBtn').textContent = this.translate('writeMessage');
+            document.getElementById('matchModalContinueBtn').textContent = this.translate('continueSwiping');
+        }
+
+        // Update settings screen texts
+        const settingsScreen = document.getElementById('settingsScreen');
+        if (settingsScreen.classList.contains('active')) {
+            document.querySelector('#settingsScreen .section-title').textContent = this.translate('settings');
+            document.querySelector('#settingsScreen .section-description').textContent = this.translate('yourChatsDescription'); // Reusing description for now
+            document.getElementById('clearDataBtn').textContent = this.translate('clearProfileData');
+        }
+
+        // Update chat screen texts
+        const chatScreen = document.getElementById('chatScreen');
+        if (chatScreen.classList.contains('active')) {
+            document.querySelector('#chatScreen .section-title').textContent = this.translate('yourChats');
+            document.querySelector('#chatScreen .section-description').textContent = this.translate('yourChatsDescription');
+            document.getElementById('noChatsMessage').innerHTML = `<p>${this.translate('noActiveChats')}</p>`;
+            const messageInput = document.getElementById('messageInput');
+            if (messageInput) messageInput.placeholder = this.translate('typeMessage');
+        }
+
+        // Update match screen texts
+        const matchScreen = document.getElementById('matchScreen');
+        if (matchScreen.classList.contains('active')) {
+            document.getElementById('noProfilesMessage').innerHTML = `<p>${this.translate('noNewProfiles')}</p><button class="btn btn-secondary" style="margin-top: 20px;" id="backToProfileFromMatchBtn">${this.translate('backToProfile')}</button>`;
+        }
     }
 }
 

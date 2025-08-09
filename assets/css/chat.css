@@ -79,17 +79,18 @@
     margin-top: 20px;
 }
 
+/* Стили для активного диалога */
 .active-chat-container {
-    display: none;
+    display: none; /* Скрыт по умолчанию */
     flex-direction: column;
     width: 100%;
-    height: 100%;
+    height: 100%; /* Занимает всю доступную высоту экрана */
     position: absolute;
     top: 0;
     left: 0;
     background-color: var(--background);
-    z-index: 10;
-    padding-bottom: 70px;
+    z-index: 10; /* Поверх списка чатов */
+    padding-bottom: 70px; /* Отступ для инпута сообщения */
 }
 
 .active-chat-container.active {
@@ -155,12 +156,12 @@
     flex-direction: column;
     gap: 10px;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
 }
 
 .messages-container::-webkit-scrollbar {
-    display: none;
+    display: none; /* Скрываем стандартный скроллбар для Webkit */
 }
 
 .message-bubble {
@@ -201,8 +202,8 @@
     border-radius: var(--radius-md);
     padding: 10px 15px;
     font-size: 1rem;
-    resize: none;
-    max-height: 100px;
+    resize: none; /* Отключаем изменение размера пользователем */
+    max-height: 100px; /* Ограничиваем высоту */
     overflow-y: auto;
     margin-right: 10px;
     font-family: 'Rubik', sans-serif;
@@ -247,6 +248,7 @@
     stroke: white;
 }
 
+/* Адаптация для мобильных */
 @media (max-width: 480px) {
     .chat-item {
         padding: 12px;

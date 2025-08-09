@@ -8,73 +8,76 @@ class FormHandler {
             <div class="form-container">
                 ${this.getAllFieldsContent()}
                 <div class="navigation">
-                    <button class="btn" id="saveProfileBtn">Сохранить профиль</button>
+                    <button class="btn" id="saveProfileBtn">${this.app.translate('saveProfile')}</button>
                 </div>
             </div>
         `;
         this.setupFormHandlers();
+        this.updateFormTexts(); // Update texts after rendering
     }
 
     getAllFieldsContent() {
+        const t = (key, replacements) => this.app.translate(key, replacements);
+
         return `
-            <h2 class="section-title">Расскажите о себе</h2>
-            <p class="section-description">Заполните информацию, чтобы создать свой профиль.</p>
+            <h2 class="section-title">${t('registrationTitle')}</h2>
+            <p class="section-description">${t('registrationDescription')}</p>
             
             <input type="text" class="input-field" id="userName" 
-                   placeholder="Ваше имя" 
+                   placeholder="${t('yourName')}" 
                    value="${this.app.state.userData.name || ''}" required>
 
             <div class="tags-container">
                 <div class="tag ${this.app.state.userData.gender === 'male' ? 'selected' : ''}" 
                      data-gender="male">
-                    👨 Мужчина
+                    👨 ${t('male')}
                 </div>
                 <div class="tag ${this.app.state.userData.gender === 'female' ? 'selected' : ''}" 
                      data-gender="female">
-                    👩 Женщина
+                    👩 ${t('female')}
                 </div>
             </div>
 
             <input type="number" class="input-field" id="userAge" 
-                   placeholder="Ваш возраст" 
+                   placeholder="${t('yourAge')}" 
                    value="${this.app.state.userData.age || ''}" 
                    min="${this.app.config.minAge}" max="${this.app.config.maxAge}" required>
 
             <input type="text" class="input-field" id="userCity" 
-                   placeholder="Где вы живете?" 
+                   placeholder="${t('yourCity')}" 
                    value="${this.app.state.userData.city || ''}" required>
 
-            <h3 class="section-title">Что вы ищете?</h3>
+            <h3 class="section-title">${t('whatAreYouLookingFor')}</h3>
             <div class="tags-container">
                 ${this.app.config.lookingForOptions.map(option => `
                     <div class="tag ${(this.app.state.userData.lookingFor || []).includes(option.id) ? 'selected' : ''}" 
                          data-looking-for="${option.id}">
-                        ${option.emoji} ${option.name}
+                        ${option.emoji} ${t(option.id)}
                     </div>
                 `).join('')}
             </div>
 
-            <h3 class="section-title">Ваши интересы</h3>
+            <h3 class="section-title">${t('yourInterests')}</h3>
             <div class="tags-container" id="interestsContainer">
                 ${this.app.config.interests.map(interest => `
                     <div class="tag ${this.app.state.userData.interests.includes(interest.id) ? 'selected' : ''}" 
                          data-interest="${interest.id}">
-                        ${interest.emoji} ${interest.name}
+                        ${interest.emoji} ${t(interest.id)}
                     </div>
                 `).join('')}
             </div>
 
-            <h3 class="section-title">Кого вы ищете?</h3>
+            <h3 class="section-title">${t('whoAreYouLookingFor')}</h3>
             <div class="tags-container">
                 ${this.app.config.preferenceOptions.map(option => `
                     <div class="tag ${this.app.state.userData.preference === option.id ? 'selected' : ''}" 
                          data-preference="${option.id}">
-                        ${option.emoji} ${option.name}
+                        ${option.emoji} ${t(option.id)}
                     </div>
                 `).join('')}
             </div>
 
-            <h3 class="section-title">Цвет профиля</h3>
+            <h3 class="section-title">${t('profileColor')}</h3>
             <div class="color-palette">
                 ${this.app.config.colors.map(color => `
                     <div class="color-option ${this.app.state.userData.profileColor === color ? 'selected' : ''}" 
@@ -84,14 +87,14 @@ class FormHandler {
             </div>
             <div class="color-custom">
                 <input type="color" id="customColor" value="${this.app.state.userData.profileColor}">
-                <label>Или выберите свой цвет</label>
+                <label>${t('orChooseYourColor')}</label>
             </div>
 
-            <h3 class="section-title">Ваши фото</h3>
-            <p class="section-description">Добавьте фото для профиля.</p>
+            <h3 class="section-title">${t('yourPhotos')}</h3>
+            <p class="section-description">${t('addPhotoDescription')}</p>
             <div class="avatar-upload">
                 <label class="btn btn-secondary">
-                    📸 Добавить фото
+                    ${t('addPhoto')}
                     <input type="file" id="photoUpload" accept="image/*" hidden>
                 </label>
             </div>
@@ -99,15 +102,14 @@ class FormHandler {
                 ${this.app.state.userData.photos.map((photo, index) => `
                     <div class="photo-preview ${this.app.state.userData.avatar === photo ? 'main-avatar' : ''}" 
                          style="background-image: url(${photo})">
-                        <button class="set-avatar-btn" data-index="${index}">Аватар</button>
                         <button class="delete-photo" data-index="${index}">×</button>
                     </div>
                 `).join('')}
             </div>
 
-            <h3 class="section-title">О себе</h3>
+            <h3 class="section-title">${t('aboutYou')}</h3>
             <textarea class="input-field" id="userDescription" 
-                      placeholder="Я люблю путешествия, книги и..." rows="4">${this.app.state.userData.description || ''}</textarea>
+                      placeholder="${t('aboutYouPlaceholder')}" rows="4">${this.app.state.userData.description || ''}</textarea>
         `;
     }
 
@@ -162,7 +164,7 @@ class FormHandler {
                         e.currentTarget.classList.add('selected');
                         this.app.state.userData.interests.push(interestId);
                     } else {
-                        alert(`Вы можете выбрать не более ${this.app.config.maxInterests} интересов.`);
+                        alert(this.app.translate('maxInterestsAlert', { maxInterests: this.app.config.maxInterests }));
                     }
                 }
             });
@@ -261,11 +263,59 @@ class FormHandler {
             !this.app.state.userData.city || this.app.state.userData.lookingFor.length === 0 ||
             this.app.state.userData.interests.length === 0 || !this.app.state.userData.preference ||
             !this.app.state.userData.avatar || !this.app.state.userData.description) {
-            alert('Пожалуйста, заполните все обязательные поля и добавьте фото.');
+            alert(this.app.translate('fillAllFieldsAlert'));
             return;
         }
 
         localStorage.setItem('datingProfile', JSON.stringify(this.app.state.userData));
         this.app.switchScreen('profile');
+    }
+
+    updateFormTexts() {
+        const t = (key, replacements) => this.app.translate(key, replacements);
+
+        document.querySelector('#registrationForm .section-title').textContent = t('registrationTitle');
+        document.querySelector('#registrationForm .section-description').textContent = t('registrationDescription');
+        document.getElementById('userName').placeholder = t('yourName');
+        document.querySelector('[data-gender="male"]').innerHTML = `👨 ${t('male')}`;
+        document.querySelector('[data-gender="female"]').innerHTML = `👩 ${t('female')}`;
+        document.getElementById('userAge').placeholder = t('yourAge');
+        document.getElementById('userCity').placeholder = t('yourCity');
+        document.querySelector('h3:nth-of-type(1)').textContent = t('whatAreYouLookingFor'); // "Что вы ищете?"
+        document.querySelector('h3:nth-of-type(2)').textContent = t('yourInterests'); // "Ваши интересы"
+        document.querySelector('h3:nth-of-type(3)').textContent = t('whoAreYouLookingFor'); // "Кого вы ищете?"
+        document.querySelector('h3:nth-of-type(4)').textContent = t('profileColor'); // "Цвет профиля"
+        document.querySelector('.color-custom label').textContent = t('orChooseYourColor');
+        document.querySelector('h3:nth-of-type(5)').textContent = t('yourPhotos'); // "Ваши фото"
+        document.querySelector('.avatar-upload .section-description').textContent = t('addPhotoDescription');
+        document.querySelector('.avatar-upload .btn-secondary').innerHTML = `📸 ${t('addPhoto')}`;
+        document.querySelector('h3:nth-of-type(6)').textContent = t('aboutYou'); // "О себе"
+        document.getElementById('userDescription').placeholder = t('aboutYouPlaceholder');
+        document.getElementById('saveProfileBtn').textContent = t('saveProfile');
+
+        // Update dynamic tags
+        document.querySelectorAll('[data-looking-for]').forEach(tag => {
+            const optionId = tag.dataset.lookingFor;
+            const option = this.app.config.lookingForOptions.find(o => o.id === optionId);
+            if (option) {
+                tag.innerHTML = `${option.emoji} ${t(option.id)}`;
+            }
+        });
+
+        document.querySelectorAll('[data-interest]').forEach(tag => {
+            const interestId = tag.dataset.interest;
+            const interest = this.app.config.interests.find(i => i.id === interestId);
+            if (interest) {
+                tag.innerHTML = `${interest.emoji} ${t(interest.id)}`;
+            }
+        });
+
+        document.querySelectorAll('[data-preference]').forEach(tag => {
+            const preferenceId = tag.dataset.preference;
+            const preference = this.app.config.preferenceOptions.find(p => p.id === preferenceId);
+            if (preference) {
+                tag.innerHTML = `${preference.emoji} ${t(preference.id)}`;
+            }
+        });
     }
 }

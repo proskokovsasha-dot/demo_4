@@ -391,8 +391,8 @@
                       stroke-linecap="round"/>
             </svg>
         </div>
-        <h1 class="loading-text title">ТочкаСхода</h1>
-        <p class="loading-text subtitle">Место, где сливаются ваши пути</p>
+        <h1 class="loading-text title" id="loadingTitle">ТочкаСхода</h1>
+        <p class="loading-text subtitle" id="loadingSubtitle">Место, где сливаются ваши пути</p>
     </div>
 
     <div class="app-container" id="appContainer" style="display: none;">
@@ -402,26 +402,26 @@
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                <span class="nav-text">Профиль</span>
+                <span class="nav-text" id="navProfileText">Профиль</span>
             </button>
             <button class="nav-btn" data-screen="match">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                 </svg>
-                <span class="nav-text">Анкеты</span>
+                <span class="nav-text" id="navMatchesText">Анкеты</span>
             </button>
             <button class="nav-btn" data-screen="chat">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                 </svg>
-                <span class="nav-text">Чат</span>
+                <span class="nav-text" id="navChatText">Чат</span>
             </button>
             <button class="nav-btn" data-screen="settings">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="3"></circle>
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0-.33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                 </svg>
-                <span class="nav-text">Настройки</span>
+                <span class="nav-text" id="navSettingsText">Настройки</span>
             </button>
         </nav>
 
@@ -597,9 +597,7 @@
         </div>
 
         <div class="screen" id="settingsScreen">
-            <h2 class="section-title">Настройки</h2>
-            <p class="section-description">Здесь будут находиться настройки приложения.</p>
-            <button class="btn btn-secondary" id="clearDataBtn">Очистить данные профиля</button>
+            <!-- Content will be rendered by SettingsHandler -->
         </div>
     </div>
 
@@ -637,6 +635,7 @@
     <script src="assets/js/components/profile.js"></script>
     <script src="assets/js/components/match.js"></script>
     <script src="assets/js/components/chat.js"></script>
+    <script src="assets/js/components/settings.js"></script> <!-- NEW: Include settings.js -->
     <script src="assets/js/app.js"></script>
 </body>
 </html>
