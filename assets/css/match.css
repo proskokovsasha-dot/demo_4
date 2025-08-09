@@ -25,6 +25,7 @@
     margin-bottom: 0;
     flex-grow: 1;
     margin-top: 20px;
+    padding-bottom: var(--safe-area-inset-bottom); /* Добавляем отступ снизу */
 }
 
 .match-card {
@@ -351,7 +352,7 @@
 /* НОВЫЕ СТИЛИ ДЛЯ КОНТЕЙНЕРА КНОПОК ДЕЙСТВИЙ ВНУТРИ КАРТОЧКИ */
 .match-card-actions {
     position: absolute;
-    bottom: 20px; /* Отступ от низа карточки */
+    bottom: calc(20px + var(--safe-area-inset-bottom)); /* Отступ от низа карточки + safe area */
     left: 50%;
     transform: translateX(-50%);
     width: 90%; /* Ширина контейнера кнопок */
@@ -360,7 +361,6 @@
     align-items: center;
     z-index: 5; /* Поверх всего контента карточки */
     padding: 10px;
-   
 }
 
 /* Адаптация для мобильных */
@@ -368,7 +368,7 @@
     .match-card-wrapper {
         width: 100%;
         max-width: unset;
-        height: calc(100vh - var(--top-nav-height, 60px) - 40px); /* Убрал -80px, так как кнопки теперь внутри */
+        height: calc(100vh - var(--top-nav-height, 60px) - 40px - var(--safe-area-inset-bottom)); /* Убрал -80px, так как кнопки теперь внутри */
         margin: 20px auto 0;
     }
     .match-card-content {
@@ -442,7 +442,7 @@
 
     .match-card-actions {
         padding: 5px 10px;
-        bottom: 15px; /* Немного уменьшаем отступ */
+        bottom: calc(15px + var(--safe-area-inset-bottom)); /* Немного уменьшаем отступ */
     }
     .action-btn {
         width: 50px;
@@ -455,7 +455,7 @@
 }
 @media (max-width: 360px) {
     .match-card-wrapper {
-        height: calc(100vh - var(--top-nav-height, 60px) - 30px); /* Убрал -70px */
+        height: calc(100vh - var(--top-nav-height, 60px) - 30px - var(--safe-area-inset-bottom)); /* Убрал -70px */
     }
     .match-card-content {
         padding: 15px;

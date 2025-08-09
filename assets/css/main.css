@@ -1,12 +1,14 @@
 :root{
-  --primary:#FF6B6B;--primary-dark:#E04F4F;--primary-light:#FFDCDC;--text-primary:#2C3E50;--text-secondary:#7F8C8D;--background:#F8F9FA;--surface:#fff;--border:#E0E0E0;--success:#2ECC71;--error:#E74C3C;--warning:#F39C12;--match-overlay-color:rgba(0,0,0,.7);--match-text-color:#fff;--match-active-dot:#2ECC71;--match-shadow-strong:0 15px 40px rgba(0,0,0,.3);--radius-sm:8px;--radius-md:12px;--radius-lg:20px;--shadow-sm:0 4px 12px rgba(0,0,0,.08);--shadow-md:0 8px 20px rgba(0,0,0,.12);--shadow-lg:0 12px 30px rgba(0,0,0,.15);--transition-fast:.2s;--transition-normal:.4s;--top-nav-height:70px
+  --primary:#FF6B6B;--primary-dark:#E04F4F;--primary-light:#FFDCDC;--text-primary:#2C3E50;--text-secondary:#7F8C8D;--background:#F8F9FA;--surface:#fff;--border:#E0E0E0;--success:#2ECC71;--error:#E74C3C;--warning:#F39C12;--match-overlay-color:rgba(0,0,0,.7);--match-text-color:#fff;--match-active-dot:#2ECC71;--match-shadow-strong:0 15px 40px rgba(0,0,0,.3);--radius-sm:8px;--radius-md:12px;--radius-lg:20px;--shadow-sm:0 4px 12px rgba(0,0,0,.08);--shadow-md:0 8px 20px rgba(0,0,0,.12);--shadow-lg:0 12px 30px rgba(0,0,0,.15);--transition-fast:.2s;--transition-normal:.4s;--top-nav-height:70px;
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px); /* Добавляем переменную для Safe Area */
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{
   font-family:'Rubik',sans-serif;background-color:var(--background);color:var(--text-primary);line-height:1.6;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow-x:hidden
 }
 .app-container{
-  width:100%;max-width:500px;margin:0 auto;padding:0 20px 20px;display:flex;flex-direction:column;align-items:center;flex-grow:1;position:relative;min-height:100vh;justify-content:center
+  width:100%;max-width:500px;margin:0 auto;padding:0 20px calc(20px + var(--safe-area-inset-bottom)); /* Добавляем отступ снизу */
+  display:flex;flex-direction:column;align-items:center;flex-grow:1;position:relative;min-height:100vh;justify-content:center
 }
 .loading-screen{transition:opacity .5s ease-out}
 .screen{
@@ -39,7 +41,7 @@ body{
 .nav-btn.active{background-color:var(--primary-light)}
 @media (max-width:480px){
   body{padding:0}
-  .app-container{padding:0 16px 16px}
+  .app-container{padding:0 16px calc(16px + var(--safe-area-inset-bottom))}
   .app-title{font-size:2.2rem}
   .section-title{font-size:1.6rem;margin-bottom:10px}
   .section-description{font-size:.95rem;margin-bottom:15px}

@@ -428,6 +428,7 @@
     align-items: center;
     justify-content: center;
     perspective: 1000px; /* Для 3D-трансформаций */
+    padding-bottom: var(--safe-area-inset-bottom); /* Добавляем отступ снизу */
 }
 
 .profile-card {
@@ -752,7 +753,7 @@
     .profile-card-wrapper {
         width: 100%; /* Растягиваем на всю ширину */
         max-width: unset; /* Снимаем ограничение max-width */
-        height: calc(100vh - var(--top-nav-height, 60px) - 40px); /* Занимаем почти всю высоту экрана, учитывая навигацию и паддинги */
+        height: calc(100vh - var(--top-nav-height, 60px) - 40px - var(--safe-area-inset-bottom)); /* Занимаем почти всю высоту экрана, учитывая навигацию, паддинги и safe area */
         margin: 20px auto; /* Центрируем и добавляем отступы */
     }
 
@@ -853,7 +854,7 @@
 
 @media (max-width: 360px) {
     .profile-card-wrapper {
-        height: calc(100vh - var(--top-nav-height, 60px) - 30px); /* Еще немного уменьшаем паддинг */
+        height: calc(100vh - var(--top-nav-height, 60px) - 30px - var(--safe-area-inset-bottom)); /* Еще немного уменьшаем паддинг */
     }
     .profile-card-content {
         padding: 15px;
