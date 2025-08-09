@@ -2,6 +2,7 @@ class MatchHandler {
     constructor(app) {
         this.app = app;
         this.currentIndex = 0;
+        this.lastMatchedProfile = null; // НОВОЕ: для хранения последнего совпавшего профиля
         this.init();
     }
 
@@ -359,20 +360,41 @@ class MatchHandler {
         if (action === 'like') {
             console.log('Liked:', profile.name);
             this.app.chatHandler.addChat(profile);
+            this.lastMatchedProfile = profile; // Сохраняем профиль
+            // Для демонстрации, показываем "Мэтч" или "Лайк отправлен"
+            if (Math.random() > 0.5) { // 50% шанс на мэтч
+                this.app.showMatchSuccessModal(profile, 'match');
+            } else {
+                this.app.showMatchSuccessModal(profile, 'like');
+            }
             card.classList.add('animate-like');
         } else if (action === 'nope') {
             console.log('Passed:', profile.name);
             card.classList.add('animate-nope');
+            // Просто переходим к следующему профилю без модального окна
+            card.addEventListener('animationend', () => {
+                card.classList.remove('animate-like', 'animate-nope', 'animate-superlike');
+                this.currentIndex++;
+                this.showNextProfile();
+            }, { once: true });
+            return; // Выходим, чтобы не вызывать showNextProfile дважды
         } else if (action === 'superlike') {
             console.log('Superliked:', profile.name);
             this.app.chatHandler.addChat(profile); // Суперлайк тоже создает чат
+            this.lastMatchedProfile = profile; // Сохраняем профиль
+            this.app.showMatchSuccessModal(profile, 'superlike');
             card.classList.add('animate-superlike');
         }
 
+        // Общая логика для перехода к следующему профилю после анимации и показа модального окна
         card.addEventListener('animationend', () => {
             card.classList.remove('animate-like', 'animate-nope', 'animate-superlike');
-            this.currentIndex++;
-            this.showNextProfile();
+            // Если модальное окно показано, showNextProfile будет вызван после его закрытия
+            // Если нет, то вызываем сразу
+            if (!this.app.elements.matchSuccessModal.classList.contains('active')) {
+                this.currentIndex++;
+                this.showNextProfile();
+            }
         }, { once: true });
     }
 }

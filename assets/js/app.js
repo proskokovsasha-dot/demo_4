@@ -103,6 +103,14 @@ class DatingApp {
             navButtons: document.querySelectorAll('.nav-btn'),
             swipeTutorialModal: document.getElementById('swipeTutorialModal'),
             modalGotItBtn: document.getElementById('modalGotItBtn'),
+            // НОВОЕ: Элементы для модального окна Match/Like
+            matchSuccessModal: document.getElementById('matchSuccessModal'),
+            matchModalIcon: document.getElementById('matchModalIcon'),
+            matchModalTitle: document.getElementById('matchModalTitle'),
+            matchModalMessage: document.getElementById('matchModalMessage'),
+            matchModalAvatar: document.getElementById('matchModalAvatar'),
+            matchModalChatBtn: document.getElementById('matchModalChatBtn'),
+            matchModalContinueBtn: document.getElementById('matchModalContinueBtn'),
         };
     }
 
@@ -130,6 +138,24 @@ class DatingApp {
 
         if (this.elements.modalGotItBtn) {
             this.elements.modalGotItBtn.addEventListener('click', () => this.hideSwipeTutorialModal());
+        }
+
+        // НОВОЕ: Обработчики для кнопок модального окна Match/Like
+        if (this.elements.matchModalChatBtn) {
+            this.elements.matchModalChatBtn.addEventListener('click', () => {
+                this.hideMatchSuccessModal();
+                // Предполагаем, что matchHandler сохраняет последний совпавший профиль
+                if (this.matchHandler.lastMatchedProfile) {
+                    this.chatHandler.openChat(this.matchHandler.lastMatchedProfile.id);
+                    this.switchScreen('chat');
+                }
+            });
+        }
+        if (this.elements.matchModalContinueBtn) {
+            this.elements.matchModalContinueBtn.addEventListener('click', () => {
+                this.hideMatchSuccessModal();
+                this.matchHandler.showNextProfile(); // Продолжаем свайпать
+            });
         }
     }
 
@@ -242,6 +268,29 @@ class DatingApp {
 
     hideSwipeTutorialModal() {
         this.elements.swipeTutorialModal.classList.remove('active');
+    }
+
+    // НОВОЕ: Методы для показа и скрытия модального окна Match/Like
+    showMatchSuccessModal(profile, type = 'match') {
+        this.elements.matchModalAvatar.style.backgroundImage = `url(${profile.avatar})`;
+        if (type === 'match') {
+            this.elements.matchModalIcon.textContent = '❤️';
+            this.elements.matchModalTitle.textContent = 'Это Мэтч!';
+            this.elements.matchModalMessage.textContent = `Вы понравились ${profile.name}!`;
+        } else if (type === 'like') {
+            this.elements.matchModalIcon.textContent = '👍';
+            this.elements.matchModalTitle.textContent = 'Лайк отправлен!';
+            this.elements.matchModalMessage.textContent = `Вы лайкнули ${profile.name}. Ждем ответа!`;
+        } else if (type === 'superlike') {
+            this.elements.matchModalIcon.textContent = '✨';
+            this.elements.matchModalTitle.textContent = 'Суперлайк отправлен!';
+            this.elements.matchModalMessage.textContent = `Вы отправили суперлайк ${profile.name}. Надеемся на взаимность!`;
+        }
+        this.elements.matchSuccessModal.classList.add('active');
+    }
+
+    hideMatchSuccessModal() {
+        this.elements.matchSuccessModal.classList.remove('active');
     }
 
     calculateDistance(lat1, lon1, lat2, lon2) {

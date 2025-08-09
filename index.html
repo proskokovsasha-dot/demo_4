@@ -239,6 +239,145 @@
                 min-width: 70px;
             }
         }
+
+        /* Стили для нового модального окна */
+        .match-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000; /* Выше, чем другие модальные окна */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .match-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .match-modal-content {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.8) translateY(50px);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .match-modal-overlay.active .match-modal-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .match-modal-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(45deg);
+            animation: sparkle 3s infinite linear;
+        }
+
+        @keyframes sparkle {
+            0% { transform: rotate(0deg); opacity: 0.5; }
+            50% { transform: rotate(180deg); opacity: 1; }
+            100% { transform: rotate(360deg); opacity: 0.5; }
+        }
+
+        .match-modal-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .match-modal-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .match-modal-message {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .match-modal-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            border: 4px solid white;
+            box-shadow: var(--shadow-md);
+            margin: 0 auto 20px;
+        }
+
+        .match-modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .match-modal-actions .btn {
+            width: 100%;
+            min-width: unset;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+        }
+
+        .match-modal-actions .btn-secondary {
+            background-color: white;
+            color: var(--primary);
+        }
+
+        .match-modal-actions .btn-secondary:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        @media (max-width: 480px) {
+            .match-modal-content {
+                padding: 30px 20px;
+            }
+            .match-modal-icon {
+                font-size: 3rem;
+            }
+            .match-modal-title {
+                font-size: 2rem;
+            }
+            .match-modal-message {
+                font-size: 1rem;
+            }
+            .match-modal-avatar {
+                width: 80px;
+                height: 80px;
+            }
+            .match-modal-actions .btn {
+                padding: 12px 15px;
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -475,6 +614,20 @@
             </p>
             <div class="modal-actions">
                 <button class="btn" id="modalGotItBtn">Понятно!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- НОВОЕ: Модальное окно для Match/Like -->
+    <div class="match-modal-overlay" id="matchSuccessModal">
+        <div class="match-modal-content">
+            <div class="match-modal-icon" id="matchModalIcon">❤️</div>
+            <h3 class="match-modal-title" id="matchModalTitle">Это Мэтч!</h3>
+            <p class="match-modal-message" id="matchModalMessage">Вы понравились друг другу!</p>
+            <div class="match-modal-avatar" id="matchModalAvatar"></div>
+            <div class="match-modal-actions">
+                <button class="btn" id="matchModalChatBtn">Написать сообщение</button>
+                <button class="btn btn-secondary" id="matchModalContinueBtn">Продолжить свайпать</button>
             </div>
         </div>
     </div>
