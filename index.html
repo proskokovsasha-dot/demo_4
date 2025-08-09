@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="assets/css/components.css">
     <link rel="stylesheet" href="assets/css/animations.css">
     <link rel="stylesheet" href="assets/css/match.css">
+    <!-- НОВЫЙ ФАЙЛ СТИЛЕЙ ДЛЯ ЧАТА -->
+    <link rel="stylesheet" href="assets/css/chat.css">
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
@@ -225,6 +227,13 @@
                 </svg>
                 <span class="nav-text">Анкеты</span>
             </button>
+            <!-- НОВАЯ КНОПКА НАВИГАЦИИ ДЛЯ ЧАТА -->
+            <button class="nav-btn" data-screen="chat">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span class="nav-text">Чат</span>
+            </button>
             <button class="nav-btn" data-screen="settings">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="3"></circle>
@@ -383,6 +392,55 @@
             </div>
         </div>
 
+        <!-- НОВЫЙ ЭКРАН ЧАТА -->
+        <div class="screen" id="chatScreen">
+            <h2 class="section-title">Ваши чаты</h2>
+            <p class="section-description">Здесь будут отображаться ваши диалоги.</p>
+            <div class="chat-list" id="chatList">
+                <!-- Пример чата (будет генерироваться динамически) -->
+                <!--
+                <div class="chat-item" data-chat-id="user123">
+                    <div class="chat-avatar" style="background-image: url('https://picsum.photos/seed/chat1/100/100');"></div>
+                    <div class="chat-info">
+                        <div class="chat-name">Анна, 25</div>
+                        <div class="chat-last-message">Привет! Как дела?</div>
+                    </div>
+                    <div class="chat-time">10:30</div>
+                </div>
+                -->
+                <div class="no-chats-message" id="noChatsMessage">
+                    <p>У вас пока нет активных чатов. Начните знакомиться в разделе "Анкеты"!</p>
+                </div>
+            </div>
+
+            <!-- Контейнер для активного диалога (скрыт по умолчанию) -->
+            <div class="active-chat-container" id="activeChatContainer">
+                <div class="chat-header-bar">
+                    <button class="btn-back-to-chats" id="backToChatListBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <div class="chat-partner-info">
+                        <div class="chat-partner-avatar" id="chatPartnerAvatar"></div>
+                        <div class="chat-partner-name" id="chatPartnerName"></div>
+                    </div>
+                </div>
+                <div class="messages-container" id="messagesContainer">
+                    <!-- Сообщения будут здесь -->
+                </div>
+                <div class="message-input-area">
+                    <textarea id="messageInput" placeholder="Напишите сообщение..." rows="1"></textarea>
+                    <button id="sendMessageBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Экран настроек -->
         <div class="screen" id="settingsScreen">
             <h2 class="section-title">Настройки</h2>
@@ -428,6 +486,8 @@
     <script src="assets/js/components/form.js"></script>
     <script src="assets/js/components/profile.js"></script>
     <script src="assets/js/components/match.js"></script>
+    <!-- НОВЫЙ ФАЙЛ JAVASCRIPT ДЛЯ ЧАТА -->
+    <script src="assets/js/components/chat.js"></script>
     <script src="assets/js/app.js"></script>
 </body>
 </html>

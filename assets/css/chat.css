@@ -1,0 +1,302 @@
+/* assets/css/chat.css */
+
+.chat-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.chat-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast) ease;
+    border: 1px solid var(--border);
+}
+
+.chat-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-light);
+}
+
+.chat-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--border);
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+    margin-right: 15px;
+}
+
+.chat-info {
+    flex-grow: 1;
+    text-align: left;
+    overflow: hidden;
+}
+
+.chat-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-last-message {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-time {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.no-chats-message {
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 20px;
+    text-align: center;
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+    border: 1px dashed var(--border);
+    margin-top: 20px;
+}
+
+/* Стили для активного диалога */
+.active-chat-container {
+    display: none; /* Скрыт по умолчанию */
+    flex-direction: column;
+    width: 100%;
+    height: 100%; /* Занимает всю доступную высоту экрана */
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: var(--background);
+    z-index: 10; /* Поверх списка чатов */
+    padding-bottom: 70px; /* Отступ для инпута сообщения */
+}
+
+.active-chat-container.active {
+    display: flex;
+}
+
+.chat-header-bar {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: var(--surface);
+    box-shadow: var(--shadow-sm);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.btn-back-to-chats {
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 5px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-back-to-chats svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--text-primary);
+}
+
+.chat-partner-info {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.chat-partner-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--border);
+    background-size: cover;
+    background-position: center;
+    margin-right: 10px;
+}
+
+.chat-partner-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.messages-container {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+}
+
+.messages-container::-webkit-scrollbar {
+    display: none; /* Скрываем стандартный скроллбар для Webkit */
+}
+
+.message-bubble {
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: var(--radius-md);
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.message-bubble.sent {
+    background-color: var(--primary);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+}
+
+.message-bubble.received {
+    background-color: var(--surface);
+    color: var(--text-primary);
+    align-self: flex-start;
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 5px;
+}
+
+.message-input-area {
+    display: flex;
+    align-items: flex-end;
+    padding: 10px 15px;
+    background-color: var(--surface);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.message-input-area textarea {
+    flex-grow: 1;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 10px 15px;
+    font-size: 1rem;
+    resize: none; /* Отключаем изменение размера пользователем */
+    max-height: 100px; /* Ограничиваем высоту */
+    overflow-y: auto;
+    margin-right: 10px;
+    font-family: 'Rubik', sans-serif;
+    color: var(--text-primary);
+    background-color: var(--background);
+}
+
+.message-input-area textarea:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1);
+}
+
+.message-input-area button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color var(--transition-fast) ease, transform var(--transition-fast) ease;
+    flex-shrink: 0;
+}
+
+.message-input-area button:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.message-input-area button:active {
+    transform: translateY(0);
+}
+
+.message-input-area button svg {
+    width: 24px;
+    height: 24px;
+    fill: white;
+    stroke: white;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+    .chat-item {
+        padding: 12px;
+    }
+    .chat-avatar {
+        width: 45px;
+        height: 45px;
+        margin-right: 12px;
+    }
+    .chat-name {
+        font-size: 1rem;
+    }
+    .chat-last-message {
+        font-size: 0.85rem;
+    }
+    .chat-time {
+        font-size: 0.75rem;
+    }
+    .chat-header-bar {
+        padding: 8px 12px;
+    }
+    .chat-partner-avatar {
+        width: 35px;
+        height: 35px;
+        margin-right: 8px;
+    }
+    .chat-partner-name {
+        font-size: 1.1rem;
+    }
+    .messages-container {
+        padding: 12px;
+    }
+    .message-bubble {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+    .message-input-area {
+        padding: 8px 12px;
+    }
+    .message-input-area textarea {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+    .message-input-area button {
+        width: 40px;
+        height: 40px;
+    }
+    .message-input-area button svg {
+        width: 20px;
+        height: 20px;
+    }
+}

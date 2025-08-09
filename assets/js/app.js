@@ -78,6 +78,7 @@ class DatingApp {
         this.profileHandler = new ProfileHandler(this);
         this.uiHandler = new UIHandler(this);
         this.matchHandler = new MatchHandler(this); 
+        this.chatHandler = new ChatHandler(this); // НОВОЕ: Инициализация ChatHandler
 
         this.bindEvents();
         this.checkSavedProfile(); // Определяет начальный экран
@@ -119,6 +120,7 @@ class DatingApp {
             registrationForm: document.getElementById('registrationForm'),
             profileView: document.getElementById('profileView'),
             matchScreen: document.getElementById('matchScreen'), 
+            chatScreen: document.getElementById('chatScreen'), // НОВОЕ: Элемент экрана чата
             settingsScreen: document.getElementById('settingsScreen'),
             topNavigation: document.getElementById('topNavigation'),
             navButtons: document.querySelectorAll('.nav-btn'),
@@ -211,6 +213,11 @@ class DatingApp {
         }
     }
 
+    // НОВОЕ: Метод для добавления чата после лайка
+    addChatAfterLike(profile) {
+        this.chatHandler.addChat(profile);
+    }
+
     clearAllData() {
         localStorage.removeItem('datingProfile');
         localStorage.removeItem('swipeTutorialShown'); // Очищаем флаг подсказки
@@ -230,6 +237,8 @@ class DatingApp {
             photos: [],
             location: { lat: null, lng: null }
         };
+        // НОВОЕ: Очистка чатов при сбросе данных
+        this.chatHandler.chats = {}; 
         alert('Все данные профиля очищены. Вы будете перенаправлены на экран регистрации.');
         this.switchScreen('registration');
     }
@@ -260,6 +269,11 @@ class DatingApp {
             document.querySelector('.nav-btn[data-screen="match"]').classList.add('active'); 
             this.elements.topNavigation.style.display = 'flex';
             this.matchHandler.startMatch(); 
+        } else if (screenName === 'chat') { // НОВОЕ: Переключение на экран чата
+            targetScreenElement = this.elements.chatScreen;
+            document.querySelector('.nav-btn[data-screen="chat"]').classList.add('active');
+            this.elements.topNavigation.style.display = 'flex';
+            this.chatHandler.showChatListScreen(); // Показываем список чатов
         } else if (screenName === 'settings') {
             targetScreenElement = this.elements.settingsScreen;
             document.querySelector('.nav-btn[data-screen="settings"]').classList.add('active');
