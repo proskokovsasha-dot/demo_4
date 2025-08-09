@@ -70,8 +70,8 @@
 }
 
 .action-btn {
-    width: 60px;
-    height: 60px;
+    width: 60px; /* Единый размер для всех экранов */
+    height: 60px; /* Единый размер для всех экранов */
     border-radius: 50%;
     border: none;
     display: flex;
@@ -84,8 +84,8 @@
 }
 
 .action-btn svg {
-    width: 30px;
-    height: 30px;
+    width: 30px; /* Единый размер иконок для всех экранов */
+    height: 30px; /* Единый размер иконок для всех экранов */
 }
 
 .action-btn:hover {

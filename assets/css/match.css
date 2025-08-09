@@ -446,14 +446,7 @@
         padding: 5px 10px;
         bottom: calc(15px + var(--safe-area-inset-bottom));
     }
-    .action-btn {
-        width: 50px;
-        height: 50px;
-    }
-    .action-btn svg {
-        width: 25px;
-        height: 25px;
-    }
+    /* Удалены медиазапросы, которые уменьшали .action-btn */
 }
 @media (max-width: 360px) {
     .match-card-wrapper {
@@ -501,12 +494,5 @@
     .match-interest-item .emoji {
         font-size: 1rem;
     }
-    .action-btn {
-        width: 45px;
-        height: 45px;
-    }
-    .action-btn svg {
-        width: 22px;
-        height: 22px;
-    }
+    /* Удалены медиазапросы, которые уменьшали .action-btn */
 }
