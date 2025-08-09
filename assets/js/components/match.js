@@ -4,10 +4,7 @@ class MatchHandler {
         this.currentIndex = 0;
         this.isExpanded = false;
         this.fixedInfoHeight = 0;
-        this.scrollThreshold = 50;
-        this.startY = 0; // Добавлено для обработки свайпов
-        this.currentTranslateY = 0; // Добавлено для обработки свайпов
-        this.isScrollingContent = false; // Добавлено для обработки свайпов
+        // Удалены свойства, связанные со свайпом: this.scrollThreshold, this.startY, this.currentTranslateY, this.isScrollingContent
         this.init();
     }
 
@@ -30,51 +27,43 @@ class MatchHandler {
             matchLastActive: document.getElementById('matchLastActive'),
             matchDistance: document.getElementById('matchDistance'),
             noProfilesMessage: document.getElementById('noProfilesMessage'),
-            matchScrollIndicator: document.querySelector('#matchScrollableContent .match-scroll-indicator'),
+            // matchScrollIndicator удален
             matchFixedInfo: document.getElementById('matchFixedInfo'),
             nopeBtn: document.getElementById('nopeBtn'),
-            viewProfileBtn: document.getElementById('viewProfileBtn'),
+            // viewProfileBtn теперь используется как toggleMatchInfoBtn
             likeBtn: document.getElementById('likeBtn'),
             matchCardActions: document.querySelector('.match-card-actions'),
-            matchActiveDot: document.querySelector('.match-active-dot')
+            matchActiveDot: document.querySelector('.match-active-dot'),
+            toggleMatchInfoBtn: document.getElementById('viewProfileBtn') // Используем существующую кнопку "viewProfileBtn" как "Подробнее"
         };
     }
 
     setupEventListeners() {
         // Удаляем старые обработчики, чтобы избежать дублирования
-        if (this.toggleExpandBound) {
-            this.elements.matchScrollIndicator.removeEventListener('click', this.toggleExpandBound);
-            this.elements.matchCard.removeEventListener('touchstart', this.handleTouchStartBound);
-            this.elements.matchCard.removeEventListener('touchmove', this.handleTouchMoveBound);
-            this.elements.matchCard.removeEventListener('touchend', this.handleTouchEndBound);
-        }
         if (this.nopeBtnHandler) {
             this.elements.nopeBtn.removeEventListener('click', this.nopeBtnHandler);
-            this.elements.viewProfileBtn.removeEventListener('click', this.viewProfileBtnHandler);
             this.elements.likeBtn.removeEventListener('click', this.likeBtnHandler);
+            // Удаляем старый обработчик для viewProfileBtn, если он был
+            if (this.toggleMatchInfoBtnHandler) {
+                this.elements.toggleMatchInfoBtn.removeEventListener('click', this.toggleMatchInfoBtnHandler);
+            }
         }
+        // Удаляем обработчики свайпа, так как они больше не нужны для раскрытия информации
+        // this.elements.matchCard.removeEventListener('touchstart', this.handleTouchStartBound);
+        // this.elements.matchCard.removeEventListener('touchmove', this.handleTouchMoveBound);
+        // this.elements.matchCard.removeEventListener('touchend', this.handleTouchEndBound);
+
 
         // Привязываем новые обработчики
-        this.toggleExpandBound = this.toggleExpand.bind(this);
-        this.elements.matchScrollIndicator.addEventListener('click', this.toggleExpandBound);
-
-        this.viewProfileBtnHandler = () => this.toggleExpand(true); // Всегда раскрываем
-        this.elements.viewProfileBtn.addEventListener('click', this.viewProfileBtnHandler);
-
         this.nopeBtnHandler = () => this.handlePass();
         this.elements.nopeBtn.addEventListener('click', this.nopeBtnHandler);
         
         this.likeBtnHandler = () => this.handleLike();
         this.elements.likeBtn.addEventListener('click', this.likeBtnHandler);
 
-        // Обработчики для свайпа
-        this.handleTouchStartBound = this.handleTouchStart.bind(this);
-        this.handleTouchMoveBound = this.handleTouchMove.bind(this);
-        this.handleTouchEndBound = this.handleTouchEnd.bind(this);
-
-        this.elements.matchCard.addEventListener('touchstart', this.handleTouchStartBound, { passive: false });
-        this.elements.matchCard.addEventListener('touchmove', this.handleTouchMoveBound, { passive: false });
-        this.elements.matchCard.addEventListener('touchend', this.handleTouchEndBound);
+        // НОВЫЙ ОБРАБОТЧИК ДЛЯ КНОПКИ "ПОДРОБНЕЕ"
+        this.toggleMatchInfoBtnHandler = this.toggleExpand.bind(this);
+        this.elements.toggleMatchInfoBtn.addEventListener('click', this.toggleMatchInfoBtnHandler);
     }
 
     generateRandomProfiles(count = 30) {
@@ -424,13 +413,9 @@ class MatchHandler {
         this.elements.matchFixedInfo.style.display = '';
 
         // Устанавливаем CSS-переменные для использования в стилях
-        // Высота match-header + отступ сверху match-fixed-info + высота match-fixed-info + небольшой паддинг
         const matchHeaderHeight = document.querySelector('.match-header').offsetHeight;
-        const fixedInfoTopPadding = 70; // top: 70px для match-fixed-info
-        const scrollableContentTopPadding = 50; // padding-top: 50px для match-scrollable-content
 
         // Рассчитываем верхнюю позицию для полностью раскрытого состояния
-        // Это будет сумма высоты хедера и фиксированной информации, плюс небольшой отступ
         const expandedTopPosition = matchHeaderHeight + this.fixedInfoHeight + 20; // 20px - дополнительный отступ
 
         document.documentElement.style.setProperty('--match-expanded-top-position', `${expandedTopPosition}px`);
@@ -442,138 +427,63 @@ class MatchHandler {
         const expandedTopPositionMobileSm = matchHeaderHeight + this.fixedInfoHeight + 10;
         document.documentElement.style.setProperty('--match-expanded-top-position-mobile-sm', `${expandedTopPositionMobileSm}px`);
 
-        // Устанавливаем начальное положение свернутого блока
-        // Высота карточки - (высота фиксированной инфо + паддинг снизу фиксированной инфо + паддинг сверху свайпаемого контента)
-        const initialVisibleHeight = this.fixedInfoHeight + 20 + scrollableContentTopPadding; // 20px - margin-bottom match-fixed-info
-        this.elements.matchScrollableContent.style.transform = `translateY(calc(100% - ${initialVisibleHeight}px))`;
+        // Изначальное положение свернутого блока теперь полностью скрыто (transform: translateY(100%))
+        // Поэтому здесь не нужно устанавливать transform.
     }
 
     resetScrollState() {
         this.isExpanded = false;
         this.elements.matchScrollableContent.classList.remove('expanded');
-        // Пересчитываем и применяем начальное положение
-        this.measureFixedInfoHeight(); // Это уже установит transform
         this.elements.matchScrollableContent.scrollTop = 0;
         this.elements.matchFixedInfo.style.opacity = '1';
-        this.elements.matchFixedInfo.style.pointerEvents = 'none';
+        this.elements.matchFixedInfo.style.pointerEvents = 'auto'; // Разрешаем клики на фиксированной инфо
         this.elements.matchCardActions.style.opacity = '1';
         this.elements.matchCardActions.style.pointerEvents = 'auto';
+
+        // Обновляем текст и иконку кнопки "Подробнее"
+        if (this.elements.toggleMatchInfoBtn) {
+            this.elements.toggleMatchInfoBtn.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            `;
+            // Применяем анимацию после обновления innerHTML
+            this.elements.toggleMatchInfoBtn.querySelector('svg').style.animation = 'rotateArrowUp 0.3s forwards';
+        }
     }
 
-    toggleExpand(forceExpand = false) {
-        this.isExpanded = forceExpand ? true : !this.isExpanded;
+    toggleExpand() {
+        this.isExpanded = !this.isExpanded;
         this.elements.matchScrollableContent.classList.toggle('expanded', this.isExpanded);
         this.elements.matchScrollableContent.scrollTop = 0;
         this.elements.matchFixedInfo.style.opacity = this.isExpanded ? '0' : '1';
         this.elements.matchFixedInfo.style.transition = 'opacity 0.4s ease-out';
         this.elements.matchCardActions.style.opacity = this.isExpanded ? '0' : '1';
         this.elements.matchCardActions.style.pointerEvents = this.isExpanded ? 'none' : 'auto';
-    }
 
-    handleTouchStart(e) {
-        // Игнорируем свайп, если касание началось на кнопках действий
-        if (e.target.closest('.match-card-actions')) {
-            return;
-        }
-
-        this.startY = e.touches[0].clientY;
-        const style = window.getComputedStyle(this.elements.matchScrollableContent);
-        this.currentTranslateY = new DOMMatrixReadOnly(style.transform).m42;
-
-        const target = e.target;
-        const scrollable = this.elements.matchScrollableContent;
-        const isInsideScrollableContent = scrollable.contains(target) && target !== this.elements.matchScrollIndicator;
-
-        if (isInsideScrollableContent && this.isExpanded) {
-            // Если пользователь уже прокручивает контент внутри, позволяем ему это делать
-            this.isScrollingContent = true;
-        } else {
-            this.isScrollingContent = false;
-        }
-        
-        this.elements.matchScrollableContent.style.transition = 'none';
-        this.elements.matchFixedInfo.style.transition = 'opacity 0.3s ease-out';
-    }
-
-    handleTouchMove(e) {
-        const deltaY = e.touches[0].clientY - this.startY;
-        
-        if (this.isScrollingContent) {
-            // Если пользователь прокручивает контент внутри, и он достиг края прокрутки,
-            // то мы можем начать перехватывать событие для свайпа карточки.
-            const scrollable = this.elements.matchScrollableContent;
-            const atTop = scrollable.scrollTop === 0;
-            const atBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight;
-
-            if ((atTop && deltaY > 0) || (atBottom && deltaY < 0)) {
-                // Если свайп вниз на самом верху или свайп вверх на самом низу,
-                // то переключаемся на управление карточкой.
-                this.isScrollingContent = false;
+        // Обновляем текст и иконку кнопки "Подробнее"
+        if (this.elements.toggleMatchInfoBtn) {
+            const svgElement = this.elements.toggleMatchInfoBtn.querySelector('svg');
+            if (this.isExpanded) {
+                this.elements.toggleMatchInfoBtn.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 15 12 9 18 15"></polyline>
+                    </svg>
+                `;
+                // Применяем анимацию после обновления innerHTML
+                this.elements.toggleMatchInfoBtn.querySelector('svg').style.animation = 'rotateArrowDown 0.3s forwards';
             } else {
-                // Иначе, продолжаем прокручивать контент
-                return;
+                this.elements.toggleMatchInfoBtn.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                `;
+                // Применяем анимацию после обновления innerHTML
+                this.elements.toggleMatchInfoBtn.querySelector('svg').style.animation = 'rotateArrowUp 0.3s forwards';
             }
         }
-
-        // Если мы дошли до этой точки, значит, мы управляем карточкой
-        e.preventDefault(); // Предотвращаем прокрутку страницы
-
-        const cardHeight = this.elements.matchCard.offsetHeight;
-        const initialVisibleHeightPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--match-scrollable-content-initial-visible-height', '150px').replace('px', ''));
-        const expandedTopPositionPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--match-expanded-top-position').replace('px', ''));
-
-        let newTranslateY = this.currentTranslateY + deltaY;
-
-        // Ограничиваем движение:
-        // - Нельзя свайпнуть ниже начального свернутого положения (cardHeight - initialVisibleHeightPx)
-        // - Нельзя свайпнуть выше, чем полностью раскрытое положение (expandedTopPositionPx)
-        newTranslateY = Math.max(expandedTopPositionPx, Math.min(cardHeight - initialVisibleHeightPx, newTranslateY)); 
-
-        this.elements.matchScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
-
-        // Рассчитываем прозрачность фиксированной информации
-        // Определение диапазона для изменения прозрачности
-        const opacityRangeStart = expandedTopPositionPx;
-        const opacityRangeEnd = cardHeight - initialVisibleHeightPx; // Когда фиксированная инфо полностью видна
-
-        let opacity = 1; // По умолчанию полностью видна
-        if (newTranslateY < opacityRangeEnd) {
-            opacity = (newTranslateY - opacityRangeStart) / (opacityRangeEnd - opacityRangeStart);
-            opacity = Math.max(0, Math.min(1, opacity)); // Ограничиваем от 0 до 1
-        }
-        this.elements.matchFixedInfo.style.opacity = opacity;
     }
-
-    handleTouchEnd(e) {
-        if (this.isScrollingContent) {
-            this.isScrollingContent = false;
-            return;
-        }
-
-        this.elements.matchScrollableContent.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        this.elements.matchFixedInfo.style.transition = 'opacity 0.4s ease-out';
-
-        const currentTransformY = new DOMMatrixReadOnly(window.getComputedStyle(this.elements.matchScrollableContent).transform).m42;
-        
-        const cardHeight = this.elements.matchCard.offsetHeight;
-        const initialVisibleHeightPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--match-scrollable-content-initial-visible-height', '150px').replace('px', ''));
-        const expandedTopPositionPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--match-expanded-top-position').replace('px', ''));
-
-        // Порог для определения, должно ли быть раскрыто или свернуто
-        // Если текущее положение ближе к раскрытому состоянию, то раскрываем
-        const threshold = expandedTopPositionPx + (cardHeight - initialVisibleHeightPx - expandedTopPositionPx) / 2;
-
-        // Определяем, должна ли карточка быть полностью раскрыта или свернута
-        if (currentTransformY < threshold) {
-            this.elements.matchScrollableContent.classList.add('expanded');
-            this.isExpanded = true;
-            this.elements.matchFixedInfo.style.opacity = '0';
-        } else {
-            this.elements.matchScrollableContent.classList.remove('expanded');
-            this.isExpanded = false;
-            this.elements.matchFixedInfo.style.opacity = '1';
-        }
-        // Сброс трансформации, чтобы класс expanded мог управлять
-        this.elements.matchScrollableContent.style.transform = ''; 
-    }
+    // Методы handleTouchStart, handleTouchMove, handleTouchEnd удалены
 }

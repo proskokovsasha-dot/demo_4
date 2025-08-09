@@ -137,7 +137,7 @@
     margin-bottom: 20px;
     flex-shrink: 0;
     z-index: 4;
-    pointer-events: none;
+    pointer-events: auto; /* Разрешаем клики, чтобы кнопка "Подробнее" работала */
     opacity: 1;
     transition: opacity 0.4s ease-out;
 }
@@ -169,16 +169,15 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 90%;
     background-color: var(--surface);
     border-top-left-radius: var(--radius-lg);
     border-top-right-radius: var(--radius-lg);
     padding: 30px;
-    padding-top: 50px;
+    padding-top: 20px; /* Уменьшаем паддинг сверху, так как индикатора не будет */
     box-shadow: var(--shadow-lg);
-    /* Изначально скрыта, видна только часть, но теперь учитываем высоту фиксированной информации */
-    transform: translateY(calc(100% - 150px)); /* Начальное положение: 150px видимой части снизу */
-    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Более плавная анимация */
+    transform: translateY(100%); /* Полностью скрыт по умолчанию */
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     color: var(--text-primary);
@@ -194,21 +193,10 @@
 }
 
 .match-scrollable-content.expanded {
-    /* Полностью раскрыта, но теперь с учетом фиксированной информации */
-    transform: translateY(var(--match-expanded-top-position)); /* Новая переменная для верхней позиции */
+    transform: translateY(var(--match-expanded-top-position)); /* Полностью раскрыта */
 }
 
-.match-scroll-indicator {
-    width: 40px;
-    height: 5px;
-    background-color: var(--border);
-    border-radius: 5px;
-    position: absolute;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    cursor: pointer;
-}
+/* match-scroll-indicator удален */
 
 .match-section .section-title {
     font-size: 1.3rem;
@@ -394,12 +382,10 @@
     }
     .match-scrollable-content {
         padding: 20px;
-        padding-top: 40px;
-        /* Изначальное положение для мобильных */
-        transform: translateY(calc(100% - 100px)); /* 100px видимой части снизу */
+        padding-top: 20px; /* Уменьшаем паддинг сверху */
+        transform: translateY(100%); /* Полностью скрыт по умолчанию */
     }
     .match-scrollable-content.expanded {
-        /* Полностью раскрыта для мобильных */
         transform: translateY(var(--match-expanded-top-position-mobile));
     }
     .match-section .section-title {
@@ -472,12 +458,10 @@
     }
     .match-scrollable-content {
         padding: 15px;
-        padding-top: 35px;
-        /* Изначальное положение для очень маленьких экранов */
-        transform: translateY(calc(100% - 80px)); /* 80px видимой части снизу */
+        padding-top: 15px; /* Уменьшаем паддинг сверху */
+        transform: translateY(100%); /* Полностью скрыт по умолчанию */
     }
     .match-scrollable-content.expanded {
-        /* Полностью раскрыта для очень маленьких экранов */
         transform: translateY(var(--match-expanded-top-position-mobile-sm));
     }
     .match-photos-grid {
