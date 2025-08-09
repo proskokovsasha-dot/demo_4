@@ -106,6 +106,7 @@
     box-shadow: var(--shadow-sm);
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
+    border-radius: 15px;
 }
 
 .btn-back-to-chats {
