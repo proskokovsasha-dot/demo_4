@@ -353,6 +353,51 @@
     padding: 10px;
 }
 
+/* НОВЫЕ СТИЛИ ДЛЯ КНОПКИ ЗАКРЫТИЯ ВЕРХНЕЙ ИНФОРМАЦИИ */
+.match-close-info-btn {
+    position: absolute;
+    top: 90px; /* Отступ сверху */
+    right: 15px; /* Отступ справа */
+    background-color: rgba(0, 0, 0, 0.4); /* Полупрозрачный фон */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 6; /* Выше других элементов карточки */
+    opacity: 0; /* Изначально скрыта */
+    visibility: hidden; /* Изначально скрыта */
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.match-close-info-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: white;
+    stroke-width: 2;
+}
+
+.match-close-info-btn:hover {
+    background-color: rgba(0, 0, 0, 0.6);
+    transform: scale(1.05);
+}
+
+.match-close-info-btn:active {
+    transform: scale(0.95);
+}
+
+/* Показываем кнопку закрытия, когда контент раскрыт */
+.match-scrollable-content.expanded + .match-close-info-btn {
+    opacity: 1;
+    visibility: visible;
+}
+
+
 /* Адаптация для мобильных */
 @media (max-width: 480px) {
     .match-card-wrapper {
@@ -441,6 +486,17 @@
     .action-btn svg {
         width: 25px;
         height: 25px;
+    }
+
+    .match-close-info-btn {
+        width: 36px;
+        height: 36px;
+        top: 10px;
+        right: 10px;
+    }
+    .match-close-info-btn svg {
+        width: 20px;
+        height: 20px;
     }
 }
 @media (max-width: 360px) {

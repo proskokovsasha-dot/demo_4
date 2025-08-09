@@ -4,7 +4,9 @@ class MatchHandler {
         this.currentIndex = 0;
         this.isExpanded = false;
         this.fixedInfoHeight = 0;
-        // Удалены свойства, связанные со свайпом: this.scrollThreshold, this.startY, this.currentTranslateY, this.isScrollingContent
+        this.startY = 0; // Для свайпа
+        this.currentTranslateY = 0; // Для свайпа
+        this.isScrollingContent = false; // Для свайпа
         this.init();
     }
 
@@ -27,14 +29,13 @@ class MatchHandler {
             matchLastActive: document.getElementById('matchLastActive'),
             matchDistance: document.getElementById('matchDistance'),
             noProfilesMessage: document.getElementById('noProfilesMessage'),
-            // matchScrollIndicator удален
             matchFixedInfo: document.getElementById('matchFixedInfo'),
             nopeBtn: document.getElementById('nopeBtn'),
-            // viewProfileBtn теперь используется как toggleMatchInfoBtn
             likeBtn: document.getElementById('likeBtn'),
             matchCardActions: document.querySelector('.match-card-actions'),
             matchActiveDot: document.querySelector('.match-active-dot'),
-            toggleMatchInfoBtn: document.getElementById('viewProfileBtn') // Используем существующую кнопку "viewProfileBtn" как "Подробнее"
+            toggleMatchInfoBtn: document.getElementById('viewProfileBtn'), // Кнопка "Подробнее"
+            closeMatchInfoBtn: document.getElementById('closeMatchInfoBtn') // НОВЫЙ ЭЛЕМЕНТ: Кнопка закрытия
         };
     }
 
@@ -43,16 +44,15 @@ class MatchHandler {
         if (this.nopeBtnHandler) {
             this.elements.nopeBtn.removeEventListener('click', this.nopeBtnHandler);
             this.elements.likeBtn.removeEventListener('click', this.likeBtnHandler);
-            // Удаляем старый обработчик для viewProfileBtn, если он был
-            if (this.toggleMatchInfoBtnHandler) {
-                this.elements.toggleMatchInfoBtn.removeEventListener('click', this.toggleMatchInfoBtnHandler);
+            this.elements.toggleMatchInfoBtn.removeEventListener('click', this.toggleMatchInfoBtnHandler);
+            if (this.closeMatchInfoBtnHandler) {
+                this.elements.closeMatchInfoBtn.removeEventListener('click', this.closeMatchInfoBtnHandler);
             }
+            // Удаляем обработчики свайпа, если они были привязаны ранее
+            this.elements.matchCard.removeEventListener('touchstart', this.handleTouchStartBound);
+            this.elements.matchCard.removeEventListener('touchmove', this.handleTouchMoveBound);
+            this.elements.matchCard.removeEventListener('touchend', this.handleTouchEndBound);
         }
-        // Удаляем обработчики свайпа, так как они больше не нужны для раскрытия информации
-        // this.elements.matchCard.removeEventListener('touchstart', this.handleTouchStartBound);
-        // this.elements.matchCard.removeEventListener('touchmove', this.handleTouchMoveBound);
-        // this.elements.matchCard.removeEventListener('touchend', this.handleTouchEndBound);
-
 
         // Привязываем новые обработчики
         this.nopeBtnHandler = () => this.handlePass();
@@ -61,9 +61,22 @@ class MatchHandler {
         this.likeBtnHandler = () => this.handleLike();
         this.elements.likeBtn.addEventListener('click', this.likeBtnHandler);
 
-        // НОВЫЙ ОБРАБОТЧИК ДЛЯ КНОПКИ "ПОДРОБНЕЕ"
         this.toggleMatchInfoBtnHandler = this.toggleExpand.bind(this);
         this.elements.toggleMatchInfoBtn.addEventListener('click', this.toggleMatchInfoBtnHandler);
+
+        // НОВЫЙ ОБРАБОТЧИК ДЛЯ КНОПКИ ЗАКРЫТИЯ
+        this.closeMatchInfoBtnHandler = () => this.toggleExpand(); // Используем тот же метод toggleExpand
+        this.elements.closeMatchInfoBtn.addEventListener('click', this.closeMatchInfoBtnHandler);
+
+        // Привязываем методы свайпа к this
+        this.handleTouchStartBound = this.handleTouchStart.bind(this);
+        this.handleTouchMoveBound = this.handleTouchMove.bind(this);
+        this.handleTouchEndBound = this.handleTouchEnd.bind(this);
+
+        // Добавляем обработчики свайпа для match-card для открытия/закрытия
+        this.elements.matchCard.addEventListener('touchstart', this.handleTouchStartBound, { passive: false });
+        this.elements.matchCard.addEventListener('touchmove', this.handleTouchMoveBound, { passive: false });
+        this.elements.matchCard.addEventListener('touchend', this.handleTouchEndBound);
     }
 
     generateRandomProfiles(count = 30) {
@@ -426,9 +439,6 @@ class MatchHandler {
         
         const expandedTopPositionMobileSm = matchHeaderHeight + this.fixedInfoHeight + 10;
         document.documentElement.style.setProperty('--match-expanded-top-position-mobile-sm', `${expandedTopPositionMobileSm}px`);
-
-        // Изначальное положение свернутого блока теперь полностью скрыто (transform: translateY(100%))
-        // Поэтому здесь не нужно устанавливать transform.
     }
 
     resetScrollState() {
@@ -439,6 +449,8 @@ class MatchHandler {
         this.elements.matchFixedInfo.style.pointerEvents = 'auto'; // Разрешаем клики на фиксированной инфо
         this.elements.matchCardActions.style.opacity = '1';
         this.elements.matchCardActions.style.pointerEvents = 'auto';
+        this.elements.closeMatchInfoBtn.style.opacity = '0'; // Скрываем кнопку закрытия
+        this.elements.closeMatchInfoBtn.style.visibility = 'hidden';
 
         // Обновляем текст и иконку кнопки "Подробнее"
         if (this.elements.toggleMatchInfoBtn) {
@@ -461,6 +473,10 @@ class MatchHandler {
         this.elements.matchFixedInfo.style.transition = 'opacity 0.4s ease-out';
         this.elements.matchCardActions.style.opacity = this.isExpanded ? '0' : '1';
         this.elements.matchCardActions.style.pointerEvents = this.isExpanded ? 'none' : 'auto';
+
+        // Управление видимостью кнопки закрытия
+        this.elements.closeMatchInfoBtn.style.opacity = this.isExpanded ? '1' : '0';
+        this.elements.closeMatchInfoBtn.style.visibility = this.isExpanded ? 'visible' : 'hidden';
 
         // Обновляем текст и иконку кнопки "Подробнее"
         if (this.elements.toggleMatchInfoBtn) {
@@ -485,5 +501,152 @@ class MatchHandler {
             }
         }
     }
-    // Методы handleTouchStart, handleTouchMove, handleTouchEnd удалены
+
+    // НОВЫЕ МЕТОДЫ ДЛЯ СВАЙПА ВВЕРХ/ВНИЗ
+    handleTouchStart(e) {
+        // Игнорируем свайп, если касание началось на кнопках действий или кнопке закрытия
+        if (e.target.closest('.match-card-actions') || e.target.closest('#closeMatchInfoBtn')) {
+            return;
+        }
+
+        this.startY = e.touches[0].clientY;
+        const style = window.getComputedStyle(this.elements.matchScrollableContent);
+        this.currentTranslateY = new DOMMatrixReadOnly(style.transform).m42;
+        this.elements.matchScrollableContent.style.transition = 'none';
+        this.elements.matchFixedInfo.style.transition = 'opacity 0.3s ease-out';
+        this.elements.matchCardActions.style.transition = 'opacity 0.3s ease-out';
+        this.elements.closeMatchInfoBtn.style.transition = 'opacity 0.3s ease, visibility 0.3s ease';
+
+        const target = e.target;
+        const scrollable = this.elements.matchScrollableContent;
+        this.isScrollingContent = scrollable.contains(target) && this.isExpanded;
+    }
+
+    handleTouchMove(e) {
+        const deltaY = e.touches[0].clientY - this.startY;
+
+        if (this.isScrollingContent) {
+            const scrollable = this.elements.matchScrollableContent;
+            const atTop = scrollable.scrollTop === 0;
+            const atBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight;
+
+            if ((atTop && deltaY > 0) || (atBottom && deltaY < 0)) {
+                this.isScrollingContent = false;
+            } else {
+                return;
+            }
+        }
+
+        e.preventDefault(); // Предотвращаем прокрутку страницы
+
+        const cardHeight = this.elements.matchCard.offsetHeight;
+        const matchHeaderHeight = document.querySelector('.match-header').offsetHeight;
+
+        // Получаем текущие значения CSS-переменных для адаптации
+        const expandedPositionPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--match-expanded-top-position').replace('px', ''));
+        const expandedPositionMobilePx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--match-expanded-top-position-mobile').replace('px', ''));
+        const expandedPositionMobileSmPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--match-expanded-top-position-mobile-sm').replace('px', ''));
+
+        let currentExpandedPosition = expandedPositionPx;
+        if (window.innerWidth <= 480) {
+            currentExpandedPosition = expandedPositionMobilePx;
+        }
+        if (window.innerWidth <= 360) {
+            currentExpandedPosition = expandedPositionMobileSmPx;
+        }
+
+        let newTranslateY = this.currentTranslateY + deltaY;
+
+        // Ограничиваем движение:
+        // - Нельзя свайпнуть ниже начального свернутого положения (cardHeight - 10% от высоты карточки, так как 90% скрыто)
+        // - Нельзя свайпнуть выше, чем полностью раскрытое положение (currentExpandedPosition)
+        newTranslateY = Math.max(currentExpandedPosition, Math.min(cardHeight * 0.9, newTranslateY)); 
+
+        this.elements.matchScrollableContent.style.transform = `translateY(${newTranslateY}px)`;
+
+        // Рассчитываем прозрачность фиксированной информации и кнопок действий
+        const opacityRangeStart = currentExpandedPosition;
+        const opacityRangeEnd = cardHeight * 0.9; // Когда фиксированная инфо и кнопки действий полностью видны
+
+        let opacity = 1; // По умолчанию полностью видна
+        if (newTranslateY < opacityRangeEnd) {
+            opacity = (newTranslateY - opacityRangeStart) / (opacityRangeEnd - opacityRangeStart);
+            opacity = Math.max(0, Math.min(1, opacity)); // Ограничиваем от 0 до 1
+        }
+        this.elements.matchFixedInfo.style.opacity = opacity;
+        this.elements.matchCardActions.style.opacity = opacity;
+        this.elements.closeMatchInfoBtn.style.opacity = 1 - opacity; // Кнопка закрытия появляется при скрытии фиксированной инфо
+        this.elements.closeMatchInfoBtn.style.visibility = (1 - opacity) > 0.1 ? 'visible' : 'hidden'; // Показываем, если достаточно прозрачна
+    }
+
+    handleTouchEnd(e) {
+        if (this.isScrollingContent) {
+            this.isScrollingContent = false;
+            return;
+        }
+
+        this.elements.matchScrollableContent.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        this.elements.matchFixedInfo.style.transition = 'opacity 0.4s ease-out';
+        this.elements.matchCardActions.style.transition = 'opacity 0.4s ease-out';
+        this.elements.closeMatchInfoBtn.style.transition = 'opacity 0.4s ease, visibility 0.4s ease';
+
+        const currentTransformY = new DOMMatrixReadOnly(window.getComputedStyle(this.elements.matchScrollableContent).transform).m42;
+        
+        const cardHeight = this.elements.matchCard.offsetHeight;
+        const matchHeaderHeight = document.querySelector('.match-header').offsetHeight;
+
+        const expandedPositionPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--match-expanded-top-position').replace('px', ''));
+        const expandedPositionMobilePx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--match-expanded-top-position-mobile').replace('px', ''));
+        const expandedPositionMobileSmPx = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--match-expanded-top-position-mobile-sm').replace('px', ''));
+
+        let currentExpandedPosition = expandedPositionPx;
+        if (window.innerWidth <= 480) {
+            currentExpandedPosition = expandedPositionMobilePx;
+        }
+        if (window.innerWidth <= 360) {
+            currentExpandedPosition = expandedPositionMobileSmPx;
+        }
+
+        // Порог для определения, должно ли быть раскрыто или свернуто
+        const threshold = currentExpandedPosition + (cardHeight * 0.9 - currentExpandedPosition) / 2;
+
+        if (currentTransformY < threshold) {
+            this.elements.matchScrollableContent.classList.add('expanded');
+            this.isExpanded = true;
+            this.elements.matchFixedInfo.style.opacity = '0';
+            this.elements.matchCardActions.style.opacity = '0';
+            this.elements.matchCardActions.style.pointerEvents = 'none';
+            this.elements.closeMatchInfoBtn.style.opacity = '1';
+            this.elements.closeMatchInfoBtn.style.visibility = 'visible';
+            // Обновляем иконку кнопки "Подробнее"
+            if (this.elements.toggleMatchInfoBtn) {
+                this.elements.toggleMatchInfoBtn.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 15 12 9 18 15"></polyline>
+                    </svg>
+                `;
+                this.elements.toggleMatchInfoBtn.querySelector('svg').style.animation = 'rotateArrowDown 0.3s forwards';
+            }
+        } else {
+            this.elements.matchScrollableContent.classList.remove('expanded');
+            this.isExpanded = false;
+            this.elements.matchFixedInfo.style.opacity = '1';
+            this.elements.matchCardActions.style.opacity = '1';
+            this.elements.matchCardActions.style.pointerEvents = 'auto';
+            this.elements.closeMatchInfoBtn.style.opacity = '0';
+            this.elements.closeMatchInfoBtn.style.visibility = 'hidden';
+            // Обновляем иконку кнопки "Подробнее"
+            if (this.elements.toggleMatchInfoBtn) {
+                this.elements.toggleMatchInfoBtn.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                `;
+                this.elements.toggleMatchInfoBtn.querySelector('svg').style.animation = 'rotateArrowUp 0.3s forwards';
+            }
+        }
+        // Сброс трансформации, чтобы класс expanded мог управлять
+        this.elements.matchScrollableContent.style.transform = ''; 
+    }
 }
