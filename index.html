@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <title>ТочкаСхода — Знакомства</title>
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/components.css">
@@ -265,11 +265,11 @@
         .match-modal-content {
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
             color: white;
-            padding: 40px 30px;
+            padding: 25px 20px; /* Уменьшил padding */
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-lg);
             text-align: center;
-            max-width: 400px;
+            max-width: 320px; /* Уменьшил max-width */
             width: 90%;
             transform: scale(0.8) translateY(50px);
             opacity: 0;
@@ -302,46 +302,46 @@
         }
 
         .match-modal-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
+            font-size: 3rem; /* Уменьшил размер иконки */
+            margin-bottom: 15px; /* Уменьшил отступ */
             animation: pulse 1.5s infinite;
         }
 
         .match-modal-title {
-            font-size: 2.5rem;
+            font-size: 2rem; /* Уменьшил размер заголовка */
             font-weight: 800;
-            margin-bottom: 15px;
+            margin-bottom: 10px; /* Уменьшил отступ */
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .match-modal-message {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
+            font-size: 1rem; /* Уменьшил размер текста сообщения */
+            margin-bottom: 20px; /* Уменьшил отступ */
             line-height: 1.4;
         }
 
         .match-modal-avatar {
-            width: 100px;
-            height: 100px;
+            width: 80px; /* Уменьшил размер аватара */
+            height: 80px;
             border-radius: 50%;
             background-size: cover;
             background-position: center;
-            border: 4px solid white;
+            border: 3px solid white; /* Уменьшил толщину рамки */
             box-shadow: var(--shadow-md);
-            margin: 0 auto 20px;
+            margin: 0 auto 15px; /* Уменьшил отступ */
         }
 
         .match-modal-actions {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px; /* Уменьшил отступ между кнопками */
         }
 
         .match-modal-actions .btn {
             width: 100%;
             min-width: unset;
-            padding: 15px 20px;
-            font-size: 1.1rem;
+            padding: 12px 15px; /* Уменьшил padding кнопок */
+            font-size: 1rem; /* Уменьшил размер шрифта кнопок */
             border-radius: var(--radius-md);
             box-shadow: var(--shadow-md);
         }
@@ -358,24 +358,25 @@
 
         @media (max-width: 480px) {
             .match-modal-content {
-                padding: 30px 20px;
+                padding: 20px 15px; /* Дополнительно уменьшил padding для маленьких экранов */
+                max-width: 280px; /* Дополнительно уменьшил max-width для маленьких экранов */
             }
             .match-modal-icon {
-                font-size: 3rem;
+                font-size: 2.5rem;
             }
             .match-modal-title {
-                font-size: 2rem;
+                font-size: 1.8rem;
             }
             .match-modal-message {
-                font-size: 1rem;
+                font-size: 0.9rem;
             }
             .match-modal-avatar {
-                width: 80px;
-                height: 80px;
+                width: 70px;
+                height: 70px;
             }
             .match-modal-actions .btn {
-                padding: 12px 15px;
-                font-size: 1rem;
+                padding: 10px 12px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -461,11 +462,6 @@
                                 <div class="profile-interests" id="myProfileInterests"></div>
                             </div>
 
-                            <div class="profile-section">
-                                <h3 class="section-title">Фото</h3>
-                                <div class="profile-photos-grid" id="myProfilePhotosGrid"></div>
-                            </div>
-
                             <div class="profile-actions">
                                 <button class="btn btn-edit" id="editBtn">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -536,11 +532,6 @@
                             <div class="match-section">
                                 <h3 class="section-title">Интересы</h3>
                                 <div class="match-interests" id="matchInterests"></div>
-                            </div>
-
-                            <div class="match-section">
-                                <h3 class="section-title">Фото</h3>
-                                <div class="match-photos-grid" id="matchPhotosGrid"></div>
                             </div>
                         </div>
                         <div class="match-card-actions">
@@ -628,7 +619,6 @@
         </div>
     </div>
 
-    <!-- НОВОЕ: Модальное окно для Match/Like -->
     <div class="match-modal-overlay" id="matchSuccessModal">
         <div class="match-modal-content">
             <div class="match-modal-icon" id="matchModalIcon">❤️</div>

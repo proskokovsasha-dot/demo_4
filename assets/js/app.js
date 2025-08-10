@@ -53,16 +53,14 @@ class DatingApp {
                 name: '',
                 gender: '',
                 age: '',
-                dob: { day: '', month: '', year: '' }, // Добавлено поле для даты рождения
-                zodiacSign: null, // Добавлено поле для знака зодиака
+                dob: { day: '', month: '', year: '' },
+                zodiacSign: null,
                 city: '',
                 description: '',
                 interests: [],
                 lookingFor: [],
                 preference: 'both',
                 profileColor: '#FF6B6B',
-                avatar: null,
-                photos: [],
             },
             suggestedProfiles: [],
             currentLanguage: 'ru', // Default language
@@ -95,9 +93,9 @@ class DatingApp {
                 whoAreYouLookingFor: 'Кого вы ищете?',
                 profileColor: 'Цвет профиля',
                 orChooseYourColor: 'Или выберите свой цвет',
-                yourPhotos: 'Ваши фото',
-                addPhoto: '📸 Добавить фото',
-                addPhotoDescription: 'Добавьте фото для профиля.',
+                yourPhotos: 'Ваши фото', // Удалено из функционала, но оставлено для перевода
+                addPhoto: '📸 Добавить фото', // Удалено из функционала, но оставлено для перевода
+                addPhotoDescription: 'Добавьте фото для профиля.', // Удалено из функционала, но оставлено для перевода
                 aboutYou: 'О себе',
                 aboutYouPlaceholder: 'Я люблю путешествия, книги и...',
                 saveProfile: 'Сохранить профиль',
@@ -107,7 +105,7 @@ class DatingApp {
                 noDescription: 'Пользователь пока ничего о себе не рассказал.',
                 noLookingFor: 'Не указано, что ищет',
                 noInterests: 'Интересы не выбраны',
-                noPhotos: 'Фотографии не добавлены',
+                noPhotos: 'Фотографии не добавлены', // Удалено из функционала, но оставлено для перевода
                 noNewProfiles: 'Пока нет новых анкет. Попробуйте позже!',
                 backToProfile: 'Вернуться в профиль',
                 yourChats: 'Ваши чаты',
@@ -134,7 +132,8 @@ class DatingApp {
                 lastActiveRecently: 'Была недавно',
                 km: 'км',
                 maxInterestsAlert: 'Вы можете выбрать не более {maxInterests} интересов.',
-                fillAllFieldsAlert: 'Пожалуйста, заполните все обязательные поля и добавьте фото.',
+                fillAllFieldsAlert: 'Пожалуйста, заполните все обязательные поля.',
+                invalidDate: 'Пожалуйста, введите корректную дату.',
                 friendship: 'Дружба',
                 dating: 'Романтические отношения',
                 serious: 'Серьёзные отношения',
@@ -159,7 +158,7 @@ class DatingApp {
                 selectLanguage: 'Выберите язык',
                 next: 'Далее',
                 back: 'Назад',
-                // Zodiac signs
+                profileColorSettings: 'Цвет профиля',
                 aquarius: 'Водолей',
                 pisces: 'Рыбы',
                 aries: 'Овен',
@@ -199,9 +198,9 @@ class DatingApp {
                 whoAreYouLookingFor: 'Who are you looking for?',
                 profileColor: 'Profile Color',
                 orChooseYourColor: 'Or choose your own color',
-                yourPhotos: 'Your Photos',
-                addPhoto: '📸 Add Photo',
-                addPhotoDescription: 'Add photos for your profile.',
+                yourPhotos: 'Your Photos', // Removed from functionality, but kept for translation
+                addPhoto: '📸 Add Photo', // Removed from functionality, but kept for translation
+                addPhotoDescription: 'Add photos for your profile.', // Removed from functionality, but kept for translation
                 aboutYou: 'About You',
                 aboutYouPlaceholder: 'I love traveling, books, and...',
                 saveProfile: 'Save Profile',
@@ -211,7 +210,7 @@ class DatingApp {
                 noDescription: 'User has not provided a description yet.',
                 noLookingFor: 'Not specified what they are looking for',
                 noInterests: 'No interests selected',
-                noPhotos: 'No photos added',
+                noPhotos: 'No photos added', // Removed from functionality, but kept for translation
                 noNewProfiles: 'No new profiles for now. Try again later!',
                 backToProfile: 'Back to Profile',
                 yourChats: 'Your Chats',
@@ -238,7 +237,8 @@ class DatingApp {
                 lastActiveRecently: 'Online recently',
                 km: 'km',
                 maxInterestsAlert: 'You can select no more than {maxInterests} interests.',
-                fillAllFieldsAlert: 'Please fill in all required fields and add a photo.',
+                fillAllFieldsAlert: 'Please fill in all required fields.',
+                invalidDate: 'Please enter a valid date.',
                 friendship: 'Friendship',
                 dating: 'Dating',
                 serious: 'Serious relationship',
@@ -263,7 +263,7 @@ class DatingApp {
                 selectLanguage: 'Select Language',
                 next: 'Next',
                 back: 'Back',
-                // Zodiac signs
+                profileColorSettings: 'Profile Color',
                 aquarius: 'Aquarius',
                 pisces: 'Pisces',
                 aries: 'Aries',
@@ -283,13 +283,13 @@ class DatingApp {
         this.formHandler = new FormHandler(this);
         this.profileHandler = new ProfileHandler(this);
         this.uiHandler = new UIHandler(this);
-        this.matchHandler = new MatchHandler(this); 
+        this.matchHandler = new MatchHandler(this);
         this.chatHandler = new ChatHandler(this);
-        this.settingsHandler = new SettingsHandler(this); // Initialize SettingsHandler
+        this.settingsHandler = new SettingsHandler(this);
 
         this.bindEvents();
         this.checkSavedProfile();
-        this.setLanguage(this.state.currentLanguage); // Set language on app start
+        this.setLanguage(this.state.currentLanguage);
         this.showLoadingScreen();
     }
 
@@ -326,7 +326,7 @@ class DatingApp {
         this.elements = {
             registrationForm: document.getElementById('registrationForm'),
             profileView: document.getElementById('profileView'),
-            matchScreen: document.getElementById('matchScreen'), 
+            matchScreen: document.getElementById('matchScreen'),
             chatScreen: document.getElementById('chatScreen'),
             settingsScreen: document.getElementById('settingsScreen'),
             topNavigation: document.getElementById('topNavigation'),
@@ -340,16 +340,12 @@ class DatingApp {
             matchModalAvatar: document.getElementById('matchModalAvatar'),
             matchModalChatBtn: document.getElementById('matchModalChatBtn'),
             matchModalContinueBtn: document.getElementById('matchModalContinueBtn'),
-            // Elements for translation
-            appTitle: document.getElementById('appTitle'),
-            appSubtitle: document.getElementById('appSubtitle'),
             loadingTitle: document.getElementById('loadingTitle'),
             loadingSubtitle: document.getElementById('loadingSubtitle'),
             navProfileText: document.getElementById('navProfileText'),
             navMatchesText: document.getElementById('navMatchesText'),
             navChatText: document.getElementById('navChatText'),
             navSettingsText: document.getElementById('navSettingsText'),
-            // Add other elements that need translation here
         };
     }
 
@@ -361,19 +357,13 @@ class DatingApp {
             });
         });
 
-        const backToProfileFromMatchBtn = document.getElementById('backToProfileFromMatchBtn'); 
+        const backToProfileFromMatchBtn = document.getElementById('backToProfileFromMatchBtn');
         if (backToProfileFromMatchBtn) {
             backToProfileFromMatchBtn.addEventListener('click', () => this.switchScreen('profile'));
         }
 
-        const clearDataBtn = document.getElementById('clearDataBtn');
-        if (clearDataBtn) {
-            clearDataBtn.addEventListener('click', () => {
-                if (confirm(this.translate('confirmClearData'))) {
-                    this.clearAllData();
-                }
-            });
-        }
+        // Clear data button is now handled within SettingsHandler
+        // No need to bind it here directly, as SettingsHandler will re-render and re-bind
 
         if (this.elements.modalGotItBtn) {
             this.elements.modalGotItBtn.addEventListener('click', () => this.hideSwipeTutorialModal());
@@ -396,8 +386,6 @@ class DatingApp {
         }
     }
 
-        // assets/js/app.js (фрагмент)
-
     checkSavedProfile() {
         const savedProfile = localStorage.getItem('datingProfile');
         const savedLanguage = localStorage.getItem('appLanguage');
@@ -409,25 +397,23 @@ class DatingApp {
         if (savedProfile) {
             try {
                 this.state.userData = JSON.parse(savedProfile);
-                // Убедимся, что массивы инициализированы, если их нет в старых данных
                 if (!Array.isArray(this.state.userData.interests)) {
                     this.state.userData.interests = [];
                 }
                 if (!Array.isArray(this.state.userData.lookingFor)) {
                     this.state.userData.lookingFor = [];
                 }
-                if (!this.state.userData.photos) { // Добавлено: инициализация photos
-                    this.state.userData.photos = [];
-                }
                 if (!this.state.userData.preference) {
                     this.state.userData.preference = 'both';
                 }
-                // Ensure dob and zodiacSign are initialized if not present in old data
                 if (!this.state.userData.dob) {
                     this.state.userData.dob = { day: '', month: '', year: '' };
                 }
                 if (!this.state.userData.zodiacSign) {
                     this.state.userData.zodiacSign = null;
+                }
+                if (!this.state.userData.profileColor) {
+                    this.state.userData.profileColor = '#FF6B6B';
                 }
                 this.state.currentScreen = 'profile';
             } catch (e) {
@@ -439,14 +425,13 @@ class DatingApp {
             this.state.currentScreen = 'registration';
         }
     }
-    
 
     showProfile() {
         this.profileHandler.showProfile();
     }
 
-    startMatch() { 
-        this.matchHandler.startMatch(); 
+    startMatch() {
+        this.matchHandler.startMatch();
         if (!localStorage.getItem('swipeTutorialShown')) {
             this.showSwipeTutorialModal();
             localStorage.setItem('swipeTutorialShown', 'true');
@@ -456,7 +441,7 @@ class DatingApp {
     clearAllData() {
         localStorage.removeItem('datingProfile');
         localStorage.removeItem('swipeTutorialShown');
-        localStorage.removeItem('appLanguage'); // Clear saved language
+        localStorage.removeItem('appLanguage');
         this.state.userData = {
             name: '',
             gender: '',
@@ -469,12 +454,10 @@ class DatingApp {
             lookingFor: [],
             preference: 'both',
             profileColor: '#FF6B6B',
-            avatar: null,
-            photos: [],
         };
-        this.chatHandler.chats = {}; 
+        this.chatHandler.chats = {};
         alert(this.translate('confirmClearData'));
-        this.setLanguage('ru'); // Reset to default language
+        this.setLanguage('ru');
         this.switchScreen('registration');
     }
 
@@ -490,43 +473,43 @@ class DatingApp {
         if (screenName === 'registration') {
             targetScreenElement = this.elements.registrationForm;
             this.elements.topNavigation.style.display = 'none';
-            this.formHandler.renderForm(); // Render the first step of the form
+            this.formHandler.renderForm();
         } else if (screenName === 'profile') {
             targetScreenElement = this.elements.profileView;
             document.querySelector('.nav-btn[data-screen="profile"]').classList.add('active');
             this.elements.topNavigation.style.display = 'flex';
             this.profileHandler.showProfile();
-        } else if (screenName === 'match') { 
-            targetScreenElement = this.elements.matchScreen; 
-            document.querySelector('.nav-btn[data-screen="match"]').classList.add('active'); 
+        } else if (screenName === 'match') {
+            targetScreenElement = this.elements.matchScreen;
+            document.querySelector('.nav-btn[data-screen="match"]').classList.add('active');
             this.elements.topNavigation.style.display = 'flex';
-            this.matchHandler.startMatch(); 
+            this.matchHandler.startMatch();
         } else if (screenName === 'chat') {
             targetScreenElement = this.elements.chatScreen;
             document.querySelector('.nav-btn[data-screen="chat"]').classList.add('active');
             this.elements.topNavigation.style.display = 'flex';
-            this.chatHandler.showChatListScreen(); // Ensure chat list is rendered
+            this.chatHandler.showChatListScreen();
         } else if (screenName === 'settings') {
             targetScreenElement = this.elements.settingsScreen;
             document.querySelector('.nav-btn[data-screen="settings"]').classList.add('active');
             this.elements.topNavigation.style.display = 'flex';
-            this.settingsHandler.renderSettings(); // Render settings content
+            this.settingsHandler.renderSettings();
         }
 
         if (targetScreenElement) {
             targetScreenElement.style.display = 'flex';
             setTimeout(() => {
                 targetScreenElement.classList.add('active');
-            }, 10); 
+            }, 10);
         }
-        
+
         this.state.currentScreen = screenName;
-        this.updateTextContent(); // Update texts on screen switch
+        this.updateTextContent();
     }
 
     showSwipeTutorialModal() {
         this.elements.swipeTutorialModal.classList.add('active');
-        this.updateTextContent(); // Update texts in modal
+        this.updateTextContent();
     }
 
     hideSwipeTutorialModal() {
@@ -534,7 +517,7 @@ class DatingApp {
     }
 
     showMatchSuccessModal(profile, type = 'match') {
-        this.elements.matchModalAvatar.style.backgroundImage = `url(${profile.avatar})`;
+        this.elements.matchModalAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${profile.id}/100/100)`;
         if (type === 'match') {
             this.elements.matchModalIcon.textContent = '❤️';
             this.elements.matchModalTitle.textContent = this.translate('match');
@@ -557,34 +540,33 @@ class DatingApp {
 
     calculateDistance(lat1, lon1, lat2, lon2) {
         if (!lat1 || !lon1 || !lat2 || !lon2) return null;
-        
+
         const R = 6371;
-        const dLat = this.deg2rad(lat2-lat1);
-        const dLon = this.deg2rad(lon2-lon1);
-        const a = 
-            Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
-            Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        const dLat = this.deg2rad(lat2 - lat1);
+        const dLon = this.deg2rad(lon2 - lon1);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return Math.round(R * c);
     }
 
     deg2rad(deg) {
-        return deg * (Math.PI/180);
+        return deg * (Math.PI / 180);
     }
 
-    // Function to determine zodiac sign
     getZodiacSign(day, month) {
         if (!day || !month) return null;
 
-        const date = new Date(2000, month - 1, day); // Use a leap year for consistency
+        const date = new Date(2000, month - 1, day);
         const monthDay = (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day;
 
         for (const sign of this.config.zodiacSigns) {
             const start = sign.start;
             const end = sign.end;
 
-            if (start.substring(0, 2) === '12' && end.substring(0, 2) === '01') { // Capricorn special case (Dec-Jan)
+            if (start.substring(0, 2) === '12' && end.substring(0, 2) === '01') {
                 if (monthDay >= start || monthDay <= end) {
                     return sign;
                 }
@@ -597,7 +579,6 @@ class DatingApp {
         return null;
     }
 
-    // Language functions
     translate(key, replacements = {}) {
         let text = this.translations[this.state.currentLanguage][key] || this.translations['en'][key] || key;
         for (const placeholder in replacements) {
@@ -611,13 +592,12 @@ class DatingApp {
             this.state.currentLanguage = lang;
             localStorage.setItem('appLanguage', lang);
             this.updateTextContent();
-            // Re-render current screen to apply language changes
             if (this.state.currentScreen === 'registration') {
-                this.formHandler.renderForm(); // Re-render the form to update texts
+                this.formHandler.renderForm();
             } else if (this.state.currentScreen === 'profile') {
                 this.profileHandler.showProfile();
             } else if (this.state.currentScreen === 'match') {
-                this.matchHandler.showNextProfile(); // Re-render current match card
+                this.matchHandler.showNextProfile();
             } else if (this.state.currentScreen === 'chat') {
                 this.chatHandler.showChatListScreen();
             } else if (this.state.currentScreen === 'settings') {
@@ -629,7 +609,6 @@ class DatingApp {
     }
 
     updateTextContent() {
-        // Update static texts
         document.getElementById('loadingTitle').textContent = this.translate('loadingTitle');
         document.getElementById('loadingSubtitle').textContent = this.translate('loadingSubtitle');
         document.getElementById('navProfileText').textContent = this.translate('profile');
@@ -637,7 +616,6 @@ class DatingApp {
         document.getElementById('navChatText').textContent = this.translate('chat');
         document.getElementById('navSettingsText').textContent = this.translate('settings');
 
-        // Update modal texts
         const swipeTutorialModal = document.getElementById('swipeTutorialModal');
         if (swipeTutorialModal.classList.contains('active')) {
             document.querySelector('#swipeTutorialModal h3').textContent = this.translate('swipeTutorialTitle');
@@ -653,21 +631,16 @@ class DatingApp {
             document.getElementById('matchModalContinueBtn').textContent = this.translate('continueSwiping');
         }
 
-        // Update settings screen texts
         const settingsScreen = document.getElementById('settingsScreen');
         if (settingsScreen.classList.contains('active')) {
-            document.querySelector('#settingsScreen .section-title').textContent = this.translate('settings');
-            // Re-render settings content to update language for dynamically added elements
-            this.settingsHandler.renderSettings(); 
+            this.settingsHandler.renderSettings();
         }
 
-        // Update chat screen texts
         const chatScreen = document.getElementById('chatScreen');
         if (chatScreen.classList.contains('active')) {
-            this.chatHandler.updateChatTexts(); // Call chat handler to update its texts
+            this.chatHandler.updateChatTexts();
         }
 
-        // Update match screen texts
         const matchScreen = document.getElementById('matchScreen');
         if (matchScreen.classList.contains('active')) {
             document.getElementById('noProfilesMessage').innerHTML = `<p>${this.translate('noNewProfiles')}</p><button class="btn btn-secondary" style="margin-top: 20px;" id="backToProfileFromMatchBtn">${this.translate('backToProfile')}</button>`;

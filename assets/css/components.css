@@ -734,13 +734,67 @@
 .looking-for-item.selected .looking-for-text {
     color: white;
 }
+
+/* НОВЫЕ СТИЛИ ДЛЯ НАСТРОЕК */
+.settings-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Отступы между карточками настроек */
+    padding: 20px 0; /* Внутренние отступы контейнера настроек */
+}
+
+.settings-card {
+    background-color: var(--surface);
+    border-radius: var(--radius-lg); /* Более скругленные углы */
+    box-shadow: var(--shadow-md); /* Более выраженная тень */
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border: 1px solid var(--border); /* Легкая обводка */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.settings-card:hover {
+    transform: translateY(-5px); /* Легкий подъем при наведении */
+    box-shadow: var(--shadow-lg); /* Усиление тени */
+}
+
+.settings-card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.settings-card-header .icon {
+    width: 36px;
+    height: 36px;
+    color: var(--primary); /* Акцентный цвет для иконок */
+    flex-shrink: 0;
+}
+
+.settings-card-header .title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.settings-card-description {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
 /* Language Selector */
 .language-selector {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start; /* Выравнивание по левому краю */
     width: 100%;
-    margin-top: 20px;
     gap: 10px;
 }
 
@@ -753,14 +807,14 @@
 
 .language-select {
     width: 100%;
-    max-width: 250px;
+    max-width: 280px; /* Увеличиваем ширину */
     padding: 12px 15px;
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     font-size: 0.95rem;
-    background-color: var(--surface);
+    background-color: var(--background); /* Фон из переменной */
     color: var(--text-primary);
-    appearance: none; /* Remove default arrow */
+    appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
     background-image: url('data:image/svg+xml;utf8,<svg fill="%237F8C8D" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
@@ -778,16 +832,144 @@
     box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1);
 }
 
+/* Стили для выбора цвета в настройках */
+.settings-color-picker {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Выравнивание по левому краю */
+    width: 100%;
+    gap: 15px;
+}
+
+.settings-color-picker .section-title {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    margin-bottom: 0; /* Убираем лишний отступ */
+    text-align: left;
+}
+
+.settings-color-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-start; /* Выравнивание по левому краю */
+    width: 100%;
+}
+
+.settings-color-option {
+    width: 45px; /* Чуть больше размер */
+    height: 45px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast) ease;
+    position: relative;
+    border: 2px solid transparent;
+    box-shadow: var(--shadow-sm);
+}
+
+.settings-color-option.selected {
+    border-color: var(--primary); /* Акцентный цвет для выбранного */
+    transform: scale(1.15);
+    box-shadow: var(--shadow-md);
+}
+
+.settings-color-option.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem; /* Чуть больше галочка */
+    text-shadow: 0 0 4px rgba(0,0,0,0.6);
+}
+
+.settings-color-custom {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Выравнивание по левому краю */
+    margin-top: 10px;
+}
+
+.settings-color-custom input[type="color"] {
+    width: 60px;
+    height: 60px;
+    border: 3px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal) ease;
+}
+
+.settings-color-custom input[type="color"]:hover {
+    transform: scale(1.08);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary);
+}
+
+.settings-color-custom label {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Кнопка очистки данных */
+.settings-clear-data-btn {
+    width: 100%; /* Растягиваем на всю ширину */
+    margin-top: 20px; /* Отступ сверху */
+    background-color: var(--error); /* Красный цвет для опасного действия */
+    color: white;
+    font-weight: 600;
+    padding: 14px 28px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal) ease;
+}
+
+.settings-clear-data-btn:hover {
+    background-color: var(--error); /* Темнее при наведении */
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Адаптация для мобильных */
 @media (max-width: 480px) {
+    .settings-card {
+        padding: 20px;
+        gap: 10px;
+    }
+    .settings-card-header .icon {
+        width: 30px;
+        height: 30px;
+    }
+    .settings-card-header .title {
+        font-size: 1.3rem;
+    }
+    .settings-card-description {
+        font-size: 0.85rem;
+    }
     .language-select {
         padding: 10px 12px;
         font-size: 0.9rem;
     }
+    .settings-color-option {
+        width: 38px;
+        height: 38px;
+    }
+    .settings-color-custom input[type="color"] {
+        width: 50px;
+        height: 50px;
+    }
+    .settings-color-picker .section-title {
+        font-size: 1.1rem;
+    }
+    .settings-clear-data-btn {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
 }
-/* assets/css/components.css */
-
-/* ... (существующие стили) ... */
-
 /* Стили для пошаговой формы */
 .form-step-container {
     width: 100%;

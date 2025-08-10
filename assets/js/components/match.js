@@ -22,7 +22,7 @@ class MatchHandler {
             matchZodiacSign: document.getElementById('matchZodiacSign'), // Добавлено
             matchLookingFor: document.getElementById('matchLookingFor'),
             matchInterests: document.getElementById('matchInterests'),
-            matchPhotosGrid: document.getElementById('matchPhotosGrid'),
+            // matchPhotosGrid: document.getElementById('matchPhotosGrid'), // Удалено
             matchLastActive: document.getElementById('matchLastActive'),
             matchDistance: document.getElementById('matchDistance'),
             noProfilesMessage: document.getElementById('noProfilesMessage'),
@@ -169,7 +169,7 @@ class MatchHandler {
                 randomInterests.push(shuffledInterests[j].id);
             }
 
-            const photos = [`https://picsum.photos/seed/${randomName}${randomAge}${randomGender}/400/600`];
+            // const photos = [`https://picsum.photos/seed/${randomName}${randomAge}${randomGender}/400/600`]; // Удалено
 
             // Generate random DOB for zodiac sign
             const randomMonth = Math.floor(Math.random() * 12) + 1;
@@ -184,8 +184,8 @@ class MatchHandler {
                 city: randomCity,
                 description: randomDescription,
                 profileColor: randomColor,
-                avatar: photos[0],
-                photos: photos,
+                // avatar: photos[0], // Удалено
+                // photos: photos, // Удалено
                 lookingFor: randomLookingFor,
                 interests: randomInterests,
                 zodiacSign: randomZodiacSign, // Добавлено
@@ -245,7 +245,8 @@ class MatchHandler {
     }
 
     renderProfile(profile) {
-        this.elements.matchCardBg.style.backgroundImage = `url(${profile.avatar})`;
+        // Так как фото удалены, используем заглушку или дефолтный фон
+        this.elements.matchCardBg.style.backgroundImage = `url(https://picsum.photos/seed/${profile.id}/400/600)`;
         
         let nameAgeText = profile.name || this.app.translate('anonymous');
         if (profile.age) {
@@ -285,7 +286,7 @@ class MatchHandler {
         this.updateZodiacSign(profile.zodiacSign); // Добавлено
         this.updateLookingFor(profile.lookingFor, this.app.config.lookingForOptions, this.elements.matchLookingFor);
         this.updateInterests(profile.interests, this.app.config.interests, this.elements.matchInterests);
-        this.updatePhotos(profile.photos, this.elements.matchPhotosGrid);
+        // this.updatePhotos(profile.photos, this.elements.matchPhotosGrid); // Удалено
 
         this.elements.matchCard.style.transform = 'translateX(0) rotate(0)';
         this.elements.matchCard.style.opacity = '1';
@@ -355,20 +356,20 @@ class MatchHandler {
         }
     }
 
-    updatePhotos(photos, container) {
-        if (!container) return;
-        container.innerHTML = '';
-        if (photos && photos.length > 0) {
-            photos.forEach(photo => {
-                const el = document.createElement('div');
-                el.className = 'match-photo-item';
-                el.style.backgroundImage = `url(${photo})`;
-                container.appendChild(el);
-            });
-        } else {
-            container.innerHTML = `<div class="no-data">${this.app.translate('noPhotos')}</div>`;
-        }
-    }
+    // updatePhotos(photos, container) { // Удалено
+    //     if (!container) return;
+    //     container.innerHTML = '';
+    //     if (photos && photos.length > 0) {
+    //         photos.forEach(photo => {
+    //             const el = document.createElement('div');
+    //             el.className = 'match-photo-item';
+    //             el.style.backgroundImage = `url(${photo})`;
+    //             container.appendChild(el);
+    //         });
+    //     } else {
+    //         container.innerHTML = `<div class="no-data">${this.app.translate('noPhotos')}</div>`;
+    //     }
+    // }
 
     handleSwipe(action) {
         const profile = this.app.state.suggestedProfiles[this.currentIndex];

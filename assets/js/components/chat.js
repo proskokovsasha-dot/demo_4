@@ -156,7 +156,7 @@ class ChatHandler {
     addChat(profile) {
         if (!this.chats[profile.id]) {
             this.chats[profile.id] = {
-                partner: profile,
+                partner: { ...profile, avatar: `https://picsum.photos/seed/${profile.id}/50/50` }, // Добавляем заглушку для аватара
                 messages: []
             };
             console.log(`Новый чат добавлен с ${profile.name}`);
