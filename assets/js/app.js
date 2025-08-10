@@ -60,7 +60,7 @@ class DatingApp {
                 interests: [],
                 lookingFor: [],
                 preference: 'both',
-                profileColor: '#FF6B6B',
+                profileColor: '#FF6B6B', // Default color
             },
             suggestedProfiles: [],
             currentLanguage: 'ru', // Default language
@@ -272,10 +272,10 @@ class DatingApp {
                 cancer: 'Cancer',
                 leo: 'Leo',
                 virgo: 'Virgo',
-                libra: 'Libra',
-                scorpio: 'Scorpio',
-                sagittarius: 'Sagittarius',
-                capricorn: 'Capricorn',
+                libra: 'Весы',
+                scorpio: 'Скорпион',
+                sagittarius: 'Стрелец',
+                capricorn: 'Козерог',
             }
         };
 
@@ -290,6 +290,7 @@ class DatingApp {
         this.bindEvents();
         this.checkSavedProfile();
         this.setLanguage(this.state.currentLanguage);
+        this.setAppThemeColor(this.state.userData.profileColor); // Apply saved color on load
         this.showLoadingScreen();
     }
 
@@ -331,21 +332,14 @@ class DatingApp {
             settingsScreen: document.getElementById('settingsScreen'),
             topNavigation: document.getElementById('topNavigation'),
             navButtons: document.querySelectorAll('.nav-btn'),
-            swipeTutorialModal: document.getElementById('swipeTutorialModal'),
-            modalGotItBtn: document.getElementById('modalGotItBtn'),
-            matchSuccessModal: document.getElementById('matchSuccessModal'),
-            matchModalIcon: document.getElementById('matchModalIcon'),
-            matchModalTitle: document.getElementById('matchModalTitle'),
-            matchModalMessage: document.getElementById('matchModalMessage'),
-            matchModalAvatar: document.getElementById('matchModalAvatar'),
-            matchModalChatBtn: document.getElementById('matchModalChatBtn'),
-            matchModalContinueBtn: document.getElementById('matchModalContinueBtn'),
+            // Removed swipeTutorialModal and matchSuccessModal from elements
             loadingTitle: document.getElementById('loadingTitle'),
             loadingSubtitle: document.getElementById('loadingSubtitle'),
             navProfileText: document.getElementById('navProfileText'),
             navMatchesText: document.getElementById('navMatchesText'),
             navChatText: document.getElementById('navChatText'),
             navSettingsText: document.getElementById('navSettingsText'),
+            dynamicStyles: document.getElementById('dynamic-styles'), // Get the style tag
         };
     }
 
@@ -362,28 +356,7 @@ class DatingApp {
             backToProfileFromMatchBtn.addEventListener('click', () => this.switchScreen('profile'));
         }
 
-        // Clear data button is now handled within SettingsHandler
-        // No need to bind it here directly, as SettingsHandler will re-render and re-bind
-
-        if (this.elements.modalGotItBtn) {
-            this.elements.modalGotItBtn.addEventListener('click', () => this.hideSwipeTutorialModal());
-        }
-
-        if (this.elements.matchModalChatBtn) {
-            this.elements.matchModalChatBtn.addEventListener('click', () => {
-                this.hideMatchSuccessModal();
-                if (this.matchHandler.lastMatchedProfile) {
-                    this.chatHandler.openChat(this.matchHandler.lastMatchedProfile.id);
-                    this.switchScreen('chat');
-                }
-            });
-        }
-        if (this.elements.matchModalContinueBtn) {
-            this.elements.matchModalContinueBtn.addEventListener('click', () => {
-                this.hideMatchSuccessModal();
-                this.matchHandler.showNextProfile();
-            });
-        }
+        // Removed event listeners for modalGotItBtn, matchModalChatBtn, matchModalContinueBtn
     }
 
     checkSavedProfile() {
@@ -432,10 +405,7 @@ class DatingApp {
 
     startMatch() {
         this.matchHandler.startMatch();
-        if (!localStorage.getItem('swipeTutorialShown')) {
-            this.showSwipeTutorialModal();
-            localStorage.setItem('swipeTutorialShown', 'true');
-        }
+        // Removed logic to show swipe tutorial modal
     }
 
     clearAllData() {
@@ -458,6 +428,7 @@ class DatingApp {
         this.chatHandler.chats = {};
         alert(this.translate('confirmClearData'));
         this.setLanguage('ru');
+        this.setAppThemeColor(this.state.userData.profileColor); // Reset theme color
         this.switchScreen('registration');
     }
 
@@ -507,36 +478,8 @@ class DatingApp {
         this.updateTextContent();
     }
 
-    showSwipeTutorialModal() {
-        this.elements.swipeTutorialModal.classList.add('active');
-        this.updateTextContent();
-    }
-
-    hideSwipeTutorialModal() {
-        this.elements.swipeTutorialModal.classList.remove('active');
-    }
-
-    showMatchSuccessModal(profile, type = 'match') {
-        this.elements.matchModalAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${profile.id}/100/100)`;
-        if (type === 'match') {
-            this.elements.matchModalIcon.textContent = '❤️';
-            this.elements.matchModalTitle.textContent = this.translate('match');
-            this.elements.matchModalMessage.textContent = this.translate('youLiked', { name: profile.name });
-        } else if (type === 'like') {
-            this.elements.matchModalIcon.textContent = '👍';
-            this.elements.matchModalTitle.textContent = this.translate('likeSent');
-            this.elements.matchModalMessage.textContent = this.translate('youLikedName', { name: profile.name });
-        } else if (type === 'superlike') {
-            this.elements.matchModalIcon.textContent = '✨';
-            this.elements.matchModalTitle.textContent = this.translate('superlikeSent');
-            this.elements.matchModalMessage.textContent = this.translate('youSuperlikedName', { name: profile.name });
-        }
-        this.elements.matchSuccessModal.classList.add('active');
-    }
-
-    hideMatchSuccessModal() {
-        this.elements.matchSuccessModal.classList.remove('active');
-    }
+    // Removed showSwipeTutorialModal and hideSwipeTutorialModal functions
+    // Removed showMatchSuccessModal and hideMatchSuccessModal functions
 
     calculateDistance(lat1, lon1, lat2, lon2) {
         if (!lat1 || !lon1 || !lat2 || !lon2) return null;
@@ -592,6 +535,7 @@ class DatingApp {
             this.state.currentLanguage = lang;
             localStorage.setItem('appLanguage', lang);
             this.updateTextContent();
+            // Re-render current screen to apply language changes
             if (this.state.currentScreen === 'registration') {
                 this.formHandler.renderForm();
             } else if (this.state.currentScreen === 'profile') {
@@ -608,6 +552,48 @@ class DatingApp {
         }
     }
 
+    // Helper to convert hex to RGB
+    hexToRgb(hex) {
+        const bigint = parseInt(hex.slice(1), 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return `${r}, ${g}, ${b}`;
+    }
+
+    // Helper to lighten/darken a color
+    shadeColor(color, percent) {
+        let f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=(f>>8)&0x00FF,B=f&0x0000FF;
+        return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+Math.round((t-B)*p)+B).toString(16).slice(1);
+    }
+
+    // New function to set the app's theme color
+    setAppThemeColor(color) {
+        if (!this.elements.dynamicStyles) {
+            console.error('Dynamic styles element not found!');
+            return;
+        }
+
+        const primaryRgb = this.hexToRgb(color);
+        const primaryDark = this.shadeColor(color, -0.2); // Darken by 20%
+        const primaryLight = this.shadeColor(color, 0.8); // Lighten by 80%
+
+        this.elements.dynamicStyles.textContent = `
+            :root {
+                --primary: ${color};
+                --primary-dark: ${primaryDark};
+                --primary-light: ${primaryLight};
+                --primary-rgb: ${primaryRgb};
+            }
+        `;
+
+        // Update logo stroke color if it exists
+        const logoPath = document.querySelector('.logo-path');
+        if (logoPath) {
+            logoPath.setAttribute('stroke', 'var(--primary)');
+        }
+    }
+
     updateTextContent() {
         document.getElementById('loadingTitle').textContent = this.translate('loadingTitle');
         document.getElementById('loadingSubtitle').textContent = this.translate('loadingSubtitle');
@@ -616,24 +602,12 @@ class DatingApp {
         document.getElementById('navChatText').textContent = this.translate('chat');
         document.getElementById('navSettingsText').textContent = this.translate('settings');
 
-        const swipeTutorialModal = document.getElementById('swipeTutorialModal');
-        if (swipeTutorialModal.classList.contains('active')) {
-            document.querySelector('#swipeTutorialModal h3').textContent = this.translate('swipeTutorialTitle');
-            const paragraphs = document.querySelectorAll('#swipeTutorialModal p');
-            if (paragraphs.length > 0) paragraphs[0].innerHTML = this.translate('swipeTutorialText1');
-            if (paragraphs.length > 1) paragraphs[1].innerHTML = this.translate('swipeTutorialText2');
-            document.getElementById('modalGotItBtn').textContent = this.translate('gotIt');
-        }
-
-        const matchSuccessModal = document.getElementById('matchSuccessModal');
-        if (matchSuccessModal.classList.contains('active')) {
-            document.getElementById('matchModalChatBtn').textContent = this.translate('writeMessage');
-            document.getElementById('matchModalContinueBtn').textContent = this.translate('continueSwiping');
-        }
+        // Removed update for swipeTutorialModal
+        // Removed update for matchSuccessModal
 
         const settingsScreen = document.getElementById('settingsScreen');
         if (settingsScreen.classList.contains('active')) {
-            this.settingsHandler.renderSettings();
+            this.settingsHandler.renderSettings(); // Re-render settings to update texts
         }
 
         const chatScreen = document.getElementById('chatScreen');

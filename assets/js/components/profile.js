@@ -24,10 +24,9 @@ class ProfileHandler {
     showProfile() {
         const { userData } = this.app.state;
 
-        if (this.elements.profileCard) {
-            this.elements.profileCard.style.backgroundColor = userData.profileColor || 'transparent';
-        }
-
+        // The background color of the profile card is now controlled by the global CSS variable
+        // this.elements.profileCard.style.backgroundColor = userData.profileColor || 'transparent'; 
+        
         this.updateProfileCardBackground(userData.avatar);
         this.updateProfileInfo(userData);
         this.updateZodiacSign(userData.zodiacSign);
@@ -39,7 +38,7 @@ class ProfileHandler {
 
     updateProfileCardBackground(avatar) {
         this.elements.profileCardBg.style.backgroundImage = 'none';
-        this.elements.profileCardBg.style.backgroundColor = 'var(--primary-dark)';
+        this.elements.profileCardBg.style.backgroundColor = 'var(--primary-dark)'; // Use primary-dark from theme
     }
 
     updateProfileInfo(userData) {

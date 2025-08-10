@@ -3,11 +3,9 @@
 class SettingsHandler {
     constructor(app) {
         this.app = app;
-        this.elements = {}; // Инициализируем elements здесь
-        // bindEvents() вызывается после renderSettings(), чтобы элементы были в DOM
+        this.elements = {}; 
     }
 
-    // Метод для рендеринга содержимого экрана настроек
     renderSettings() {
         const t = (key) => this.app.translate(key);
 
@@ -80,17 +78,12 @@ class SettingsHandler {
             </div>
         `;
 
-        // Инициализируем элементы после их рендеринга
         this.initElements();
-        // Перепривязываем события, так как DOM был обновлен
         this.bindEvents();
-        // Устанавливаем текущий выбранный язык в селекторе
         this.elements.languageSelect.value = this.app.state.currentLanguage;
-        // Обновляем выбор цвета после рендеринга
         this.updateColorSelection(this.app.state.userData.profileColor);
     }
 
-    // Метод для кэширования элементов DOM
     initElements() {
         this.elements = {
             settingsScreen: document.getElementById('settingsScreen'),
@@ -101,11 +94,8 @@ class SettingsHandler {
         };
     }
 
-    // Метод для привязки обработчиков событий
     bindEvents() {
-        // Обработчик для кнопки очистки данных
         if (this.elements.clearDataBtn) {
-            // Удаляем старый обработчик, если он есть, чтобы избежать дублирования
             if (this.elements.clearDataBtn._hasClickListener) {
                 this.elements.clearDataBtn.removeEventListener('click', this.elements.clearDataBtn._hasClickListener);
             }
@@ -115,10 +105,9 @@ class SettingsHandler {
                 }
             };
             this.elements.clearDataBtn.addEventListener('click', newClearDataHandler);
-            this.elements.clearDataBtn._hasClickListener = newClearDataHandler; // Сохраняем ссылку на обработчик
+            this.elements.clearDataBtn._hasClickListener = newClearDataHandler;
         }
 
-        // Обработчик для выбора языка
         if (this.elements.languageSelect) {
             if (this.elements.languageSelect._hasChangeListener) {
                 this.elements.languageSelect.removeEventListener('change', this.elements.languageSelect._hasChangeListener);
@@ -130,7 +119,6 @@ class SettingsHandler {
             this.elements.languageSelect._hasChangeListener = newChangeHandler;
         }
 
-        // Обработчики для выбора цвета профиля
         if (this.elements.colorPalette) {
             this.elements.colorPalette.querySelectorAll('.settings-color-option').forEach(option => {
                 if (option._hasClickListener) {
@@ -140,12 +128,7 @@ class SettingsHandler {
                     const selectedColor = e.currentTarget.dataset.color;
                     this.app.state.userData.profileColor = selectedColor;
                     this.updateColorSelection(selectedColor);
-                    // Обновляем цвет myProfileCard сразу
-                    const myProfileCard = document.getElementById('myProfileCard');
-                    if (myProfileCard) {
-                        myProfileCard.style.backgroundColor = selectedColor;
-                    }
-                    // Сохраняем профиль после изменения цвета
+                    this.app.setAppThemeColor(selectedColor); // Apply to app theme
                     localStorage.setItem('datingProfile', JSON.stringify(this.app.state.userData));
                 };
                 option.addEventListener('click', newColorClickHandler);
@@ -161,12 +144,7 @@ class SettingsHandler {
                 const selectedColor = e.target.value;
                 this.app.state.userData.profileColor = selectedColor;
                 this.updateColorSelection(selectedColor);
-                // Обновляем цвет myProfileCard сразу
-                const myProfileCard = document.getElementById('myProfileCard');
-                if (myProfileCard) {
-                    myProfileCard.style.backgroundColor = selectedColor;
-                }
-                // Сохраняем профиль после изменения цвета
+                this.app.setAppThemeColor(selectedColor); // Apply to app theme
                 localStorage.setItem('datingProfile', JSON.stringify(this.app.state.userData));
             };
             this.elements.customColorInput.addEventListener('input', newCustomColorInputHandler);
@@ -174,7 +152,6 @@ class SettingsHandler {
         }
     }
 
-    // Метод для обновления визуального выбора цвета
     updateColorSelection(selectedColor) {
         if (this.elements.colorPalette) {
             this.elements.colorPalette.querySelectorAll('.settings-color-option').forEach(option => {

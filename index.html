@@ -10,7 +10,14 @@
     <link rel="stylesheet" href="assets/css/match.css">
     <link rel="stylesheet" href="assets/css/chat.css">
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
+    <style id="dynamic-styles">
+        /* Эти стили будут обновляться динамически через JavaScript */
+        :root {
+            --primary: #FF6B6B; /* Default primary color */
+            --primary-dark: #E04F4F;
+            --primary-light: #FFDCDC;
+            --primary-rgb: 255, 107, 107; /* Default RGB for primary */
+        }
         body {
             margin: 0;
             padding: 0;
@@ -386,7 +393,7 @@
         <div class="logo-container">
             <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                 <path class="logo-path" d="M20,50 Q35,20 50,50 T80,50" 
-                      stroke="#D7303B" 
+                      stroke="var(--primary)" 
                       stroke-width="8" 
                       fill="none"
                       stroke-linecap="round"/>
@@ -601,34 +608,6 @@
 
         <div class="screen" id="settingsScreen">
             <!-- Content will be rendered by SettingsHandler -->
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="swipeTutorialModal">
-        <div class="modal-content">
-            <h3>Добро пожаловать в Анкеты!</h3>
-            <p>Здесь вы можете просматривать профили других пользователей.</p>
-            <p>
-                👉 Смахните вправо, чтобы поставить **ЛАЙК**.<br>
-                👈 Смахните влево, чтобы **ПРОПУСТИТЬ** анкету.<br>
-                👆 Смахните вверх, чтобы поставить **СУПЕРЛАЙК**!
-            </p>
-            <div class="modal-actions">
-                <button class="btn" id="modalGotItBtn">Понятно!</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="match-modal-overlay" id="matchSuccessModal">
-        <div class="match-modal-content">
-            <div class="match-modal-icon" id="matchModalIcon">❤️</div>
-            <h3 class="match-modal-title" id="matchModalTitle">Это Мэтч!</h3>
-            <p class="match-modal-message" id="matchModalMessage">Вы понравились друг другу!</p>
-            <div class="match-modal-avatar" id="matchModalAvatar"></div>
-            <div class="match-modal-actions">
-                <button class="btn" id="matchModalChatBtn">Написать сообщение</button>
-                <button class="btn btn-secondary" id="matchModalContinueBtn">Продолжить свайпать</button>
-            </div>
         </div>
     </div>
 

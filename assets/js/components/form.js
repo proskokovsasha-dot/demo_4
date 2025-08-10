@@ -425,6 +425,7 @@ class FormHandler {
                 const selectedColor = e.currentTarget.dataset.color;
                 this.app.state.userData.profileColor = selectedColor;
                 this.updateColorPalette(selectedColor);
+                this.app.setAppThemeColor(selectedColor); // Apply to app theme
                 const customColorInput = document.getElementById('customColor');
                 if (customColorInput) customColorInput.value = selectedColor;
             });
@@ -435,6 +436,7 @@ class FormHandler {
                 const selectedColor = e.target.value;
                 this.app.state.userData.profileColor = selectedColor;
                 this.updateColorPalette(selectedColor);
+                this.app.setAppThemeColor(selectedColor); // Apply to app theme
             });
         }
         this.updateColorPalette(this.app.state.userData.profileColor);
@@ -458,10 +460,7 @@ class FormHandler {
                 option.classList.add('selected');
             }
         });
-        const myProfileCard = document.getElementById('myProfileCard');
-        if (myProfileCard) {
-            myProfileCard.style.backgroundColor = color;
-        }
+        // No need to update myProfileCard here, as setAppThemeColor handles global theme
     }
 
     saveProfile() {
