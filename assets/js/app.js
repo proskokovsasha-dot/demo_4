@@ -271,7 +271,7 @@ class DatingApp {
                 gemini: 'Gemini',
                 cancer: 'Cancer',
                 leo: 'Leo',
-                virgo: 'Virgo',
+                virgo: 'Дева',
                 libra: 'Весы',
                 scorpio: 'Скорпион',
                 sagittarius: 'Стрелец',
@@ -297,30 +297,54 @@ class DatingApp {
     showLoadingScreen() {
         this.uiHandler.initLogoAnimation();
 
-        const loadingTextElements = document.querySelectorAll('.loading-text');
-        loadingTextElements.forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px) scale(0.95)';
-        });
+        const loadingScreen = document.getElementById('loadingScreen');
+        const appContainer = document.getElementById('appContainer');
+
+        // Ensure loading screen is visible and covers the whole screen
+        loadingScreen.style.display = 'flex';
+        loadingScreen.style.position = 'fixed';
+        loadingScreen.style.top = '0';
+        loadingScreen.style.left = '0';
+        loadingScreen.style.width = '100%';
+        loadingScreen.style.height = '100%';
+        loadingScreen.style.opacity = '1'; // Ensure opacity is 1 when showing
+
+        // Make sure loading text elements are visible for animation
+        const loadingTitle = document.getElementById('loadingTitle');
+        const loadingSubtitle = document.getElementById('loadingSubtitle');
+        
+        // Set initial state for animation
+        loadingTitle.style.opacity = '0';
+        loadingTitle.style.transform = 'translateY(20px) scale(0.95)';
+        loadingSubtitle.style.opacity = '0';
+        loadingSubtitle.style.transform = 'translateY(20px) scale(0.95)';
+
+        // Start logo animation first
+        setTimeout(() => {
+            // Then fade in title and subtitle with staggered delays
+            loadingTitle.style.animation = 'fadeInScale 1s ease-out forwards';
+        }, 1500); // Delay for title after logo animation starts
 
         setTimeout(() => {
-            loadingTextElements.forEach(el => {
-                el.style.animationPlayState = 'running';
-            });
-        }, 1500);
+            loadingSubtitle.style.animation = 'fadeInScale 1s ease-out forwards';
+        }, 1800); // Delay for subtitle after title starts
 
         setTimeout(() => {
-            const loadingScreen = document.getElementById('loadingScreen');
-            const appContainer = document.getElementById('appContainer');
-
             loadingScreen.style.opacity = '0';
 
             loadingScreen.addEventListener('transitionend', () => {
                 loadingScreen.style.display = 'none';
+                // Reset fixed positioning when hidden
+                loadingScreen.style.position = '';
+                loadingScreen.style.top = '';
+                loadingScreen.style.left = '';
+                loadingScreen.style.width = '';
+                loadingScreen.style.height = '';
+
                 appContainer.style.display = 'flex';
                 this.switchScreen(this.state.currentScreen);
             }, { once: true });
-        }, 3500);
+        }, 3500); // Total duration before hiding loading screen
     }
 
     initElements() {
@@ -332,7 +356,13 @@ class DatingApp {
             settingsScreen: document.getElementById('settingsScreen'),
             topNavigation: document.getElementById('topNavigation'),
             navButtons: document.querySelectorAll('.nav-btn'),
-            // Removed swipeTutorialModal and matchSuccessModal from elements
+            matchSuccessModal: document.getElementById('matchSuccessModal'), // ВОССТАНОВЛЕНО
+            matchModalIcon: document.getElementById('matchModalIcon'), // ВОССТАНОВЛЕНО
+            matchModalTitle: document.getElementById('matchModalTitle'), // ВОССТАНОВЛЕНО
+            matchModalMessage: document.getElementById('matchModalMessage'), // ВОССТАНОВЛЕНО
+            matchModalAvatar: document.getElementById('matchModalAvatar'), // ВОССТАНОВЛЕНО
+            matchModalChatBtn: document.getElementById('matchModalChatBtn'), // ВОССТАНОВЛЕНО
+            matchModalContinueBtn: document.getElementById('matchModalContinueBtn'), // ВОССТАНОВЛЕНО
             loadingTitle: document.getElementById('loadingTitle'),
             loadingSubtitle: document.getElementById('loadingSubtitle'),
             navProfileText: document.getElementById('navProfileText'),
@@ -356,7 +386,23 @@ class DatingApp {
             backToProfileFromMatchBtn.addEventListener('click', () => this.switchScreen('profile'));
         }
 
-        // Removed event listeners for modalGotItBtn, matchModalChatBtn, matchModalContinueBtn
+        // ВОССТАНОВЛЕНЫ обработчики для модального окна успеха
+        if (this.elements.matchModalChatBtn) {
+            this.elements.matchModalChatBtn.addEventListener('click', () => {
+                this.hideMatchSuccessModal();
+                this.switchScreen('chat');
+                if (this.matchHandler.lastMatchedProfile) {
+                    this.chatHandler.openChat(this.matchHandler.lastMatchedProfile.id);
+                }
+            });
+        }
+        if (this.elements.matchModalContinueBtn) {
+            this.elements.matchModalContinueBtn.addEventListener('click', () => {
+                this.hideMatchSuccessModal();
+                this.matchHandler.currentIndex++; // Переходим к следующему профилю
+                this.matchHandler.showNextProfile();
+            });
+        }
     }
 
     checkSavedProfile() {
@@ -478,8 +524,43 @@ class DatingApp {
         this.updateTextContent();
     }
 
-    // Removed showSwipeTutorialModal and hideSwipeTutorialModal functions
-    // Removed showMatchSuccessModal and hideMatchSuccessModal functions
+    // ВОССТАНОВЛЕНЫ функции для модального окна успеха
+    showMatchSuccessModal(profile, type) {
+        if (!this.elements.matchSuccessModal) return;
+
+        let title = '';
+        let message = '';
+        let iconHtml = '';
+
+        if (type === 'match') {
+            title = this.translate('match');
+            message = this.translate('youLiked', { name: profile.name });
+            iconHtml = '❤️'; // Или другая иконка для мэтча
+        } else if (type === 'like') {
+            title = this.translate('likeSent');
+            message = this.translate('youLikedName', { name: profile.name });
+            iconHtml = '👍'; // Или другая иконка для лайка
+        } else if (type === 'superlike') {
+            title = this.translate('superlikeSent');
+            message = this.translate('youSuperlikedName', { name: profile.name });
+            iconHtml = '✨'; // Или другая иконка для суперлайка
+        }
+
+        this.elements.matchModalIcon.textContent = iconHtml;
+        this.elements.matchModalTitle.textContent = title;
+        this.elements.matchModalMessage.textContent = message;
+        this.elements.matchModalAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${profile.id}/80/80)`;
+        this.elements.matchModalChatBtn.textContent = this.translate('writeMessage');
+        this.elements.matchModalContinueBtn.textContent = this.translate('continueSwiping');
+
+        this.elements.matchSuccessModal.classList.add('active');
+    }
+
+    hideMatchSuccessModal() {
+        if (this.elements.matchSuccessModal) {
+            this.elements.matchSuccessModal.classList.remove('active');
+        }
+    }
 
     calculateDistance(lat1, lon1, lat2, lon2) {
         if (!lat1 || !lon1 || !lat2 || !lon2) return null;
@@ -528,7 +609,7 @@ class DatingApp {
             text = text.replace(`{${placeholder}}`, replacements[placeholder]);
         }
         return text;
-    }
+        }
 
     setLanguage(lang) {
         if (this.translations[lang]) {
@@ -602,8 +683,13 @@ class DatingApp {
         document.getElementById('navChatText').textContent = this.translate('chat');
         document.getElementById('navSettingsText').textContent = this.translate('settings');
 
-        // Removed update for swipeTutorialModal
-        // Removed update for matchSuccessModal
+        // Обновление текста для модального окна успеха
+        if (this.elements.matchSuccessModal && this.elements.matchSuccessModal.classList.contains('active')) {
+            // Если модальное окно активно, его текст будет обновлен при следующем вызове showMatchSuccessModal
+            // или при переключении языка, если оно активно.
+            // Для простоты, можно вызвать showMatchSuccessModal снова с текущими данными, если это необходимо.
+            // Но обычно оно закрывается перед сменой экрана/языка.
+        }
 
         const settingsScreen = document.getElementById('settingsScreen');
         if (settingsScreen.classList.contains('active')) {

@@ -18,56 +18,17 @@
             --primary-light: #FFDCDC;
             --primary-rgb: 255, 107, 107; /* Default RGB for primary */
         }
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Rubik', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: var(--background);
-            overflow-x: hidden;
-        }
+        /* Стили для body и app-container перенесены в main.css */
+        /* Стили для loading-screen перенесены в main.css */
         
-        .app-container {
-            width: 100%;
-            max-width: 500px;
-            padding: 0 20px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            min-height: 100vh;
-        }
-        
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 1;
-            transition: opacity 0.5s ease-out;
-        }
-
         .loading-text {
             font-family: 'Rubik', sans-serif;
             color: var(--text-primary);
             text-align: center;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInScale 1s ease-out forwards;
-            animation-delay: 1.2s;
+            opacity: 0; /* Изначально скрыто */
+            transform: translateY(20px) scale(0.95); /* Изначально немного смещено и уменьшено */
+            animation: fadeInScale 1s ease-out forwards; /* Анимация применяется через JS */
+            /* animation-play-state: paused; */ /* УДАЛЕНО: чтобы анимация запускалась сразу */
         }
 
         .loading-text.title {
@@ -77,7 +38,6 @@
             margin-bottom: 8px;
             line-height: 1.2;
             letter-spacing: -0.03em;
-            animation-delay: 1.5s;
         }
 
         .loading-text.subtitle {
@@ -85,7 +45,6 @@
             color: var(--text-secondary);
             margin-bottom: 20px;
             max-width: 360px;
-            animation-delay: 1.8s;
         }
         
         .screen {
@@ -413,7 +372,7 @@
                 <span class="nav-text" id="navProfileText">Профиль</span>
             </button>
             <button class="nav-btn" data-screen="match">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                 </svg>
                 <span class="nav-text" id="navMatchesText">Анкеты</span>
@@ -608,6 +567,20 @@
 
         <div class="screen" id="settingsScreen">
             <!-- Content will be rendered by SettingsHandler -->
+        </div>
+    </div>
+
+    <!-- Модальное окно успеха мэтча/лайка -->
+    <div class="match-modal-overlay" id="matchSuccessModal">
+        <div class="match-modal-content">
+            <div class="match-modal-icon" id="matchModalIcon"></div>
+            <h3 class="match-modal-title" id="matchModalTitle"></h3>
+            <p class="match-modal-message" id="matchModalMessage"></p>
+            <div class="match-modal-avatar" id="matchModalAvatar"></div>
+            <div class="match-modal-actions">
+                <button class="btn" id="matchModalChatBtn"></button>
+                <button class="btn btn-secondary" id="matchModalContinueBtn"></button>
+            </div>
         </div>
     </div>
 
