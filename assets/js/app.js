@@ -292,6 +292,15 @@ class DatingApp {
         this.setLanguage(this.state.currentLanguage);
         this.setAppThemeColor(this.state.userData.profileColor); // Apply saved color on load
         this.showLoadingScreen();
+
+        // Инициализация Telegram Web Apps API
+        if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand(); // Развернуть приложение на весь экран
+            // Опционально: установить цвет фона Telegram Mini App
+            Telegram.WebApp.setBackgroundColor(getComputedStyle(document.documentElement).getPropertyValue('--background'));
+            Telegram.WebApp.setHeaderColor(getComputedStyle(document.documentElement).getPropertyValue('--surface'));
+        }
     }
 
     showLoadingScreen() {

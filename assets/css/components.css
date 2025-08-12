@@ -3,7 +3,6 @@
 .logo-container {
     width: 120px;
     height: 120px;
-    margin-bottom: 24px;
     /* Убраны display: flex, justify-content, align-items, так как родительский loading-screen уже центрирует */
 }
 
@@ -18,14 +17,14 @@
     justify-content: center;
     background-color: var(--primary);
     color: white;
-    border: none;
+    border: none; /* Убрана граница */
     padding: 14px 28px;
     border-radius: var(--radius-md);
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-normal) ease;
-    box-shadow: var(--shadow-sm);
+    box-shadow: none; /* Убрана тень */
     min-width: 180px;
     position: relative;
     overflow: hidden;
@@ -37,12 +36,12 @@
 .btn:hover {
     background-color: var(--primary-dark);
     transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-md); /* Можно оставить тень при наведении для эффекта */
 }
 
 .btn:active {
     transform: translateY(0);
-    box-shadow: var(--shadow-sm);
+    box-shadow: none; /* Убрана тень */
 }
 
 .btn.pulse {
@@ -59,24 +58,25 @@
 .btn-secondary {
     background-color: var(--surface);
     color: var(--text-primary);
-    box-shadow: var(--shadow-sm);
+    box-shadow: none; /* Убрана тень */
+    border: none; /* Убрана граница */
 }
 
 .btn-secondary:hover {
     background-color: var(--border);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-md); /* Можно оставить тень при наведении для эффекта */
 }
 
 .action-btn {
     width: 60px; /* Единый размер для всех экранов */
     height: 60px; /* Единый размер для всех экранов */
     border-radius: 50%;
-    border: none;
+    border: none; /* Убрана граница */
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: var(--shadow-md);
+    box-shadow: none; /* Убрана тень */
     transition: all var(--transition-fast) ease;
     flex-shrink: 0;
 }
@@ -88,24 +88,24 @@
 
 .action-btn:hover {
     transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-lg); /* Можно оставить тень при наведении для эффекта */
 }
 
 .action-btn:active {
     transform: translateY(0);
-    box-shadow: var(--shadow-sm);
+    box-shadow: none; /* Убрана тень */
 }
 
 .btn-nope {
     background-color: var(--surface);
     color: var(--text-secondary);
-    border: 1px solid var(--border);
+    border: none; /* Убрана граница */
 }
 
 .btn-nope:hover {
     background-color: var(--error);
     color: white;
-    border-color: var(--error);
+    border-color: var(--error); /* Можно оставить border-color для hover */
 }
 
 .btn-like {
@@ -132,19 +132,19 @@
     width: 100%;
     padding: 14px;
     margin: 10px 0;
-    border: 1px solid var(--border);
+    border: none; /* Убрана граница */
     border-radius: var(--radius-md);
     font-size: 0.95rem;
     transition: all var(--transition-normal) ease;
     background-color: var(--surface);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+    box-shadow: none; /* Убрана тень */
     text-align: center;
 }
 
 .input-field:focus {
     background-color: white;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15), inset 0 1px 3px rgba(0,0,0,0.06);
+    border-color: var(--primary); /* Можно оставить border-color для focus */
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15); /* Можно оставить тень для focus */
     outline: none;
 }
 
@@ -172,8 +172,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
+    box-shadow: none; /* Убрана тень */
+    border: none; /* Убрана граница */
     text-align: center;
     flex-grow: 1;
     justify-content: center;
@@ -182,16 +182,16 @@
 
 .tag:hover {
     transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--primary-light);
+    box-shadow: var(--shadow-md); /* Можно оставить тень при наведении для эффекта */
+    border-color: var(--primary-light); /* Можно оставить border-color для hover */
 }
 
 .tag.selected {
     background: var(--primary);
     color: white;
     transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--primary);
+    box-shadow: var(--shadow-md); /* Можно оставить тень для selected */
+    border-color: var(--primary); /* Можно оставить border-color для selected */
 }
 
 .color-palette {
@@ -210,14 +210,14 @@
     cursor: pointer;
     transition: all var(--transition-fast) ease;
     position: relative;
-    border: 2px solid transparent;
-    box-shadow: var(--shadow-sm);
+    border: none; /* Убрана граница */
+    box-shadow: none; /* Убрана тень */
 }
 
 .color-option.selected {
-    border-color: var(--text-primary);
+    border-color: var(--text-primary); /* Можно оставить border-color для selected */
     transform: scale(1.15);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-md); /* Можно оставить тень для selected */
 }
 
 .color-option.selected::after {
@@ -242,18 +242,18 @@
 .color-custom input[type="color"] {
     width: 60px;
     height: 60px;
-    border: 3px solid var(--border);
+    border: none; /* Убрана граница */
     border-radius: 50%;
     cursor: pointer;
     padding: 0;
-    box-shadow: var(--shadow-sm);
+    box-shadow: none; /* Убрана тень */
     transition: all var(--transition-normal) ease;
 }
 
 .color-custom input[type="color"]:hover {
     transform: scale(1.08);
-    box-shadow: var(--shadow-md);
-    border-color: var(--primary);
+    box-shadow: var(--shadow-md); /* Можно оставить тень при наведении для эффекта */
+    border-color: var(--primary); /* Можно оставить border-color для hover */
 }
 
 .color-custom label {
@@ -279,8 +279,8 @@
     background-size: cover;
     background-position: center;
     border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
+    box-shadow: none; /* Убрана тень */
+    border: none; /* Убрана граница */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -288,8 +288,8 @@
 }
 
 .photo-preview.main-avatar {
-    border: 2px solid var(--primary);
-    box-shadow: var(--shadow-md);
+    border: 2px solid var(--primary); /* Можно оставить границу для main-avatar */
+    box-shadow: var(--shadow-md); /* Можно оставить тень для main-avatar */
 }
 
 .photo-preview .delete-photo {
@@ -363,7 +363,7 @@
     height: 100%;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: var(--match-shadow-strong);
+    box-shadow: none; /* Убрана тень */
     display: flex;
     flex-direction: column;
     color: var(--match-text-color);
@@ -450,7 +450,7 @@
     border-top-right-radius: var(--radius-lg);
     padding: 30px;
     padding-top: 50px;
-    box-shadow: var(--shadow-lg);
+    box-shadow: none; /* Убрана тень */
     transform: translateY(calc(100% - 150px));
     transition: transform 0.4s ease-out;
     overflow-y: auto;
@@ -494,9 +494,9 @@
     font-size: 0.95rem;
     line-height: 1.6;
     color: var(--text-primary);
-    box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+    box-shadow: none; /* Убрана тень */
     text-align: left;
-    border: 1px solid var(--border);
+    border: none; /* Убрана граница */
     word-break: break-word;
 }
 
@@ -512,8 +512,8 @@
     background-position: center;
     height: 90px;
     border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
+    box-shadow: none; /* Убрана тень */
+    border: none; /* Убрана граница */
 }
 
 .profile-actions {
@@ -547,8 +547,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
+    box-shadow: none; /* Убрана тень */
+    border: none; /* Убрана граница */
     text-align: center;
     flex-grow: 1;
     justify-content: center;
@@ -558,8 +558,8 @@
 .profile-looking-for .looking-for-item:hover,
 .profile-interests .interest-item:hover {
     transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--primary-light);
+    box-shadow: var(--shadow-md); /* Можно оставить тень при наведении для эффекта */
+    border-color: var(--primary-light); /* Можно оставить border-color для hover */
 }
 
 .profile-looking-for .looking-for-emoji,
@@ -583,8 +583,8 @@
     text-align: center;
     background-color: var(--surface);
     border-radius: var(--radius-md);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
-    border: 1px dashed var(--border);
+    box-shadow: none; /* Убрана тень */
+    border: none; /* Убрана граница */
     font-size: 0.9rem;
 }
 
@@ -729,8 +729,8 @@
 .looking-for-item.selected {
     background-color: var(--primary);
     color: white;
-    border-color: var(--primary);
-    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+    border-color: var(--primary); /* Можно оставить border-color для selected */
+    box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3); /* Можно оставить тень для selected */
 }
 
 .looking-for-item.selected .looking-for-text {
@@ -749,12 +749,12 @@
 .settings-card {
     background-color: var(--surface);
     border-radius: var(--radius-lg); /* Более скругленные углы */
-    box-shadow: var(--shadow-md); /* Более выраженная тень */
+    box-shadow: none; /* Убрана тень */
     padding: 25px;
     display: flex;
     flex-direction: column;
     gap: 15px;
-    border: 1px solid var(--border); /* Легкая обводка */
+    border: none; /* Убрана граница */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -811,7 +811,7 @@
     width: 100%;
     max-width: 280px; /* Увеличиваем ширину */
     padding: 12px 15px;
-    border: 1px solid var(--border);
+    border: none; /* Убрана граница */
     border-radius: var(--radius-md);
     font-size: 0.95rem;
     background-color: var(--background); /* Фон из переменной */
@@ -825,13 +825,13 @@
     background-size: 20px;
     cursor: pointer;
     transition: all var(--transition-fast) ease;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
+    box-shadow: none; /* Убрана тень */
 }
 
 .language-select:focus {
-    border-color: var(--primary);
+    border-color: var(--primary); /* Можно оставить border-color для focus */
     outline: none;
-    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1);
+    box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1); /* Можно оставить тень для focus */
 }
 
 /* Стили для выбора цвета в настройках */
@@ -865,14 +865,14 @@
     cursor: pointer;
     transition: all var(--transition-fast) ease;
     position: relative;
-    border: 2px solid transparent;
-    box-shadow: var(--shadow-sm);
+    border: none; /* Убрана граница */
+    box-shadow: none; /* Убрана тень */
 }
 
 .settings-color-option.selected {
     border-color: var(--primary); /* Акцентный цвет для выбранного */
     transform: scale(1.15);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-md); /* Можно оставить тень для selected */
 }
 
 .settings-color-option.selected::after {
@@ -897,18 +897,18 @@
 .settings-color-custom input[type="color"] {
     width: 60px;
     height: 60px;
-    border: 3px solid var(--border);
+    border: none; /* Убрана граница */
     border-radius: 50%;
     cursor: pointer;
     padding: 0;
-    box-shadow: var(--shadow-sm);
+    box-shadow: none; /* Убрана тень */
     transition: all var(--transition-normal) ease;
 }
 
 .settings-color-custom input[type="color"]:hover {
     transform: scale(1.08);
-    box-shadow: var(--shadow-md);
-    border-color: var(--primary);
+    box-shadow: var(--shadow-md); /* Можно оставить тень при наведении для эффекта */
+    border-color: var(--primary); /* Можно оставить border-color для hover */
 }
 
 .settings-color-custom label {
@@ -926,14 +926,14 @@
     font-weight: 600;
     padding: 14px 28px;
     border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
+    box-shadow: none; /* Убрана тень */
     transition: all var(--transition-normal) ease;
 }
 
 .settings-clear-data-btn:hover {
     background-color: var(--error); /* Темнее при наведении */
     transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-md); /* Можно оставить тень при наведении для эффекта */
 }
 
 /* Адаптация для мобильных */
@@ -1025,6 +1025,7 @@
     order: 2; /* Кнопка "Назад" будет второй */
     background-color: var(--border);
     color: var(--text-secondary);
+    border: none; /* Убрана граница */
 }
 
 .form-navigation .btn-prev:hover {
@@ -1057,8 +1058,8 @@
     padding: 10px 15px;
     background-color: var(--primary-light);
     border-radius: var(--radius-md);
-    border: 1px solid var(--primary);
-    box-shadow: var(--shadow-sm);
+    border: none; /* Убрана граница */
+    box-shadow: none; /* Убрана тень */
 }
 
 .zodiac-display .emoji {
