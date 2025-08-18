@@ -18,6 +18,7 @@
     cursor: pointer;
     transition: all var(--transition-fast) ease;
     border: none; /* Убрана граница */
+    position: relative; /* Для индикатора новых сообщений */
 }
 
 .chat-item:hover {
@@ -170,6 +171,7 @@
     border-radius: var(--radius-md);
     line-height: 1.4;
     word-wrap: break-word;
+    position: relative; /* Для статуса сообщения */
 }
 
 .message-bubble.sent {
@@ -301,3 +303,162 @@
         height: 20px;
     }
 }
+
+/* НОВЫЕ СТИЛИ */
+
+/* Индикатор новых сообщений */
+.new-messages-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--error); /* Красный кружок */
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 1;
+}
+
+/* Статус сообщений */
+.message-status {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.7); /* Для отправленных сообщений */
+    text-align: right;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 3px;
+}
+
+.message-bubble.received .message-status {
+    color: var(--text-secondary); /* Для полученных сообщений */
+    justify-content: flex-start;
+}
+
+.message-status svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    fill: none;
+}
+
+.message-status.read svg {
+    stroke: var(--success); /* Зеленый для прочитанных */
+}
+
+/* Кнопка блокировки */
+.btn-block-user {
+    background: none;
+    border: none;
+    color: var(--error);
+    cursor: pointer;
+    padding: 5px;
+    margin-left: auto; /* Выравнивание вправо */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color var(--transition-fast) ease;
+}
+
+.btn-block-user:hover {
+    color: var(--primary-dark);
+}
+
+.btn-block-user svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+}
+
+/* Стили для медиа сообщений */
+.message-bubble.media {
+    padding: 5px; /* Меньший padding для медиа */
+}
+
+.message-bubble.media img {
+    max-width: 100%;
+    border-radius: var(--radius-md);
+    display: block;
+}
+
+.message-bubble.media .media-caption {
+    font-size: 0.85rem;
+    margin-top: 5px;
+    color: white; /* Для отправленных медиа */
+}
+
+.message-bubble.received.media .media-caption {
+    color: var(--text-primary); /* Для полученных медиа */
+}
+
+/* Кнопки для отправки медиа и эмодзи */
+.message-input-actions {
+    display: flex;
+    gap: 5px;
+    margin-right: 10px;
+}
+
+.message-input-actions button {
+    background: none;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color var(--transition-fast) ease;
+    flex-shrink: 0;
+}
+
+.message-input-actions button:hover {
+    background-color: var(--border);
+}
+
+.message-input-actions button svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--text-secondary);
+    fill: none;
+}
+
+.message-input-actions button.emoji-picker-btn svg {
+    fill: var(--text-secondary); /* Для иконки эмодзи */
+    stroke: none;
+}
+
+/* Стили для счетчика на иконке чата в навигации */
+.nav-btn.chat-nav-btn {
+    position: relative;
+}
+
+.chat-notification-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: var(--error);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    z-index: 1;
+    transform: scale(0); /* Изначально скрыт */
+    transition: transform 0.3s ease;
+}
+
+.chat-notification-badge.active {
+    transform: scale(1);
+}
+

@@ -64,6 +64,8 @@ class DatingApp {
             },
             suggestedProfiles: [],
             currentLanguage: 'ru', // Default language
+            unreadMessagesCount: 0, // НОВОЕ: Счетчик непрочитанных сообщений
+            blockedUsers: [], // НОВОЕ: Список заблокированных пользователей
         };
 
         this.translations = {
@@ -170,6 +172,14 @@ class DatingApp {
                 scorpio: 'Скорпион',
                 sagittarius: 'Стрелец',
                 capricorn: 'Козерог',
+                noActiveChats: 'У вас пока нет активных чатов. Начните знакомиться в разделе "Анкеты"!', // НОВОЕ
+                messageDelivered: 'Доставлено', // НОВОЕ
+                messageRead: 'Прочитано', // НОВОЕ
+                blockUser: 'Заблокировать', // НОВОЕ
+                confirmBlockUser: 'Вы уверены, что хотите заблокировать {name}? Вы больше не будете получать от него сообщения.', // НОВОЕ
+                userBlocked: '{name} заблокирован.', // НОВОЕ
+                sendPhoto: 'Отправить фото', // НОВОЕ
+                sendEmoji: 'Отправить эмодзи', // НОВОЕ
             },
             en: {
                 appName: 'Meeting Point',
@@ -274,6 +284,14 @@ class DatingApp {
                 scorpio: 'Scorpio',
                 sagittarius: 'Sagittarius',
                 capricorn: 'Capricorn',
+                noActiveChats: 'You don\'t have any active chats yet. Start meeting people in the "Matches" section!', // НОВОЕ
+                messageDelivered: 'Delivered', // НОВОЕ
+                messageRead: 'Read', // НОВОЕ
+                blockUser: 'Block', // НОВОЕ
+                confirmBlockUser: 'Are you sure you want to block {name}? You will no longer receive messages from them.', // НОВОЕ
+                userBlocked: '{name} blocked.', // НОВОЕ
+                sendPhoto: 'Send Photo', // НОВОЕ
+                sendEmoji: 'Send Emoji', // НОВОЕ
             }
         };
 
@@ -407,6 +425,10 @@ class DatingApp {
             matchFullModalDistance: document.getElementById('matchFullModalDistance'),
             matchFullModalActiveDot: document.getElementById('matchFullModalActiveDot'),
             matchFullModalScrollableContent: document.getElementById('matchFullModalScrollableContent'),
+
+            // НОВОЕ: Элементы для уведомлений чата
+            chatNavBtn: document.querySelector('.nav-btn[data-screen="chat"]'),
+            chatNotificationBadge: document.getElementById('chatNotificationBadge'),
         };
     }
 
@@ -501,9 +523,18 @@ class DatingApp {
     checkSavedProfile() {
         const savedProfile = localStorage.getItem('datingProfile');
         const savedLanguage = localStorage.getItem('appLanguage');
+        const savedBlockedUsers = localStorage.getItem('blockedUsers'); // НОВОЕ: Загрузка заблокированных пользователей
 
         if (savedLanguage) {
             this.state.currentLanguage = savedLanguage;
+        }
+        if (savedBlockedUsers) { // НОВОЕ: Парсинг заблокированных пользователей
+            try {
+                this.state.blockedUsers = JSON.parse(savedBlockedUsers);
+            } catch (e) {
+                console.error('Error loading blocked users:', e);
+                localStorage.removeItem('blockedUsers');
+            }
         }
 
         if (savedProfile) {
@@ -550,6 +581,7 @@ class DatingApp {
         localStorage.removeItem('datingProfile');
         localStorage.removeItem('swipeTutorialShown');
         localStorage.removeItem('appLanguage');
+        localStorage.removeItem('blockedUsers'); // НОВОЕ: Очистка заблокированных пользователей
         this.state.userData = {
             name: '',
             gender: '',
@@ -563,6 +595,9 @@ class DatingApp {
             preference: 'both',
             profileColor: '#FF6B6B',
         };
+        this.state.blockedUsers = []; // НОВОЕ: Сброс заблокированных пользователей
+        this.state.unreadMessagesCount = 0; // НОВОЕ: Сброс счетчика
+        this.updateChatNotificationBadge(); // НОВОЕ: Обновление бейджа
         // Reset chatHandler if it's loaded
         if (this.chatHandler) {
             this.chatHandler.chats = {};
@@ -602,6 +637,8 @@ class DatingApp {
             this.elements.topNavigation.style.display = 'flex';
             await this.lazyLoadScript('chat');
             this.chatHandler.showChatListScreen();
+            this.state.unreadMessagesCount = 0; // НОВОЕ: Сброс счетчика при открытии чата
+            this.updateChatNotificationBadge(); // НОВОЕ: Обновление бейджа
         } else if (screenName === 'settings') {
             targetScreenElement = this.elements.settingsScreen;
             document.querySelector('.nav-btn[data-screen="settings"]').classList.add('active');
@@ -1019,8 +1056,55 @@ class DatingApp {
             document.getElementById('noProfilesMessage').innerHTML = `<p>${this.translate('noNewProfiles')}</p><button class="btn btn-secondary" style="margin-top: 20px;" id="backToProfileFromMatchBtn">${this.translate('backToProfile')}</button>`;
         }
     }
+
+    // НОВОЕ: Функции для управления блокировкой пользователей
+    blockUser(userId) {
+        if (!this.state.blockedUsers.includes(userId)) {
+            this.state.blockedUsers.push(userId);
+            localStorage.setItem('blockedUsers', JSON.stringify(this.state.blockedUsers));
+            console.log(`User ${userId} blocked.`);
+            // Если чат открыт, обновить его
+            if (this.chatHandler && this.chatHandler.activeChatPartner && this.chatHandler.activeChatPartner.id === userId) {
+                this.chatHandler.showChatList(); // Вернуться к списку чатов
+            }
+            // Удалить чат из списка, если он существует
+            if (this.chatHandler && this.chatHandler.chats[userId]) {
+                delete this.chatHandler.chats[userId];
+                this.chatHandler.renderChatList();
+            }
+        }
+    }
+
+    isUserBlocked(userId) {
+        return this.state.blockedUsers.includes(userId);
+    }
+
+    // НОВОЕ: Функция для обновления счетчика непрочитанных сообщений
+    incrementUnreadMessages() {
+        this.state.unreadMessagesCount++;
+        this.updateChatNotificationBadge();
+    }
+
+    updateChatNotificationBadge() {
+        if (this.elements.chatNotificationBadge) {
+            if (this.state.unreadMessagesCount > 0) {
+                this.elements.chatNotificationBadge.textContent = this.state.unreadMessagesCount;
+                this.elements.chatNotificationBadge.classList.add('active');
+                if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+                    Telegram.WebApp.setHeaderColor(getComputedStyle(document.documentElement).getPropertyValue('--surface')); // Обновить цвет хедера, чтобы бейдж был виден
+                    // Telegram.WebApp.setBadges({ unread_count: this.state.unreadMessagesCount }); // Для реального бейджа в Telegram
+                }
+            } else {
+                this.elements.chatNotificationBadge.classList.remove('active');
+                if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+                    // Telegram.WebApp.setBadges({ unread_count: 0 });
+                }
+            }
+        }
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     new DatingApp();
 });
+
