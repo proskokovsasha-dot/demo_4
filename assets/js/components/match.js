@@ -19,7 +19,7 @@ class MatchHandler {
             matchDescriptionShort: document.getElementById('matchDescriptionShort'),
             matchScrollableContent: document.getElementById('matchScrollableContent'),
             matchDescriptionFull: document.getElementById('matchDescriptionFull'),
-            matchZodiacSign: document.getElementById('matchZodiacSign'), // Добавлено
+            matchZodiacSign: document.getElementById('matchZodiacSign'),
             matchLookingFor: document.getElementById('matchLookingFor'),
             matchInterests: document.getElementById('matchInterests'),
             // matchPhotosGrid: document.getElementById('matchPhotosGrid'), // Удалено
@@ -32,10 +32,12 @@ class MatchHandler {
             superLikeBtn: document.getElementById('superLikeBtn'),
             matchCardActions: document.querySelector('.match-card-actions'),
             matchActiveDot: document.querySelector('.match-active-dot'),
+            // matchViewFullProfileBtn: document.getElementById('matchViewFullProfileBtn'), // УДАЛЕНО
         };
     }
 
     setupEventListeners() {
+        // Удаляем старые обработчики, чтобы избежать дублирования
         if (this.nopeBtnHandler) {
             this.elements.nopeBtn.removeEventListener('click', this.nopeBtnHandler);
             this.elements.likeBtn.removeEventListener('click', this.likeBtnHandler);
@@ -44,94 +46,44 @@ class MatchHandler {
             }
         }
 
-        this.nopeBtnHandler = () => this.handleSwipe('nope');
+        // Привязываем новые обработчики кнопок
+        this.nopeBtnHandler = (e) => { // Добавлено 'e'
+            e.stopPropagation(); // Останавливаем всплытие события
+            this.handleSwipe('nope');
+        };
         this.elements.nopeBtn.addEventListener('click', this.nopeBtnHandler);
         
-        this.likeBtnHandler = () => this.handleSwipe('like');
+        this.likeBtnHandler = (e) => { // Добавлено 'e'
+            e.stopPropagation(); // Останавливаем всплытие события
+            this.handleSwipe('like');
+        };
         this.elements.likeBtn.addEventListener('click', this.likeBtnHandler);
 
         if (this.elements.superLikeBtn) {
-            this.superLikeBtnHandler = () => this.handleSwipe('superlike');
+            this.superLikeBtnHandler = (e) => { // Добавлено 'e'
+                e.stopPropagation(); // Останавливаем всплытие события
+                this.handleSwipe('superlike');
+            };
             this.elements.superLikeBtn.addEventListener('click', this.superLikeBtnHandler);
         }
 
-        this.addSwipeGestureRecognition();
-
-        // НОВЫЙ ОБРАБОТЧИК: Открытие модального окна при клике на карточку анкеты
-        if (this.matchCardClickHandler) {
-            this.elements.matchCard.removeEventListener('click', this.matchCardClickHandler);
-        }
-        this.matchCardClickHandler = (e) => {
-            // Проверяем, что клик не был по кнопкам действий
-            if (!e.target.closest('.action-btn')) {
+        // НОВОЕ: Добавляем обработчик клика на всю карточку профиля
+        if (this.elements.matchCard) {
+            // Удаляем предыдущий обработчик, если он был
+            if (this.matchCardClickHandler) {
+                this.elements.matchCard.removeEventListener('click', this.matchCardClickHandler);
+            }
+            this.matchCardClickHandler = () => {
                 const currentProfile = this.app.state.suggestedProfiles[this.currentIndex];
                 if (currentProfile) {
                     this.app.showMatchFullModal(currentProfile);
                 }
-            }
-        };
-        this.elements.matchCard.addEventListener('click', this.matchCardClickHandler);
+            };
+            this.elements.matchCard.addEventListener('click', this.matchCardClickHandler);
+        }
     }
 
-    addSwipeGestureRecognition() {
-        let startX, startY, endX, endY;
-        const card = this.elements.matchCard;
-
-        card.addEventListener('touchstart', (e) => {
-            // Игнорируем свайп, если начат на кнопках действий
-            if (e.target.closest('.action-btn')) {
-                return;
-            }
-            startX = e.touches[0].clientX;
-            startY = e.touches[0].clientY;
-            card.style.transition = 'none';
-        });
-
-        card.addEventListener('touchmove', (e) => {
-            // Игнорируем свайп, если начат на кнопках действий
-            if (e.target.closest('.action-btn')) {
-                return;
-            }
-            endX = e.touches[0].clientX;
-            endY = e.touches[0].clientY;
-            const deltaX = endX - startX;
-            const deltaY = endY - startY;
-
-            card.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${deltaX / 20}deg)`;
-            card.style.opacity = 1 - Math.abs(deltaX / card.offsetWidth * 1.5) - Math.abs(deltaY / card.offsetHeight * 1.5);
-        });
-
-        card.addEventListener('touchend', (e) => {
-            // Игнорируем свайп, если начат на кнопках действий
-            if (e.target.closest('.action-btn')) {
-                return;
-            }
-            const deltaX = endX - startX;
-            const deltaY = endY - startY;
-            const thresholdX = card.offsetWidth / 4;
-            const thresholdY = card.offsetHeight / 4;
-
-            card.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
-
-            if (Math.abs(deltaX) > thresholdX && Math.abs(deltaX) > Math.abs(deltaY)) {
-                if (deltaX > 0) {
-                    this.handleSwipe('like');
-                } else {
-                    this.handleSwipe('nope');
-                }
-            } else if (Math.abs(deltaY) > thresholdY && Math.abs(deltaY) > Math.abs(deltaX)) {
-                if (deltaY < 0) {
-                    this.handleSwipe('superlike');
-                } else {
-                    card.style.transform = 'translate(0, 0) rotate(0deg)';
-                    card.style.opacity = '1';
-                }
-            } else {
-                card.style.transform = 'translate(0, 0) rotate(0deg)';
-                card.style.opacity = '1';
-            }
-        });
-    }
+    // Метод addSwipeGestureRecognition() полностью удален, так как свайп больше не нужен.
 
     generateRandomProfiles(count = 30) {
         const profiles = [];
@@ -170,6 +122,16 @@ class MatchHandler {
             'Люблю спорт, но не фанатично. Просто поддерживаю форму и наслаждаюсь движением.',
             'Ищу человека, который будет меня вдохновлять и поддерживать в моих начинаниях.'
         ];
+
+        // НОВЫЕ ДАННЫЕ ДЛЯ ГЕНЕРАЦИИ
+        const educations = ['Высшее', 'Среднее специальное', 'Неоконченное высшее', 'Кандидат наук'];
+        const professions = ['Инженер', 'Дизайнер', 'Врач', 'Учитель', 'Менеджер', 'Разработчик', 'Предприниматель', 'Студент'];
+        const badHabits = [['none'], ['alcohol'], ['smoking'], ['alcohol', 'smoking']];
+        const childrenStatuses = ['no_children', 'has_children', 'wants_children', 'does_not_want_children'];
+        const pets = [['no_pets'], ['cat'], ['dog'], ['cat', 'dog'], ['other_pets']];
+        const languages = [['russian'], ['english'], ['russian', 'english'], ['spanish']];
+        const datingGoals = [['long_term_relationship'], ['new_friends'], ['casual_fun'], ['marriage'], ['travel_buddy'], ['hobby_partner']];
+
 
         for (let i = 0; i < count; i++) {
             const randomGender = Math.random() > 0.5 ? 'male' : 'female';
@@ -217,7 +179,15 @@ class MatchHandler {
                 interests: randomInterests,
                 zodiacSign: randomZodiacSign, // Добавлено
                 location: { lat: 55.7558 + (Math.random() - 0.5) * 0.1, lng: 37.6173 + (Math.random() - 0.5) * 0.1 },
-                lastActive: this.getRandomLastActiveStatus()
+                lastActive: this.getRandomLastActiveStatus(),
+                // НОВЫЕ ПОЛЯ
+                education: educations[Math.floor(Math.random() * educations.length)],
+                profession: professions[Math.floor(Math.random() * professions.length)],
+                badHabits: badHabits[Math.floor(Math.random() * badHabits.length)],
+                children: childrenStatuses[Math.floor(Math.random() * childrenStatuses.length)],
+                pets: pets[Math.floor(Math.random() * pets.length)],
+                languages: languages[Math.floor(Math.random() * languages.length)],
+                datingGoals: datingGoals[Math.floor(Math.random() * datingGoals.length)],
             });
         }
         return profiles;
@@ -403,15 +373,17 @@ class MatchHandler {
         const card = this.elements.matchCard;
 
         card.classList.remove('animate-like', 'animate-nope', 'animate-superlike');
-        void card.offsetWidth;
-        
+        void card.offsetWidth; // Trigger reflow
+
         if (action === 'like') {
             console.log('Liked:', profile.name);
             // Симуляция взаимного лайка
             if (Math.random() < 0.3) { // 30% шанс, что пользователь лайкнет в ответ
-                this.app.chatHandler.addChat(profile);
-                this.lastMatchedProfile = profile;
-                this.app.showMatchSuccessModal(profile, 'match');
+                this.app.lazyLoadScript('chat').then(() => { // Убедимся, что chat.js загружен
+                    this.app.chatHandler.addChat(profile);
+                    this.lastMatchedProfile = profile;
+                    this.app.showMatchSuccessModal(profile, 'match');
+                });
             } else {
                 this.app.showMatchSuccessModal(profile, 'like');
                 // Если нет мэтча, добавляем пользователя в список "Кто меня лайкнул"
@@ -434,9 +406,11 @@ class MatchHandler {
             return;
         } else if (action === 'superlike') {
             console.log('Superliked:', profile.name);
-            this.app.chatHandler.addChat(profile);
-            this.lastMatchedProfile = profile;
-            this.app.showMatchSuccessModal(profile, 'superlike');
+            this.app.lazyLoadScript('chat').then(() => { // Убедимся, что chat.js загружен
+                this.app.chatHandler.addChat(profile);
+                this.lastMatchedProfile = profile;
+                this.app.showMatchSuccessModal(profile, 'superlike');
+            });
             card.classList.add('animate-superlike');
         }
 

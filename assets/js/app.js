@@ -432,6 +432,36 @@ class DatingApp {
             }
         };
 
+        this.state = {
+            currentScreen: 'main',
+            userData: {
+                name: '',
+                gender: '',
+                age: '',
+                dob: { day: '', month: '', year: '' },
+                zodiacSign: null,
+                city: '',
+                description: '',
+                interests: [],
+                lookingFor: [],
+                preference: 'both',
+                profileColor: '#FF6B6B', // Default color
+                // НОВЫЕ ПОЛЯ ПРОФИЛЯ
+                education: '',
+                profession: '',
+                badHabits: [], // Может быть несколько
+                children: '', // Выбор из опций
+                pets: [], // Может быть несколько
+                languages: [], // Может быть несколько
+                datingGoals: [], // Множественный выбор
+            },
+            suggestedProfiles: [],
+            currentLanguage: 'ru', // Default language
+            unreadMessagesCount: 0, // НОВОЕ: Счетчик непрочитанных сообщений
+            blockedUsers: [], // НОВОЕ: Список заблокированных пользователей
+            likedByUsers: [], // НОВОЕ: Список пользователей, которые лайкнули текущего
+        };
+
         this.initElements();
         this.formHandler = new FormHandler(this);
         this.profileHandler = new ProfileHandler(this);
@@ -549,6 +579,15 @@ class DatingApp {
             profileFullModalScrollableContent: document.getElementById('profileFullModalScrollableContent'),
             profileFullModalEditBtn: document.getElementById('profileFullModalEditBtn'),
             profileFullModalNewProfileBtn: document.getElementById('profileFullModalNewProfileBtn'),
+            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ МОДАЛЬНОГО ОКНА ПРОФИЛЯ
+            profileFullModalEducation: document.getElementById('profileFullModalEducation'),
+            profileFullModalProfession: document.getElementById('profileFullModalProfession'),
+            profileFullModalBadHabits: document.getElementById('profileFullModalBadHabits'),
+            profileFullModalChildren: document.getElementById('profileFullModalChildren'),
+            profileFullModalPets: document.getElementById('profileFullModalPets'),
+            profileFullModalLanguages: document.getElementById('profileFullModalLanguages'),
+            profileFullModalDatingGoals: document.getElementById('profileFullModalDatingGoals'),
+
 
             // Добавленные элементы для модального окна анкеты
             matchFullModalOverlay: document.getElementById('matchModalOverlay'),
@@ -564,6 +603,15 @@ class DatingApp {
             matchFullModalDistance: document.getElementById('matchFullModalDistance'),
             matchFullModalActiveDot: document.getElementById('matchFullModalActiveDot'),
             matchFullModalScrollableContent: document.getElementById('matchFullModalScrollableContent'),
+            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ МОДАЛЬНОГО ОКНА АНКЕТЫ
+            matchFullModalEducation: document.getElementById('matchFullModalEducation'),
+            matchFullModalProfession: document.getElementById('matchFullModalProfession'),
+            matchFullModalBadHabits: document.getElementById('matchFullModalBadHabits'),
+            matchFullModalChildren: document.getElementById('matchFullModalChildren'),
+            matchFullModalPets: document.getElementById('matchFullModalPets'),
+            matchFullModalLanguages: document.getElementById('matchFullModalLanguages'),
+            matchFullModalDatingGoals: document.getElementById('matchFullModalDatingGoals'),
+            // matchViewFullProfileBtn: document.getElementById('matchViewFullProfileBtn'), // УДАЛЕНО: Кнопка просмотра полного профиля анкеты
 
             // НОВОЕ: Элементы для уведомлений чата
             chatNavBtn: document.querySelector('.nav-btn[data-screen="chat"]'),
@@ -591,7 +639,7 @@ class DatingApp {
                 if (this.matchHandler.lastMatchedProfile) {
                     // Ensure chatHandler is loaded before calling openChat
                     this.lazyLoadScript('chat').then(() => {
-                        this.chatHandler.openChat(this.matchHandler.lastMatchedProfile.id);
+                        this.chatHandler.addChat(this.matchHandler.lastMatchedProfile);
                     });
                 }
             });
@@ -642,6 +690,16 @@ class DatingApp {
                 }
             });
         }
+
+        // УДАЛЕНО: Обработчик для кнопки просмотра полного профиля анкеты
+        // if (this.elements.matchViewFullProfileBtn) {
+        //     this.elements.matchViewFullProfileBtn.addEventListener('click', () => {
+        //         const currentProfile = this.matchHandler.app.state.suggestedProfiles[this.matchHandler.currentIndex];
+        //         if (currentProfile) {
+        //             this.showMatchFullModal(currentProfile);
+        //         }
+        //     });
+        // }
 
         // Закрытие модальных окон по Esc
         document.addEventListener('keydown', (e) => {
@@ -791,7 +849,11 @@ class DatingApp {
             screen.style.display = 'none';
         });
 
-        this.elements.navButtons.forEach(button => button.classList.remove('active'));
+        this.elements.navButtons.forEach(button => {
+            button.classList.remove('active');
+            // Убираем tabindex="-1" со всех кнопок навигации, чтобы они были доступны для фокуса
+            button.removeAttribute('tabindex');
+        });
 
         let targetScreenElement;
         if (screenName === 'registration') {
@@ -952,7 +1014,7 @@ class DatingApp {
         this.elements.matchModalTitle.textContent = title;
         this.elements.matchModalMessage.textContent = message;
 
-        this.elements.matchModalMyAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${this.state.userData.name}/100/100)`;
+        this.elements.matchModalMyAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${this.app.state.userData.name}/100/100)`;
         this.elements.matchModalPartnerAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${profile.id}/100/100)`;
 
         this.elements.matchModalChatBtn.textContent = this.translate('writeMessage');
@@ -985,6 +1047,17 @@ class DatingApp {
 
         this.elements.profileFullModalDescriptionFull.textContent = fullDescription;
 
+        // НОВЫЕ ПОЛЯ
+        this.elements.profileFullModalEducation.textContent = profileData.education || this.translate('noData');
+        this.elements.profileFullModalProfession.textContent = profileData.profession || this.translate('noData');
+
+        this.renderTags(this.elements.profileFullModalBadHabits, profileData.badHabits, this.config.badHabitsOptions, 'bad-habit');
+        this.renderSingleTag(this.elements.profileFullModalChildren, profileData.children, this.config.childrenOptions, 'children');
+        this.renderTags(this.elements.profileFullModalPets, profileData.pets, this.config.petsOptions, 'pets');
+        this.renderTags(this.elements.profileFullModalLanguages, profileData.languages, this.config.languagesOptions, 'language');
+        this.renderTags(this.elements.profileFullModalDatingGoals, profileData.datingGoals, this.config.datingGoalsOptions, 'dating-goal');
+        // КОНЕЦ НОВЫХ ПОЛЕЙ
+
         const zodiacContainer = this.elements.profileFullModalZodiacSign;
         const zodiacSign = profileData.zodiacSign;
         if (zodiacSign) {
@@ -998,43 +1071,8 @@ class DatingApp {
             zodiacContainer.innerHTML = `<div class="no-data">${this.translate('noData')}</div>`;
         }
 
-        const lookingForContainer = this.elements.profileFullModalLookingFor;
-        lookingForContainer.innerHTML = '';
-        if (profileData.lookingFor && profileData.lookingFor.length > 0) {
-            profileData.lookingFor.forEach(optionId => {
-                const option = this.config.lookingForOptions.find(o => o.id === optionId);
-                if (option) {
-                    const el = document.createElement('div');
-                    el.className = 'looking-for-item';
-                    el.innerHTML = `
-                        <span class="looking-for-emoji">${option.emoji}</span>
-                        <span class="looking-for-text">${this.translate(option.id)}</span>
-                    `;
-                    lookingForContainer.appendChild(el);
-                }
-            });
-        } else {
-            lookingForContainer.innerHTML = `<div class="no-data">${this.translate('noLookingFor')}</div>`;
-        }
-
-        const interestsContainer = this.elements.profileFullModalInterests;
-        interestsContainer.innerHTML = '';
-        if (profileData.interests && profileData.interests.length > 0) {
-            profileData.interests.forEach(interestId => {
-                const interest = this.config.interests.find(i => i.id === interestId);
-                if (interest) {
-                    const el = document.createElement('div');
-                    el.className = 'interest-item';
-                    el.innerHTML = `
-                        <span class="interest-emoji">${interest.emoji}</span>
-                        <span class="interest-text">${this.translate(interest.id)}</span>
-                    `;
-                    interestsContainer.appendChild(el);
-                }
-            });
-        } else {
-            interestsContainer.innerHTML = `<div class="no-data">${this.translate('noInterests')}</div>`;
-        }
+        this.renderTags(this.elements.profileFullModalLookingFor, profileData.lookingFor, this.config.lookingForOptions, 'looking-for');
+        this.renderTags(this.elements.profileFullModalInterests, profileData.interests, this.config.interests, 'interest');
 
         this.elements.profileFullModalScrollableContent.scrollTop = 0;
 
@@ -1078,7 +1116,12 @@ class DatingApp {
             this.elements.matchFullModalActiveDot.style.backgroundColor = 'var(--text-secondary)';
         }
 
-        if (this.state.userData.location?.lat && profileData.location?.lat) {
+        if (this.calculateDistance(
+            this.state.userData.location?.lat,
+            this.state.userData.location?.lng,
+            profileData.location?.lat,
+            profileData.location?.lng
+        ) !== null) {
             const distance = this.calculateDistance(
                 this.state.userData.location.lat,
                 this.state.userData.location.lng,
@@ -1089,6 +1132,17 @@ class DatingApp {
         } else {
             this.elements.matchFullModalDistance.textContent = '';
         }
+
+        // НОВЫЕ ПОЛЯ
+        this.elements.matchFullModalEducation.textContent = profileData.education || this.translate('noData');
+        this.elements.matchFullModalProfession.textContent = profileData.profession || this.translate('noData');
+
+        this.renderTags(this.elements.matchFullModalBadHabits, profileData.badHabits, this.config.badHabitsOptions, 'bad-habit');
+        this.renderSingleTag(this.elements.matchFullModalChildren, profileData.children, this.config.childrenOptions, 'children');
+        this.renderTags(this.elements.matchFullModalPets, profileData.pets, this.config.petsOptions, 'pets');
+        this.renderTags(this.elements.matchFullModalLanguages, profileData.languages, this.config.languagesOptions, 'language');
+        this.renderTags(this.elements.matchFullModalDatingGoals, profileData.datingGoals, this.config.datingGoalsOptions, 'dating-goal');
+        // КОНЕЦ НОВЫХ ПОЛЕЙ
 
         const zodiacContainer = this.elements.matchFullModalZodiacSign;
         const zodiacSign = profileData.zodiacSign;
@@ -1103,43 +1157,8 @@ class DatingApp {
             zodiacContainer.innerHTML = `<div class="no-data">${this.translate('noData')}</div>`;
         }
 
-        const lookingForContainer = this.elements.matchFullModalLookingFor;
-        lookingForContainer.innerHTML = '';
-        if (profileData.lookingFor && profileData.lookingFor.length > 0) {
-            profileData.lookingFor.forEach(optionId => {
-                const option = this.config.lookingForOptions.find(o => o.id === optionId);
-                if (option) {
-                    const el = document.createElement('div');
-                    el.className = 'looking-for-item';
-                    el.innerHTML = `
-                        <span class="looking-for-emoji">${option.emoji}</span>
-                        <span class="looking-for-text">${this.translate(option.id)}</span>
-                    `;
-                    lookingForContainer.appendChild(el);
-                }
-            });
-        } else {
-            lookingForContainer.innerHTML = `<div class="no-data">${this.translate('noLookingFor')}</div>`;
-        }
-
-        const interestsContainer = this.elements.matchFullModalInterests;
-        interestsContainer.innerHTML = '';
-        if (profileData.interests && profileData.interests.length > 0) {
-            profileData.interests.forEach(interestId => {
-                const interest = this.config.interests.find(i => i.id === interestId);
-                if (interest) {
-                    const el = document.createElement('div');
-                    el.className = 'interest-item';
-                    el.innerHTML = `
-                        <span class="interest-emoji">${interest.emoji}</span>
-                        <span class="interest-text">${this.translate(interest.id)}</span>
-                    `;
-                    interestsContainer.appendChild(el);
-                }
-            });
-        } else {
-            interestsContainer.innerHTML = `<div class="no-data">${this.translate('noInterests')}</div>`;
-        }
+        this.renderTags(this.elements.matchFullModalLookingFor, profileData.lookingFor, this.config.lookingForOptions, 'looking-for');
+        this.renderTags(this.elements.matchFullModalInterests, profileData.interests, this.config.interests, 'interest');
 
         this.elements.matchFullModalScrollableContent.scrollTop = 0;
 
@@ -1154,6 +1173,46 @@ class DatingApp {
             this.elements.matchFullModalOverlay.classList.remove('active');
             this.elements.matchFullModalContent.classList.remove('active');
             document.body.style.overflow = '';
+        }
+    }
+
+    // НОВАЯ ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ РЕНДЕРИНГА ТЕГОВ (МНОЖЕСТВЕННЫЙ ВЫБОР)
+    renderTags(container, selectedIds, optionsConfig, classNamePrefix) {
+        container.innerHTML = '';
+        if (selectedIds && selectedIds.length > 0) {
+            selectedIds.forEach(optionId => {
+                const option = optionsConfig.find(o => o.id === optionId);
+                if (option) {
+                    const el = document.createElement('div');
+                    el.className = `${classNamePrefix}-item`;
+                    el.innerHTML = `
+                        <span class="${classNamePrefix}-emoji">${option.emoji}</span>
+                        <span class="${classNamePrefix}-text">${this.translate(option.id)}</span>
+                    `;
+                    container.appendChild(el);
+                }
+            });
+        } else {
+            container.innerHTML = `<div class="no-data">${this.translate('noData')}</div>`;
+        }
+    }
+
+    // НОВАЯ ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ РЕНДЕРИНГА ОДИНОЧНОГО ТЕГА (ЕДИНИЧНЫЙ ВЫБОР)
+    renderSingleTag(container, selectedId, optionsConfig, classNamePrefix) {
+        container.innerHTML = '';
+        if (selectedId) {
+            const option = optionsConfig.find(o => o.id === selectedId);
+            if (option) {
+                const el = document.createElement('div');
+                el.className = `${classNamePrefix}-item`;
+                el.innerHTML = `
+                    <span class="${classNamePrefix}-emoji">${option.emoji}</span>
+                    <span class="${classNamePrefix}-text">${this.translate(option.id)}</span>
+                `;
+                container.appendChild(el);
+            }
+        } else {
+            container.innerHTML = `<div class="no-data">${this.translate('noData')}</div>`;
         }
     }
 

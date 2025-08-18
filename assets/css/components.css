@@ -1180,7 +1180,13 @@
 }
 
 .profile-full-modal-looking-for,
-.profile-full-modal-interests {
+.profile-full-modal-interests,
+.profile-full-modal-bad-habits, /* НОВОЕ */
+.profile-full-modal-children, /* НОВОЕ */
+.profile-full-modal-pets, /* НОВОЕ */
+.profile-full-modal-languages, /* НОВОЕ */
+.profile-full-modal-dating-goals /* НОВОЕ */
+{
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -1189,7 +1195,13 @@
 }
 
 .profile-full-modal-looking-for .looking-for-item,
-.profile-full-modal-interests .interest-item {
+.profile-full-modal-interests .interest-item,
+.profile-full-modal-bad-habits .bad-habit-item, /* НОВОЕ */
+.profile-full-modal-children .children-item, /* НОВОЕ */
+.profile-full-modal-pets .pets-item, /* НОВОЕ */
+.profile-full-modal-languages .language-item, /* НОВОЕ */
+.profile-full-modal-dating-goals .dating-goal-item /* НОВОЕ */
+{
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1205,13 +1217,25 @@
 }
 
 .profile-full-modal-looking-for .looking-for-emoji,
-.profile-full-modal-interests .interest-emoji {
+.profile-full-modal-interests .interest-emoji,
+.profile-full-modal-bad-habits .bad-habit-emoji, /* НОВОЕ */
+.profile-full-modal-children .children-emoji, /* НОВОЕ */
+.profile-full-modal-pets .pets-emoji, /* НОВОЕ */
+.profile-full-modal-languages .language-emoji, /* НОВОЕ */
+.profile-full-modal-dating-goals .dating-goal-emoji /* НОВОЕ */
+{
     font-size: 1.3rem;
     line-height: 1;
 }
 
 .profile-full-modal-looking-for .looking-for-text,
-.profile-full-modal-interests .interest-text {
+.profile-full-modal-interests .interest-text,
+.profile-full-modal-bad-habits .bad-habit-text, /* НОВОЕ */
+.profile-full-modal-children .children-text, /* НОВОЕ */
+.profile-full-modal-pets .pets-text, /* НОВОЕ */
+.profile-full-modal-languages .language-text, /* НОВОЕ */
+.profile-full-modal-dating-goals .dating-goal-text /* НОВОЕ */
+{
     font-size: 0.88rem;
     color: var(--text-primary);
     font-weight: 500;
@@ -1263,218 +1287,13 @@
     }
 
     .profile-full-modal-looking-for .looking-for-item,
-    .profile-full-modal-interests .interest-item {
-        padding: 8px 12px;
-        font-size: 0.8rem;
-    }
-}
-/* assets/css/components.css */
-
-/* ... (существующие стили) ... */
-
-/* НОВЫЕ СТИЛИ ДЛЯ МОДАЛЬНОГО ОКНА ПРОФИЛЯ */
-.profile-full-modal-content {
-    background: var(--background);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
-    max-width: 500px;
-    width: 95%;
-    height: 95%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.modal-overlay.active .profile-full-modal-content {
-    transform: scale(1);
-    opacity: 1;
-}
-
-.profile-full-modal-close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 1002;
-    transition: background-color 0.2s ease;
-}
-
-.profile-full-modal-close-btn:hover {
-    background-color: var(--error);
-}
-
-.profile-full-modal-close-btn svg {
-    width: 24px;
-    height: 24px;
-    stroke: white; /* Изменено на stroke для SVG */
-}
-
-.profile-full-modal-scrollable-content {
-    flex-grow: 1;
-    padding: 30px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    color: var(--text-primary);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.profile-full-modal-scrollable-content::-webkit-scrollbar {
-    display: none;
-}
-
-.profile-full-modal-header-info {
-    margin-bottom: 20px;
-    text-align: left;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border);
-}
-
-.profile-full-modal-name-age {
-    font-size: 2.2rem;
-    font-weight: 700;
-    line-height: 1.1;
-    margin-bottom: 8px;
-    color: var(--text-primary);
-}
-
-.profile-full-modal-description-short {
-    font-size: 1rem;
-    line-height: 1.4;
-    color: var(--text-secondary);
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.profile-full-modal-section {
-    margin-bottom: 20px;
-}
-
-.profile-full-modal-section:last-child {
-    margin-bottom: 0;
-}
-
-.profile-full-modal-section .section-title {
-    font-size: 1.3rem;
-    color: var(--primary);
-    margin-bottom: 12px;
-    font-weight: 800;
-    text-align: left;
-}
-
-.profile-full-modal-description-full {
-    background: var(--surface);
-    padding: 15px;
-    border-radius: var(--radius-md);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: var(--text-primary);
-    border: none;
-    word-break: break-word;
-}
-
-.profile-full-modal-looking-for,
-.profile-full-modal-interests {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: flex-start;
-    width: 100%;
-}
-
-.profile-full-modal-looking-for .looking-for-item,
-.profile-full-modal-interests .interest-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    background-color: var(--surface);
-    border-radius: var(--radius-md);
-    font-size: 0.9rem;
-    border: none;
-    text-align: center;
-    flex-grow: 1;
-    justify-content: center;
-    min-width: 100px;
-}
-
-.profile-full-modal-looking-for .looking-for-emoji,
-.profile-full-modal-interests .interest-emoji {
-    font-size: 1.3rem;
-    line-height: 1;
-}
-
-.profile-full-modal-looking-for .looking-for-text,
-.profile-full-modal-interests .interest-text {
-    font-size: 0.88rem;
-    color: var(--text-primary);
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.profile-full-modal-actions {
-    display: flex;
-    flex-direction: column;
-    margin-top: 20px;
-    gap: 10px;
-    flex-shrink: 0;
-    width: 100%;
-}
-
-@media (max-width: 480px) {
-    .profile-full-modal-content {
-        padding: 15px;
-        width: 98%;
-        height: 98%;
-    }
-
-    .profile-full-modal-close-btn {
-        top: 10px;
-        right: 10px;
-        width: 30px;
-        height: 30px;
-    }
-
-    .profile-full-modal-name-age {
-        font-size: 1.8rem;
-    }
-
-    .profile-full-modal-description-short {
-        font-size: 0.9rem;
-    }
-
-    .profile-full-modal-scrollable-content {
-        padding: 15px;
-    }
-
-    .profile-full-modal-section .section-title {
-        font-size: 1.1rem;
-    }
-
-    .profile-full-modal-description-full {
-        padding: 12px;
-        font-size: 0.9rem;
-    }
-
-    .profile-full-modal-looking-for .looking-for-item,
-    .profile-full-modal-interests .interest-item {
+    .profile-full-modal-interests .interest-item,
+    .profile-full-modal-bad-habits .bad-habit-item, /* НОВОЕ */
+    .profile-full-modal-children .children-item, /* НОВОЕ */
+    .profile-full-modal-pets .pets-item, /* НОВОЕ */
+    .profile-full-modal-languages .language-item, /* НОВОЕ */
+    .profile-full-modal-dating-goals .dating-goal-item /* НОВОЕ */
+    {
         padding: 8px 12px;
         font-size: 0.8rem;
     }
@@ -1625,7 +1444,13 @@
 }
 
 .match-full-modal-looking-for,
-.match-full-modal-interests {
+.match-full-modal-interests,
+.match-full-modal-bad-habits, /* НОВОЕ */
+.match-full-modal-children, /* НОВОЕ */
+.match-full-modal-pets, /* НОВОЕ */
+.match-full-modal-languages, /* НОВОЕ */
+.match-full-modal-dating-goals /* НОВОЕ */
+{
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -1634,7 +1459,13 @@
 }
 
 .match-full-modal-looking-for .looking-for-item,
-.match-full-modal-interests .interest-item {
+.match-full-modal-interests .interest-item,
+.match-full-modal-bad-habits .bad-habit-item, /* НОВОЕ */
+.match-full-modal-children .children-item, /* НОВОЕ */
+.match-full-modal-pets .pets-item, /* НОВОЕ */
+.match-full-modal-languages .language-item, /* НОВОЕ */
+.match-full-modal-dating-goals .dating-goal-item /* НОВОЕ */
+{
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1650,13 +1481,25 @@
 }
 
 .match-full-modal-looking-for .looking-for-emoji,
-.match-full-modal-interests .interest-emoji {
+.match-full-modal-interests .interest-emoji,
+.match-full-modal-bad-habits .bad-habit-emoji, /* НОВОЕ */
+.match-full-modal-children .children-emoji, /* НОВОЕ */
+.match-full-modal-pets .pets-emoji, /* НОВОЕ */
+.match-full-modal-languages .language-emoji, /* НОВОЕ */
+.match-full-modal-dating-goals .dating-goal-emoji /* НОВОЕ */
+{
     font-size: 1.3rem;
     line-height: 1;
 }
 
 .match-full-modal-looking-for .looking-for-text,
-.match-full-modal-interests .interest-text {
+.match-full-modal-interests .interest-text,
+.match-full-modal-bad-habits .bad-habit-text, /* НОВОЕ */
+.match-full-modal-children .children-text, /* НОВОЕ */
+.match-full-modal-pets .pets-text, /* НОВОЕ */
+.match-full-modal-languages .language-text, /* НОВОЕ */
+.match-full-modal-dating-goals .dating-goal-text /* НОВОЕ */
+{
     font-size: 0.88rem;
     color: var(--text-primary);
     font-weight: 500;
@@ -1699,7 +1542,13 @@
     }
 
     .match-full-modal-looking-for .looking-for-item,
-    .match-full-modal-interests .interest-item {
+    .match-full-modal-interests .interest-item,
+    .match-full-modal-bad-habits .bad-habit-item, /* НОВОЕ */
+    .match-full-modal-children .children-item, /* НОВОЕ */
+    .match-full-modal-pets .pets-item, /* НОВОЕ */
+    .match-full-modal-languages .language-item, /* НОВОЕ */
+    .match-full-modal-dating-goals .dating-goal-item /* НОВОЕ */
+    {
         padding: 8px 12px;
         font-size: 0.8rem;
     }
