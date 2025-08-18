@@ -128,7 +128,7 @@ class DatingApp {
                 continueSwiping: 'Продолжить свайпать',
                 lastActiveToday: 'Была сегодня',
                 lastActiveYesterday: 'Была вчера',
-                lastActiveThisWeek: 'Была на этой неделе',
+                lastActiveThisWeek: 'Была недавно',
                 lastActiveRecently: 'Была недавно',
                 km: 'км',
                 maxInterestsAlert: 'Вы можете выбрать не более {maxInterests} интересов.',
@@ -321,7 +321,7 @@ class DatingApp {
         // Make sure loading text elements are visible for animation
         const loadingTitle = document.getElementById('loadingTitle');
         const loadingSubtitle = document.getElementById('loadingSubtitle');
-        
+
         // Set initial state for animation
         loadingTitle.style.opacity = '0';
         loadingTitle.style.transform = 'translateY(20px) scale(0.95)';
@@ -380,6 +380,35 @@ class DatingApp {
             navChatText: document.getElementById('navChatText'),
             navSettingsText: document.getElementById('navSettingsText'),
             dynamicStyles: document.getElementById('dynamic-styles'), // Get the style tag
+
+            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ МОДАЛЬНОГО ОКНА ПРОФИЛЯ
+            profileFullModalOverlay: document.getElementById('profileFullModalOverlay'),
+            profileFullModalContent: document.getElementById('profileFullModalContent'),
+            profileFullModalCloseBtn: document.getElementById('profileFullModalCloseBtn'),
+            profileFullModalNameAge: document.getElementById('profileFullModalNameAge'),
+            profileFullModalDescriptionShort: document.getElementById('profileFullModalDescriptionShort'),
+            profileFullModalDescriptionFull: document.getElementById('profileFullModalDescriptionFull'),
+            profileFullModalZodiacSign: document.getElementById('profileFullModalZodiacSign'),
+            profileFullModalLookingFor: document.getElementById('profileFullModalLookingFor'),
+            profileFullModalInterests: document.getElementById('profileFullModalInterests'),
+            profileFullModalScrollableContent: document.getElementById('profileFullModalScrollableContent'),
+            profileFullModalEditBtn: document.getElementById('profileFullModalEditBtn'),
+            profileFullModalNewProfileBtn: document.getElementById('profileFullModalNewProfileBtn'),
+
+            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ МОДАЛЬНОГО ОКНА АНКЕТЫ
+            matchFullModalOverlay: document.getElementById('matchModalOverlay'),
+            matchFullModalContent: document.getElementById('matchFullModalContent'),
+            matchFullModalCloseBtn: document.getElementById('matchFullModalCloseBtn'),
+            matchFullModalNameAge: document.getElementById('matchFullModalNameAge'),
+            matchFullModalDescriptionShort: document.getElementById('matchFullModalDescriptionShort'),
+            matchFullModalDescriptionFull: document.getElementById('matchFullModalDescriptionFull'),
+            matchFullModalZodiacSign: document.getElementById('matchFullModalZodiacSign'),
+            matchFullModalLookingFor: document.getElementById('matchFullModalLookingFor'),
+            matchFullModalInterests: document.getElementById('matchFullModalInterests'),
+            matchFullModalLastActive: document.getElementById('matchFullModalLastActive'),
+            matchFullModalDistance: document.getElementById('matchFullModalDistance'),
+            matchFullModalActiveDot: document.getElementById('matchFullModalActiveDot'),
+            matchFullModalScrollableContent: document.getElementById('matchFullModalScrollableContent'),
         };
     }
 
@@ -410,6 +439,45 @@ class DatingApp {
                 this.hideMatchSuccessModal();
                 this.matchHandler.currentIndex++; // Переходим к следующему профилю
                 this.matchHandler.showNextProfile();
+            });
+        }
+
+        // Обработчики для нового модального окна профиля
+        if (this.elements.profileFullModalCloseBtn) {
+            this.elements.profileFullModalCloseBtn.addEventListener('click', () => this.hideProfileFullModal());
+        }
+        if (this.elements.profileFullModalOverlay) {
+            this.elements.profileFullModalOverlay.addEventListener('click', (e) => {
+                if (e.target === this.elements.profileFullModalOverlay) {
+                    this.hideProfileFullModal();
+                }
+            });
+        }
+        // Кнопки внутри модального окна профиля
+        if (this.elements.profileFullModalEditBtn) {
+            this.elements.profileFullModalEditBtn.addEventListener('click', () => {
+                this.hideProfileFullModal();
+                this.switchScreen('registration');
+            });
+        }
+        if (this.elements.profileFullModalNewProfileBtn) {
+            this.elements.profileFullModalNewProfileBtn.addEventListener('click', () => {
+                if (confirm(this.translate('confirmClearData'))) {
+                    this.hideProfileFullModal();
+                    this.clearAllData();
+                }
+            });
+        }
+
+        // Обработчики для модального окна анкеты (оставляем как есть)
+        if (this.elements.matchFullModalCloseBtn) {
+            this.elements.matchFullModalCloseBtn.addEventListener('click', () => this.hideMatchFullModal());
+        }
+        if (this.elements.matchFullModalOverlay) {
+            this.elements.matchFullModalOverlay.addEventListener('click', (e) => {
+                if (e.target === this.elements.matchFullModalOverlay) {
+                    this.hideMatchFullModal();
+                }
             });
         }
     }
@@ -557,11 +625,11 @@ class DatingApp {
         this.elements.matchModalIcon.textContent = iconHtml;
         this.elements.matchModalTitle.textContent = title;
         this.elements.matchModalMessage.textContent = message;
-        
+
         // ОБНОВЛЕНО: Установка аватаров для нового дизайна
         this.elements.matchModalMyAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${this.state.userData.name}/100/100)`; // Аватар текущего пользователя
         this.elements.matchModalPartnerAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${profile.id}/100/100)`; // Аватар партнера
-        
+
         this.elements.matchModalChatBtn.textContent = this.translate('writeMessage');
         this.elements.matchModalContinueBtn.textContent = this.translate('continueSwiping');
 
@@ -571,6 +639,208 @@ class DatingApp {
     hideMatchSuccessModal() {
         if (this.elements.matchSuccessModal) {
             this.elements.matchSuccessModal.classList.remove('active');
+        }
+    }
+
+    // НОВАЯ ФУНКЦИЯ: Показать модальное окно профиля
+    showProfileFullModal(profileData) {
+        if (!this.elements.profileFullModalOverlay || !this.elements.profileFullModalContent) return;
+
+        let nameAgeText = profileData.name || this.translate('anonymous');
+        if (profileData.age) {
+            nameAgeText += `, ${profileData.age}`;
+        }
+        this.elements.profileFullModalNameAge.textContent = nameAgeText;
+
+        const fullDescription = profileData.description || this.translate('noDescription');
+        this.elements.profileFullModalDescriptionShort.textContent = fullDescription.split('.')[0] + (fullDescription.includes('.') ? '.' : '');
+        if (this.elements.profileFullModalDescriptionShort.textContent.length > 100) {
+            this.elements.profileFullModalDescriptionShort.textContent = this.elements.profileFullModalDescriptionShort.textContent.substring(0, 97) + '...';
+        }
+
+        this.elements.profileFullModalDescriptionFull.textContent = fullDescription;
+
+        // Обновляем знак зодиака
+        const zodiacContainer = this.elements.profileFullModalZodiacSign;
+        const zodiacSign = profileData.zodiacSign;
+        if (zodiacSign) {
+            zodiacContainer.innerHTML = `
+                <div class="zodiac-display">
+                    <span class="emoji">${zodiacSign.emoji}</span>
+                    ${this.translate(zodiacSign.id)}
+                </div>
+            `;
+        } else {
+            zodiacContainer.innerHTML = `<div class="no-data">${this.translate('noData')}</div>`;
+        }
+
+        // Обновляем "Ищу"
+        const lookingForContainer = this.elements.profileFullModalLookingFor;
+        lookingForContainer.innerHTML = '';
+        if (profileData.lookingFor && profileData.lookingFor.length > 0) {
+            profileData.lookingFor.forEach(optionId => {
+                const option = this.config.lookingForOptions.find(o => o.id === optionId);
+                if (option) {
+                    const el = document.createElement('div');
+                    el.className = 'looking-for-item';
+                    el.innerHTML = `
+                        <span class="looking-for-emoji">${option.emoji}</span>
+                        <span class="looking-for-text">${this.translate(option.id)}</span>
+                    `;
+                    lookingForContainer.appendChild(el);
+                }
+            });
+        } else {
+            lookingForContainer.innerHTML = `<div class="no-data">${this.translate('noLookingFor')}</div>`;
+        }
+
+        // Обновляем "Интересы"
+        const interestsContainer = this.elements.profileFullModalInterests;
+        interestsContainer.innerHTML = '';
+        if (profileData.interests && profileData.interests.length > 0) {
+            profileData.interests.forEach(interestId => {
+                const interest = this.config.interests.find(i => i.id === interestId);
+                if (interest) {
+                    const el = document.createElement('div');
+                    el.className = 'interest-item';
+                    el.innerHTML = `
+                        <span class="interest-emoji">${interest.emoji}</span>
+                        <span class="interest-text">${this.translate(interest.id)}</span>
+                    `;
+                    interestsContainer.appendChild(el);
+                }
+            });
+        } else {
+            interestsContainer.innerHTML = `<div class="no-data">${this.translate('noInterests')}</div>`;
+        }
+
+        // Сбрасываем прокрутку
+        this.elements.profileFullModalScrollableContent.scrollTop = 0;
+
+        // Показываем модальное окно
+        this.elements.profileFullModalOverlay.classList.add('active');
+        this.elements.profileFullModalContent.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Запрещаем прокрутку фона
+    }
+
+    // НОВАЯ ФУНКЦИЯ: Скрыть модальное окно профиля
+    hideProfileFullModal() {
+        if (this.elements.profileFullModalOverlay && this.elements.profileFullModalContent) {
+            this.elements.profileFullModalOverlay.classList.remove('active');
+            this.elements.profileFullModalContent.classList.remove('active');
+            document.body.style.overflow = ''; // Разрешаем прокрутку фона
+        }
+    }
+
+    // НОВАЯ ФУНКЦИЯ: Показать модальное окно анкеты (оставляем как есть)
+    showMatchFullModal(profileData) {
+        if (!this.elements.matchFullModalOverlay || !this.elements.matchFullModalContent) return;
+
+        let nameAgeText = profileData.name || this.translate('anonymous');
+        if (profileData.age) {
+            nameAgeText += `, ${profileData.age}`;
+        }
+        this.elements.matchFullModalNameAge.textContent = nameAgeText;
+
+        const fullDescription = profileData.description || this.translate('noDescription');
+        this.elements.matchFullModalDescriptionShort.textContent = fullDescription.split('.')[0] + (fullDescription.includes('.') ? '.' : '');
+        if (this.elements.matchFullModalDescriptionShort.textContent.length > 100) {
+            this.elements.matchFullModalDescriptionShort.textContent = this.elements.matchFullModalDescriptionShort.textContent.substring(0, 97) + '...';
+        }
+
+        this.elements.matchFullModalDescriptionFull.textContent = fullDescription;
+
+        // Обновляем статус активности и дистанцию
+        this.elements.matchFullModalLastActive.textContent = profileData.lastActive;
+        if (profileData.lastActive === this.translate('lastActiveToday')) {
+            this.elements.matchFullModalActiveDot.classList.remove('offline');
+            this.elements.matchFullModalActiveDot.style.backgroundColor = 'var(--match-active-dot)';
+        } else {
+            this.elements.matchFullModalActiveDot.classList.add('offline');
+            this.elements.matchFullModalActiveDot.style.backgroundColor = 'var(--text-secondary)';
+        }
+
+        if (this.state.userData.location?.lat && profileData.location?.lat) {
+            const distance = this.calculateDistance(
+                this.state.userData.location.lat,
+                this.state.userData.location.lng,
+                profileData.location.lat,
+                profileData.location.lng
+            );
+            this.elements.matchFullModalDistance.textContent = distance ? `${distance} ${this.translate('km')}` : '';
+        } else {
+            this.elements.matchFullModalDistance.textContent = '';
+        }
+
+        // Обновляем знак зодиака
+        const zodiacContainer = this.elements.matchFullModalZodiacSign;
+        const zodiacSign = profileData.zodiacSign;
+        if (zodiacSign) {
+            zodiacContainer.innerHTML = `
+                <div class="zodiac-display">
+                    <span class="emoji">${zodiacSign.emoji}</span>
+                    ${this.translate(zodiacSign.id)}
+                </div>
+            `;
+        } else {
+            zodiacContainer.innerHTML = `<div class="no-data">${this.translate('noData')}</div>`;
+        }
+
+        // Обновляем "Ищу"
+        const lookingForContainer = this.elements.matchFullModalLookingFor;
+        lookingForContainer.innerHTML = '';
+        if (profileData.lookingFor && profileData.lookingFor.length > 0) {
+            profileData.lookingFor.forEach(optionId => {
+                const option = this.config.lookingForOptions.find(o => o.id === optionId);
+                if (option) {
+                    const el = document.createElement('div');
+                    el.className = 'looking-for-item';
+                    el.innerHTML = `
+                        <span class="looking-for-emoji">${option.emoji}</span>
+                        <span class="looking-for-text">${this.translate(option.id)}</span>
+                    `;
+                    lookingForContainer.appendChild(el);
+                }
+            });
+        } else {
+            lookingForContainer.innerHTML = `<div class="no-data">${this.translate('noLookingFor')}</div>`;
+        }
+
+        // Обновляем "Интересы"
+        const interestsContainer = this.elements.matchFullModalInterests;
+        interestsContainer.innerHTML = '';
+        if (profileData.interests && profileData.interests.length > 0) {
+            profileData.interests.forEach(interestId => {
+                const interest = this.config.interests.find(i => i.id === interestId);
+                if (interest) {
+                    const el = document.createElement('div');
+                    el.className = 'interest-item';
+                    el.innerHTML = `
+                        <span class="interest-emoji">${interest.emoji}</span>
+                        <span class="interest-text">${this.translate(interest.id)}</span>
+                    `;
+                    interestsContainer.appendChild(el);
+                }
+            });
+        } else {
+            interestsContainer.innerHTML = `<div class="no-data">${this.translate('noInterests')}</div>`;
+        }
+
+        // Сбрасываем прокрутку
+        this.elements.matchFullModalScrollableContent.scrollTop = 0;
+
+        // Показываем модальное окно
+        this.elements.matchFullModalOverlay.classList.add('active');
+        this.elements.matchFullModalContent.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Запрещаем прокрутку фона
+    }
+
+    // НОВАЯ ФУНКЦИЯ: Скрыть модальное окно анкеты (оставляем как есть)
+    hideMatchFullModal() {
+        if (this.elements.matchFullModalOverlay && this.elements.matchFullModalContent) {
+            this.elements.matchFullModalOverlay.classList.remove('active');
+            this.elements.matchFullModalContent.classList.remove('active');
+            document.body.style.overflow = ''; // Разрешаем прокрутку фона
         }
     }
 

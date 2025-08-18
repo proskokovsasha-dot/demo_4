@@ -2,6 +2,7 @@ class ProfileHandler {
     constructor(app) {
         this.app = app;
         this.initElements();
+        this.bindEvents();
     }
 
     initElements() {
@@ -10,34 +11,36 @@ class ProfileHandler {
             profileCardBg: document.getElementById('myProfileCardBg'),
             profileNameAge: document.getElementById('myProfileNameAge'),
             profileDescriptionShort: document.getElementById('myProfileDescriptionShort'),
-            profileScrollableContent: document.getElementById('myProfileScrollableContent'),
-            profileDescriptionFull: document.getElementById('myProfileDescriptionFull'),
-            profileZodiacSign: document.getElementById('myProfileZodiacSign'),
-            profileLookingFor: document.getElementById('myProfileLookingFor'),
-            profileInterests: document.getElementById('myProfileInterests'),
-            editBtn: document.getElementById('editBtn'),
-            newProfileBtn: document.getElementById('newProfileBtn'),
             profileFixedInfo: document.getElementById('myProfileFixedInfo'),
         };
+    }
+
+    bindEvents() {
+        if (this.profileCardClickHandler) {
+            this.elements.profileCard.removeEventListener('click', this.profileCardClickHandler);
+        }
+
+        // Обработчик для открытия модального окна при клике на карточку профиля
+        this.profileCardClickHandler = () => {
+            this.app.showProfileFullModal(this.app.state.userData);
+        };
+        this.elements.profileCard.addEventListener('click', this.profileCardClickHandler);
     }
 
     showProfile() {
         const { userData } = this.app.state;
 
-        // The background color of the profile card is now controlled by the global CSS variable
-        // this.elements.profileCard.style.backgroundColor = userData.profileColor || 'transparent'; 
-        
+        // Обновляем фон карточки профиля (для предпросмотра)
         this.updateProfileCardBackground(userData.avatar);
+        // Обновляем краткую информацию на карточке профиля
         this.updateProfileInfo(userData);
-        this.updateZodiacSign(userData.zodiacSign);
-        this.updateLookingFor(userData.lookingFor, this.app.config.lookingForOptions);
-        this.updateInterests(userData.interests, this.app.config.interests);
-        this.bindEvents();
+        // Обновляем тексты (если есть)
         this.updateProfileTexts();
     }
 
     updateProfileCardBackground(avatar) {
-        this.elements.profileCardBg.style.backgroundImage = 'none';
+        // Используем userData.name для генерации уникального seed для аватара текущего пользователя
+        this.elements.profileCardBg.style.backgroundImage = `url(https://picsum.photos/seed/${this.app.state.userData.name}/400/600)`;
         this.elements.profileCardBg.style.backgroundColor = 'var(--primary-dark)'; // Use primary-dark from theme
     }
 
@@ -53,130 +56,28 @@ class ProfileHandler {
         if (this.elements.profileDescriptionShort.textContent.length > 100) {
             this.elements.profileDescriptionShort.textContent = this.elements.profileDescriptionShort.textContent.substring(0, 97) + '...';
         }
-
-        this.elements.profileDescriptionFull.textContent = fullDescription;
     }
 
+    // Эти функции теперь используются только для модального окна, но оставлены здесь, если потребуется их переиспользовать
     updateZodiacSign(zodiacSign) {
-        const container = this.elements.profileZodiacSign;
-        if (!container) return;
-
-        if (zodiacSign) {
-            container.innerHTML = `
-                <div class="zodiac-display">
-                    <span class="emoji">${zodiacSign.emoji}</span>
-                    ${this.app.translate(zodiacSign.id)}
-                </div>
-            `;
-        } else {
-            container.innerHTML = `<div class="no-data">${this.app.translate('noData')}</div>`;
-        }
+        // Логика перемещена в showProfileFullModal в app.js
     }
 
     updateLookingFor(lookingFor, options) {
-        const container = this.elements.profileLookingFor;
-        if (!container) return;
-
-        container.innerHTML = '';
-
-        if (lookingFor && lookingFor.length > 0) {
-            const lookingForContainer = document.createElement('div');
-            lookingForContainer.className = 'profile-looking-for-container';
-
-            lookingFor.forEach(optionId => {
-                const option = options.find(o => o.id === optionId);
-                if (option) {
-                    const el = document.createElement('div');
-                    el.className = 'looking-for-item';
-                    el.innerHTML = `
-                        <span class="looking-for-emoji">${option.emoji}</span>
-                        <span class="looking-for-text">${this.app.translate(option.id)}</span>
-                    `;
-                    lookingForContainer.appendChild(el);
-                }
-            });
-
-            container.appendChild(lookingForContainer);
-        } else {
-            container.innerHTML = `<div class="no-data">${this.app.translate('noLookingFor')}</div>`;
-        }
+        // Логика перемещена в showProfileFullModal в app.js
     }
 
     updateInterests(userInterests, configInterests) {
-        const container = this.elements.profileInterests;
-        if (!container) return;
-
-        container.innerHTML = '';
-
-        if (userInterests && userInterests.length > 0) {
-            const interestsContainer = document.createElement('div');
-            interestsContainer.className = 'profile-interests-container';
-
-            userInterests.forEach(interestId => {
-                const interest = configInterests.find(i => i.id === interestId);
-                if (interest) {
-                    const el = document.createElement('div');
-                    el.className = 'interest-item';
-                    el.innerHTML = `
-                        <span class="interest-emoji">${interest.emoji}</span>
-                        <span class="interest-text">${this.app.translate(interest.id)}</span>
-                    `;
-                    interestsContainer.appendChild(el);
-                }
-            });
-
-            container.appendChild(interestsContainer);
-        } else {
-            container.innerHTML = `<div class="no-data">${this.app.translate('noInterests')}</div>`;
-        }
-    }
-
-    bindEvents() {
-        this.elements.editBtn.removeEventListener('click', this.editProfileHandler);
-        this.elements.newProfileBtn.removeEventListener('click', this.newProfileHandler);
-
-        this.editProfileHandler = () => this.app.switchScreen('registration');
-        this.elements.editBtn.addEventListener('click', this.editProfileHandler);
-
-        this.newProfileHandler = () => {
-            if (confirm(this.app.translate('confirmClearData'))) {
-                this.resetProfile();
-            }
-        };
-        this.elements.newProfileBtn.addEventListener('click', this.newProfileHandler);
+        // Логика перемещена в showProfileFullModal в app.js
     }
 
     resetProfile() {
-        this.app.state.userData = {
-            name: '',
-            gender: '',
-            age: '',
-            dob: { day: '', month: '', year: '' },
-            zodiacSign: null,
-            city: '',
-            description: '',
-            interests: [],
-            lookingFor: [],
-            preference: 'both',
-            profileColor: '#FF6B6B',
-        };
-
-        localStorage.removeItem('datingProfile');
-        this.app.switchScreen('registration');
+        // Эта функция теперь вызывается через clearAllData в app.js
+        this.app.clearAllData();
     }
 
     updateProfileTexts() {
-        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(1) .section-title').textContent = this.app.translate('aboutYou');
-        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(2) .section-title').textContent = this.app.translate('yourZodiacSign');
-        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(3) .section-title').textContent = this.app.translate('whatAreYouLookingFor');
-        document.querySelector('#myProfileScrollableContent .profile-section:nth-child(4) .section-title').textContent = this.app.translate('yourInterests');
-        document.getElementById('editBtn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h 14a2 2 0 0 0 2-2v-7"></path>
-                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                    </svg>${this.app.translate('edit')}`;
-        document.getElementById('newProfileBtn').innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M12 5v14"></path>
-                                        <path d="M5 12h14"></path>
-                                    </svg>${this.app.translate('newProfile')}`;
+        // Тексты кнопок теперь обновляются в app.js при инициализации элементов модального окна
+        // и при переключении языка.
     }
 }

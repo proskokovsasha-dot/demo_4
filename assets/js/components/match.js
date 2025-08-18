@@ -56,6 +56,21 @@ class MatchHandler {
         }
 
         this.addSwipeGestureRecognition();
+
+        // НОВЫЙ ОБРАБОТЧИК: Открытие модального окна при клике на карточку анкеты
+        if (this.matchCardClickHandler) {
+            this.elements.matchCard.removeEventListener('click', this.matchCardClickHandler);
+        }
+        this.matchCardClickHandler = (e) => {
+            // Проверяем, что клик не был по кнопкам действий
+            if (!e.target.closest('.action-btn')) {
+                const currentProfile = this.app.state.suggestedProfiles[this.currentIndex];
+                if (currentProfile) {
+                    this.app.showMatchFullModal(currentProfile);
+                }
+            }
+        };
+        this.elements.matchCard.addEventListener('click', this.matchCardClickHandler);
     }
 
     addSwipeGestureRecognition() {
@@ -63,12 +78,20 @@ class MatchHandler {
         const card = this.elements.matchCard;
 
         card.addEventListener('touchstart', (e) => {
+            // Игнорируем свайп, если начат на кнопках действий
+            if (e.target.closest('.action-btn')) {
+                return;
+            }
             startX = e.touches[0].clientX;
             startY = e.touches[0].clientY;
             card.style.transition = 'none';
         });
 
         card.addEventListener('touchmove', (e) => {
+            // Игнорируем свайп, если начат на кнопках действий
+            if (e.target.closest('.action-btn')) {
+                return;
+            }
             endX = e.touches[0].clientX;
             endY = e.touches[0].clientY;
             const deltaX = endX - startX;
@@ -78,7 +101,11 @@ class MatchHandler {
             card.style.opacity = 1 - Math.abs(deltaX / card.offsetWidth * 1.5) - Math.abs(deltaY / card.offsetHeight * 1.5);
         });
 
-        card.addEventListener('touchend', () => {
+        card.addEventListener('touchend', (e) => {
+            // Игнорируем свайп, если начат на кнопках действий
+            if (e.target.closest('.action-btn')) {
+                return;
+            }
             const deltaX = endX - startX;
             const deltaY = endY - startY;
             const thresholdX = card.offsetWidth / 4;
