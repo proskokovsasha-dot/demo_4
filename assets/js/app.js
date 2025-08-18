@@ -271,11 +271,11 @@ class DatingApp {
                 gemini: 'Gemini',
                 cancer: 'Cancer',
                 leo: 'Leo',
-                virgo: 'Дева',
-                libra: 'Весы',
-                scorpio: 'Скорпион',
-                sagittarius: 'Стрелец',
-                capricorn: 'Козерог',
+                virgo: 'Virgo',
+                libra: 'Libra',
+                scorpio: 'Scorpio',
+                sagittarius: 'Sagittarius',
+                capricorn: 'Capricorn',
             }
         };
 
@@ -365,13 +365,14 @@ class DatingApp {
             settingsScreen: document.getElementById('settingsScreen'),
             topNavigation: document.getElementById('topNavigation'),
             navButtons: document.querySelectorAll('.nav-btn'),
-            matchSuccessModal: document.getElementById('matchSuccessModal'), // ВОССТАНОВЛЕНО
-            matchModalIcon: document.getElementById('matchModalIcon'), // ВОССТАНОВЛЕНО
-            matchModalTitle: document.getElementById('matchModalTitle'), // ВОССТАНОВЛЕНО
-            matchModalMessage: document.getElementById('matchModalMessage'), // ВОССТАНОВЛЕНО
-            matchModalAvatar: document.getElementById('matchModalAvatar'), // ВОССТАНОВЛЕНО
-            matchModalChatBtn: document.getElementById('matchModalChatBtn'), // ВОССТАНОВЛЕНО
-            matchModalContinueBtn: document.getElementById('matchModalContinueBtn'), // ВОССТАНОВЛЕНО
+            matchSuccessModal: document.getElementById('matchSuccessModal'),
+            matchModalIcon: document.getElementById('matchModalIcon'),
+            matchModalTitle: document.getElementById('matchModalTitle'),
+            matchModalMessage: document.getElementById('matchModalMessage'),
+            matchModalMyAvatar: document.getElementById('matchModalMyAvatar'), // НОВЫЙ ЭЛЕМЕНТ
+            matchModalPartnerAvatar: document.getElementById('matchModalPartnerAvatar'), // НОВЫЙ ЭЛЕМЕНТ
+            matchModalChatBtn: document.getElementById('matchModalChatBtn'),
+            matchModalContinueBtn: document.getElementById('matchModalContinueBtn'),
             loadingTitle: document.getElementById('loadingTitle'),
             loadingSubtitle: document.getElementById('loadingSubtitle'),
             navProfileText: document.getElementById('navProfileText'),
@@ -395,7 +396,6 @@ class DatingApp {
             backToProfileFromMatchBtn.addEventListener('click', () => this.switchScreen('profile'));
         }
 
-        // ВОССТАНОВЛЕНЫ обработчики для модального окна успеха
         if (this.elements.matchModalChatBtn) {
             this.elements.matchModalChatBtn.addEventListener('click', () => {
                 this.hideMatchSuccessModal();
@@ -533,7 +533,6 @@ class DatingApp {
         this.updateTextContent();
     }
 
-    // ВОССТАНОВЛЕНЫ функции для модального окна успеха
     showMatchSuccessModal(profile, type) {
         if (!this.elements.matchSuccessModal) return;
 
@@ -544,21 +543,25 @@ class DatingApp {
         if (type === 'match') {
             title = this.translate('match');
             message = this.translate('youLiked', { name: profile.name });
-            iconHtml = '❤️'; // Или другая иконка для мэтча
+            iconHtml = '❤️';
         } else if (type === 'like') {
             title = this.translate('likeSent');
             message = this.translate('youLikedName', { name: profile.name });
-            iconHtml = '👍'; // Или другая иконка для лайка
+            iconHtml = '👍';
         } else if (type === 'superlike') {
             title = this.translate('superlikeSent');
             message = this.translate('youSuperlikedName', { name: profile.name });
-            iconHtml = '✨'; // Или другая иконка для суперлайка
+            iconHtml = '✨';
         }
 
         this.elements.matchModalIcon.textContent = iconHtml;
         this.elements.matchModalTitle.textContent = title;
         this.elements.matchModalMessage.textContent = message;
-        this.elements.matchModalAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${profile.id}/80/80)`;
+        
+        // ОБНОВЛЕНО: Установка аватаров для нового дизайна
+        this.elements.matchModalMyAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${this.state.userData.name}/100/100)`; // Аватар текущего пользователя
+        this.elements.matchModalPartnerAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${profile.id}/100/100)`; // Аватар партнера
+        
         this.elements.matchModalChatBtn.textContent = this.translate('writeMessage');
         this.elements.matchModalContinueBtn.textContent = this.translate('continueSwiping');
 

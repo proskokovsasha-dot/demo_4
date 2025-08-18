@@ -207,146 +207,6 @@
                 min-width: 70px;
             }
         }
-
-        /* Стили для нового модального окна */
-        .match-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000; /* Выше, чем другие модальные окна */
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-
-        .match-modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .match-modal-content {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-            color: white;
-            padding: 25px 20px; /* Уменьшил padding */
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
-            text-align: center;
-            max-width: 320px; /* Уменьшил max-width */
-            width: 90%;
-            transform: scale(0.8) translateY(50px);
-            opacity: 0;
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .match-modal-overlay.active .match-modal-content {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-        }
-
-        .match-modal-content::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
-            transform: rotate(45deg);
-            animation: sparkle 3s infinite linear;
-        }
-
-        @keyframes sparkle {
-            0% { transform: rotate(0deg); opacity: 0.5; }
-            50% { transform: rotate(180deg); opacity: 1; }
-            100% { transform: rotate(360deg); opacity: 0.5; }
-        }
-
-        .match-modal-icon {
-            font-size: 3rem; /* Уменьшил размер иконки */
-            margin-bottom: 15px; /* Уменьшил отступ */
-            animation: pulse 1.5s infinite;
-        }
-
-        .match-modal-title {
-            font-size: 2rem; /* Уменьшил размер заголовка */
-            font-weight: 800;
-            margin-bottom: 10px; /* Уменьшил отступ */
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .match-modal-message {
-            font-size: 1rem; /* Уменьшил размер текста сообщения */
-            margin-bottom: 20px; /* Уменьшил отступ */
-            line-height: 1.4;
-        }
-
-        .match-modal-avatar {
-            width: 80px; /* Уменьшил размер аватара */
-            height: 80px;
-            border-radius: 50%;
-            background-size: cover;
-            background-position: center;
-            border: 3px solid white; /* Уменьшил толщину рамки */
-            box-shadow: var(--shadow-md);
-            margin: 0 auto 15px; /* Уменьшил отступ */
-        }
-
-        .match-modal-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 10px; /* Уменьшил отступ между кнопками */
-        }
-
-        .match-modal-actions .btn {
-            width: 100%;
-            min-width: unset;
-            padding: 12px 15px; /* Уменьшил padding кнопок */
-            font-size: 1rem; /* Уменьшил размер шрифта кнопок */
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-md);
-        }
-
-        .match-modal-actions .btn-secondary {
-            background-color: white;
-            color: var(--primary);
-        }
-
-        .match-modal-actions .btn-secondary:hover {
-            background-color: var(--primary-light);
-            color: var(--primary-dark);
-        }
-
-        @media (max-width: 480px) {
-            .match-modal-content {
-                padding: 20px 15px; /* Дополнительно уменьшил padding для маленьких экранов */
-                max-width: 280px; /* Дополнительно уменьшил max-width для маленьких экранов */
-            }
-            .match-modal-icon {
-                font-size: 2.5rem;
-            }
-            .match-modal-title {
-                font-size: 1.8rem;
-            }
-            .match-modal-message {
-                font-size: 0.9rem;
-            }
-            .match-modal-avatar {
-                width: 70px;
-                height: 70px;
-            }
-            .match-modal-actions .btn {
-                padding: 10px 12px;
-                font-size: 0.9rem;
-            }
-        }
     </style>
 </head>
 <body>
@@ -449,6 +309,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="no-profiles-message" id="noProfilesMessage">
+                <p>Пока нет новых анкет. Попробуйте позже!</p>
+                <button class="btn btn-secondary" style="margin-top: 20px;" id="backToProfileFromMatchBtn">
+                    Вернуться в профиль
+                </button>
             </div>
         </div>
 
@@ -572,16 +438,22 @@
         </div>
     </div>
 
-    <!-- Модальное окно успеха мэтча/лайка -->
+    <!-- Модальное окно успеха мэтча/лайка (ОБНОВЛЕНО) -->
     <div class="match-modal-overlay" id="matchSuccessModal">
         <div class="match-modal-content">
-            <div class="match-modal-icon" id="matchModalIcon"></div>
-            <h3 class="match-modal-title" id="matchModalTitle"></h3>
+            <div class="match-modal-header">
+                <div class="match-modal-icon" id="matchModalIcon"></div>
+                <h3 class="match-modal-title" id="matchModalTitle"></h3>
+            </div>
             <p class="match-modal-message" id="matchModalMessage"></p>
-            <div class="match-modal-avatar" id="matchModalAvatar"></div>
+            <div class="match-modal-avatars-container">
+                <div class="match-modal-avatar my-avatar" id="matchModalMyAvatar"></div>
+                <div class="match-modal-heart">❤️</div>
+                <div class="match-modal-avatar partner-avatar" id="matchModalPartnerAvatar"></div>
+            </div>
             <div class="match-modal-actions">
-                <button class="btn" id="matchModalChatBtn"></button>
-                <button class="btn btn-secondary" id="matchModalContinueBtn"></button>
+                <button class="btn match-modal-chat-btn" id="matchModalChatBtn"></button>
+                <button class="btn btn-secondary match-modal-continue-btn" id="matchModalContinueBtn"></button>
             </div>
         </div>
     </div>
