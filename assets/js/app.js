@@ -393,6 +393,7 @@ class DatingApp {
             profileFullModalEditBtn: document.getElementById('profileFullModalEditBtn'),
             profileFullModalNewProfileBtn: document.getElementById('profileFullModalNewProfileBtn'),
 
+            // Добавленные элементы для модального окна анкеты
             matchFullModalOverlay: document.getElementById('matchModalOverlay'),
             matchFullModalContent: document.getElementById('matchFullModalContent'),
             matchFullModalCloseBtn: document.getElementById('matchFullModalCloseBtn'),
@@ -762,7 +763,7 @@ class DatingApp {
         this.elements.profileFullModalScrollableContent.scrollTop = 0;
 
         this.elements.profileFullModalOverlay.classList.add('active');
-        this.elements.profileFullModalContent.classList.add('active');
+        this.elements.profileFullModalContent.classList.add('active'); // Добавлено
         document.body.style.overflow = 'hidden';
         this.elements.profileFullModalContent.focus(); // Set focus to modal for accessibility
     }
@@ -867,7 +868,7 @@ class DatingApp {
         this.elements.matchFullModalScrollableContent.scrollTop = 0;
 
         this.elements.matchFullModalOverlay.classList.add('active');
-        this.elements.matchFullModalContent.classList.add('active');
+        this.elements.matchFullModalContent.classList.add('active'); // Добавлено
         document.body.style.overflow = 'hidden';
         this.elements.matchFullModalContent.focus(); // Set focus to modal for accessibility
     }

@@ -369,7 +369,7 @@ class MatchHandler {
                 const interest = configInterests.find(i => i.id === interestId);
                 if (interest) {
                     const el = document.createElement('div');
-                    el.className = 'match-interest-item';
+                    el.className = 'interest-item';
                     el.innerHTML = `
                         <span class="emoji">${interest.emoji}</span>
                         <span class="text">${this.app.translate(interest.id)}</span>
