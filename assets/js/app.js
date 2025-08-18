@@ -44,6 +44,42 @@ class DatingApp {
                 { id: 'scorpio', name: 'Скорпион', emoji: '♏', start: '10-23', end: '11-21' },
                 { id: 'sagittarius', name: 'Стрелец', emoji: '♐', start: '11-22', end: '12-21' },
                 { id: 'capricorn', name: 'Козерог', emoji: '♑', start: '12-22', end: '01-19' }
+            ],
+            // НОВЫЕ КОНФИГУРАЦИИ ДЛЯ РАСШИРЕННЫХ ПОЛЕЙ
+            badHabitsOptions: [
+                { id: 'none', name: 'Нет', emoji: '😇' },
+                { id: 'alcohol', name: 'Алкоголь', emoji: '🍺' },
+                { id: 'smoking', name: 'Курение', emoji: '🚬' },
+                { id: 'both', name: 'И то, и другое', emoji: '😈' }
+            ],
+            childrenOptions: [
+                { id: 'no_children', name: 'Нет детей', emoji: '🚫👶' },
+                { id: 'has_children', name: 'Есть дети', emoji: '👨‍👩‍👧‍👦' },
+                { id: 'wants_children', name: 'Хочу детей', emoji: '🤰' },
+                { id: 'does_not_want_children', name: 'Не хочу детей', emoji: '🙅‍♀️👶' }
+            ],
+            petsOptions: [
+                { id: 'no_pets', name: 'Нет животных', emoji: '🐾🚫' },
+                { id: 'cat', name: 'Кошка', emoji: '🐱' },
+                { id: 'dog', name: 'Собака', emoji: '🐶' },
+                { id: 'other_pets', name: 'Другие', emoji: '🐠' }
+            ],
+            languagesOptions: [ // Пример популярных языков
+                { id: 'russian', name: 'Русский', emoji: '🇷🇺' },
+                { id: 'english', name: 'Английский', emoji: '🇬🇧' },
+                { id: 'spanish', name: 'Испанский', emoji: '🇪🇸' },
+                { id: 'german', name: 'Немецкий', emoji: '🇩🇪' },
+                { id: 'french', name: 'Французский', emoji: '🇫🇷' },
+                { id: 'chinese', name: 'Китайский', emoji: '🇨🇳' }
+            ],
+            datingGoalsOptions: [ // Более детальные цели знакомства
+                { id: 'long_term_relationship', name: 'Серьезные отношения', emoji: '❤️‍🔥' },
+                { id: 'short_term_dating', name: 'Недолгие свидания', emoji: '🥂' },
+                { id: 'new_friends', name: 'Новые друзья', emoji: '🫂' },
+                { id: 'casual_fun', name: 'Легкое общение', emoji: '🥳' },
+                { id: 'marriage', name: 'Брак', emoji: '👰‍♀️' },
+                { id: 'travel_buddy', name: 'Спутник для путешествий', emoji: '✈️' },
+                { id: 'hobby_partner', name: 'Партнер по хобби', emoji: '🎨' }
             ]
         };
 
@@ -61,6 +97,14 @@ class DatingApp {
                 lookingFor: [],
                 preference: 'both',
                 profileColor: '#FF6B6B', // Default color
+                // НОВЫЕ ПОЛЯ ПРОФИЛЯ
+                education: '',
+                profession: '',
+                badHabits: [], // Может быть несколько
+                children: '', // Выбор из опций
+                pets: [], // Может быть несколько
+                languages: [], // Может быть несколько
+                datingGoals: [], // Множественный выбор
             },
             suggestedProfiles: [],
             currentLanguage: 'ru', // Default language
@@ -187,6 +231,46 @@ class DatingApp {
                 noLikedByMessage: 'Пока никто не поставил вам лайк. Продолжайте свайпать!', // НОВОЕ
                 likeBack: 'Лайкнуть в ответ', // НОВОЕ
                 skip: 'Пропустить', // НОВОЕ
+                // НОВЫЕ ПЕРЕВОДЫ ДЛЯ РАСШИРЕННЫХ ПОЛЕЙ
+                education: 'Образование',
+                yourEducation: 'Ваше образование',
+                profession: 'Профессия',
+                yourProfession: 'Ваша профессия',
+                badHabits: 'Вредные привычки',
+                yourBadHabits: 'Ваши вредные привычки',
+                none: 'Нет',
+                alcohol: 'Алкоголь',
+                smoking: 'Курение',
+                both: 'И то, и другое',
+                children: 'Дети',
+                yourChildrenStatus: 'Ваш статус по детям',
+                no_children: 'Нет детей',
+                has_children: 'Есть дети',
+                wants_children: 'Хочу детей',
+                does_not_want_children: 'Не хочу детей',
+                pets: 'Домашние животные',
+                yourPets: 'Ваши домашние животные',
+                no_pets: 'Нет животных',
+                cat: 'Кошка',
+                dog: 'Собака',
+                other_pets: 'Другие',
+                languages: 'Языки',
+                yourLanguages: 'Какие языки вы знаете?',
+                russian: 'Русский',
+                english: 'Английский',
+                spanish: 'Испанский',
+                german: 'Немецкий',
+                french: 'Французский',
+                chinese: 'Китайский',
+                datingGoals: 'Цели знакомства',
+                yourDatingGoals: 'Что вы ищете в отношениях?',
+                long_term_relationship: 'Серьезные отношения',
+                short_term_dating: 'Недолгие свидания',
+                new_friends: 'Новые друзья',
+                casual_fun: 'Легкое общение',
+                marriage: 'Брак',
+                travel_buddy: 'Спутник для путешествий',
+                hobby_partner: 'Партнер по хобби',
             },
             en: {
                 appName: 'Meeting Point',
@@ -305,6 +389,46 @@ class DatingApp {
                 noLikedByMessage: 'No one has liked you yet. Keep swiping!', // НОВОЕ
                 likeBack: 'Like Back', // НОВОЕ
                 skip: 'Skip', // НОВОЕ
+                // НОВЫЕ ПЕРЕВОДЫ ДЛЯ РАСШИРЕННЫХ ПОЛЕЙ
+                education: 'Education',
+                yourEducation: 'Your Education',
+                profession: 'Profession',
+                yourProfession: 'Your Profession',
+                badHabits: 'Bad Habits',
+                yourBadHabits: 'Your Bad Habits',
+                none: 'None',
+                alcohol: 'Alcohol',
+                smoking: 'Smoking',
+                both: 'Both',
+                children: 'Children',
+                yourChildrenStatus: 'Your Children Status',
+                no_children: 'No children',
+                has_children: 'Has children',
+                wants_children: 'Wants children',
+                does_not_want_children: 'Does not want children',
+                pets: 'Pets',
+                yourPets: 'Your Pets',
+                no_pets: 'No pets',
+                cat: 'Cat',
+                dog: 'Dog',
+                other_pets: 'Other',
+                languages: 'Languages',
+                yourLanguages: 'What languages do you know?',
+                russian: 'Russian',
+                english: 'English',
+                spanish: 'Spanish',
+                german: 'German',
+                french: 'French',
+                chinese: 'Chinese',
+                datingGoals: 'Dating Goals',
+                yourDatingGoals: 'What are you looking for in a relationship?',
+                long_term_relationship: 'Long-term relationship',
+                short_term_dating: 'Short-term dating',
+                new_friends: 'New friends',
+                casual_fun: 'Casual fun',
+                marriage: 'Marriage',
+                travel_buddy: 'Travel buddy',
+                hobby_partner: 'Hobby partner',
             }
         };
 
@@ -563,7 +687,13 @@ class DatingApp {
 
         if (savedProfile) {
             try {
-                this.state.userData = JSON.parse(savedProfile);
+                const parsedProfile = JSON.parse(savedProfile);
+                // Обновляем userData, чтобы включить новые поля, если они отсутствуют
+                this.state.userData = {
+                    ...this.state.userData, // Сохраняем дефолтные значения для новых полей
+                    ...parsedProfile, // Перезаписываем сохраненными значениями
+                };
+
                 if (!Array.isArray(this.state.userData.interests)) {
                     this.state.userData.interests = [];
                 }
@@ -582,6 +712,15 @@ class DatingApp {
                 if (!this.state.userData.profileColor) {
                     this.state.userData.profileColor = '#FF6B6B';
                 }
+                // Инициализация новых полей, если они отсутствуют в старых сохранениях
+                if (!this.state.userData.education) this.state.userData.education = '';
+                if (!this.state.userData.profession) this.state.userData.profession = '';
+                if (!Array.isArray(this.state.userData.badHabits)) this.state.userData.badHabits = [];
+                if (!this.state.userData.children) this.state.userData.children = '';
+                if (!Array.isArray(this.state.userData.pets)) this.state.userData.pets = [];
+                if (!Array.isArray(this.state.userData.languages)) this.state.userData.languages = [];
+                if (!Array.isArray(this.state.userData.datingGoals)) this.state.userData.datingGoals = [];
+
                 this.state.currentScreen = 'profile';
             } catch (e) {
                 console.error('Ошибка при загрузке профиля:', e);
@@ -623,6 +762,14 @@ class DatingApp {
             lookingFor: [],
             preference: 'both',
             profileColor: '#FF6B6B',
+            // Сброс новых полей
+            education: '',
+            profession: '',
+            badHabits: [],
+            children: '',
+            pets: [],
+            languages: [],
+            datingGoals: [],
         };
         this.state.blockedUsers = []; // НОВОЕ: Сброс заблокированных пользователей
         this.state.likedByUsers = []; // НОВОЕ
