@@ -20,192 +20,8 @@
             --primary-light: #FFDCDC;
             --primary-rgb: 255, 107, 107; /* Default RGB for primary */
         }
-        /* Стили для body и app-container перенесены в main.css */
-        /* Стили для loading-screen перенесены в main.css */
-
-        .loading-text {
-            font-family: 'Rubik', sans-serif;
-            color: var(--text-primary);
-            text-align: center;
-            opacity: 0; /* Изначально скрыто */
-            transform: translateY(20px) scale(0.95); /* Изначально немного смещено и уменьшено */
-            animation: fadeInScale 1s ease-out forwards; /* Анимация применяется через JS */
-            /* animation-play-state: paused; */ /* УДАЛЕНО: чтобы анимация запускалась сразу */
-        }
-
-        .loading-text.title {
-            font-size: 2.8rem;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 8px;
-            line-height: 1.2;
-            letter-spacing: -0.03em;
-        }
-
-        .loading-text.subtitle {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            max-width: 360px;
-        }
-
-        .screen {
-            width: 100%;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex-grow: 1;
-            opacity: 0;
-            height: 0;
-            overflow: hidden;
-            transition: opacity var(--transition-normal) ease, height var(--transition-normal) ease;
-            padding-top: 20px;
-            padding-bottom: 20px;
-        }
-
-        .screen.active {
-            display: flex;
-            opacity: 1;
-            height: auto;
-            overflow: visible;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1001;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            background: var(--surface);
-            padding: 30px;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
-            text-align: center;
-            max-width: 380px;
-            width: 90%;
-            transform: translateY(20px);
-            opacity: 0;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .modal-content h3 {
-            font-size: 1.5rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .modal-content p {
-            font-size: 1rem;
-            color: var(--text-primary);
-            margin-bottom: 25px;
-        }
-
-        .modal-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .profile-stats {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-            margin-top: 20px;
-            padding: 15px;
-            background-color: var(--surface);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border);
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .stat-item {
-            text-align: center;
-            flex: 1;
-            min-width: 80px;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            line-height: 1.2;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 5px;
-        }
-
-        @media (max-width: 480px) {
-            .app-container {
-                padding: 0 16px;
-            }
-            .screen {
-                padding-top: 16px;
-                padding-bottom: 16px;
-            }
-            .loading-text.title {
-                font-size: 2.2rem;
-            }
-            .loading-text.subtitle {
-                font-size: 1rem;
-            }
-            .modal-content {
-                padding: 20px;
-            }
-            .modal-content h3 {
-                font-size: 1.3rem;
-            }
-            .modal-content p {
-                font-size: 0.9rem;
-            }
-            .profile-stats {
-                padding: 10px;
-                gap: 5px;
-            }
-            .stat-value {
-                font-size: 1.3rem;
-            }
-            .stat-label {
-                font-size: 0.75rem;
-            }
-        }
-        @media (max-width: 360px) {
-            .loading-text.title {
-                font-size: 2rem;
-            }
-            .loading-text.subtitle {
-                font-size: 0.9rem;
-            }
-            .stat-item {
-                min-width: 70px;
-            }
-        }
+        /* Стили для body, app-container, loading-screen, screen, modal-overlay, modal-content, profile-stats
+           перенесены в main.css или components.css */
     </style>
 </head>
 <body>
@@ -225,26 +41,26 @@
 
     <div class="app-container" id="appContainer" style="display: none;">
         <nav class="top-navigation" id="topNavigation" style="display: none;">
-            <button class="nav-btn" data-screen="profile">
+            <button class="nav-btn" data-screen="profile" aria-label="Профиль">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
                 <span class="nav-text" id="navProfileText">Профиль</span>
             </button>
-            <button class="nav-btn" data-screen="match">
+            <button class="nav-btn" data-screen="match" aria-label="Анкеты">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                 </svg>
                 <span class="nav-text" id="navMatchesText">Анкеты</span>
             </button>
-            <button class="nav-btn" data-screen="chat">
+            <button class="nav-btn" data-screen="chat" aria-label="Чат">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                 </svg>
                 <span class="nav-text" id="navChatText">Чат</span>
             </button>
-            <button class="nav-btn" data-screen="settings">
+            <button class="nav-btn" data-screen="settings" aria-label="Настройки">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="3"></circle>
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0-.33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -253,13 +69,13 @@
             </button>
         </nav>
 
-        <div class="screen" id="registrationForm">
+        <div class="screen" id="registrationForm" role="region" aria-labelledby="registrationTitle">
             <!-- Registration steps will be rendered here by FormHandler -->
         </div>
 
-        <div class="screen" id="profileView">
+        <div class="screen" id="profileView" role="region" aria-labelledby="myProfileNameAge">
             <div class="profile-card-wrapper">
-                <div class="profile-card" id="myProfileCard">
+                <div class="profile-card" id="myProfileCard" role="button" tabindex="0" aria-label="Открыть мой профиль">
                     <div class="profile-card-bg" id="myProfileCardBg"></div>
                     <div class="profile-card-overlay"></div>
                     <div class="profile-card-content">
@@ -267,16 +83,14 @@
                             <h1 class="profile-name-age" id="myProfileNameAge"></h1>
                             <p class="profile-description-short" id="myProfileDescriptionShort"></p>
                         </div>
-                        <!-- Scrollable content is now part of the modal, not directly in the main profile view -->
                     </div>
                 </div>
             </div>
-            <!-- Кнопки "Редактировать" и "Новый профиль" теперь находятся в модальном окне -->
         </div>
 
-        <div class="screen" id="matchScreen">
+        <div class="screen" id="matchScreen" role="region" aria-labelledby="matchScreenTitle">
             <div class="match-card-wrapper">
-                <div class="match-card" id="matchCard">
+                <div class="match-card" id="matchCard" role="group" aria-label="Профиль для свайпа">
                     <div class="match-card-bg" id="matchCardBg"></div>
                     <div class="match-card-overlay"></div>
                     <div class="match-card-content">
@@ -325,19 +139,19 @@
                             </div>
                         </div>
                         <div class="match-card-actions">
-                            <button class="action-btn btn-nope" id="nopeBtn">
+                            <button class="action-btn btn-nope" id="nopeBtn" aria-label="Пропустить">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="18" y1="6" x2="6" y2="18"></line>
                                     <line x1="6" y1="6" x2="18" y2="18"></line>
                                 </svg>
                             </button>
-                            <button class="action-btn btn-superlike" id="superLikeBtn">
+                            <button class="action-btn btn-superlike" id="superLikeBtn" aria-label="Суперлайк">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M12 19V5"></path>
                                     <path d="M5 12H19"></path>
                                 </svg>
                             </button>
-                            <button class="action-btn btn-like" id="likeBtn">
+                            <button class="action-btn btn-like" id="likeBtn" aria-label="Лайк">
                                 <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                 </svg>
@@ -354,8 +168,8 @@
             </div>
         </div>
 
-        <div class="screen" id="chatScreen">
-            <h2 class="section-title">Ваши чаты</h2>
+        <div class="screen" id="chatScreen" role="region" aria-labelledby="chatScreenTitle">
+            <h2 class="section-title" id="chatScreenTitle">Ваши чаты</h2>
             <p class="section-description">Здесь будут отображаться ваши диалоги.</p>
             <div class="chat-list" id="chatList">
                 <div class="no-chats-message" id="noChatsMessage">
@@ -365,7 +179,7 @@
 
             <div class="active-chat-container" id="activeChatContainer">
                 <div class="chat-header-bar">
-                    <button class="btn-back-to-chats" id="backToChatListBtn">
+                    <button class="btn-back-to-chats" id="backToChatListBtn" aria-label="Назад к чатам">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="15 18 9 12 15 6"></polyline>
                         </svg>
@@ -375,11 +189,11 @@
                         <div class="chat-partner-name" id="chatPartnerName"></div>
                     </div>
                 </div>
-                <div class="messages-container" id="messagesContainer">
+                <div class="messages-container" id="messagesContainer" role="log" aria-live="polite">
                 </div>
                 <div class="message-input-area">
-                    <textarea id="messageInput" placeholder="Напишите сообщение..." rows="1"></textarea>
-                    <button id="sendMessageBtn">
+                    <textarea id="messageInput" placeholder="Напишите сообщение..." rows="1" aria-label="Поле ввода сообщения"></textarea>
+                    <button id="sendMessageBtn" aria-label="Отправить сообщение">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="22" y1="2" x2="11" y2="13"></line>
                             <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -389,23 +203,23 @@
             </div>
         </div>
 
-        <div class="screen" id="settingsScreen">
+        <div class="screen" id="settingsScreen" role="region" aria-labelledby="settingsScreenTitle">
             <!-- Content will be rendered by SettingsHandler -->
         </div>
     </div>
 
     <!-- Модальное окно успеха мэтча/лайка (ОБНОВЛЕНО) -->
-    <div class="match-modal-overlay" id="matchSuccessModal">
+    <div class="match-modal-overlay" id="matchSuccessModal" role="dialog" aria-modal="true" aria-labelledby="matchModalTitle">
         <div class="match-modal-content">
             <div class="match-modal-header">
-                <div class="match-modal-icon" id="matchModalIcon"></div>
+                <div class="match-modal-icon" id="matchModalIcon" aria-hidden="true"></div>
                 <h3 class="match-modal-title" id="matchModalTitle"></h3>
             </div>
             <p class="match-modal-message" id="matchModalMessage"></p>
             <div class="match-modal-avatars-container">
-                <div class="match-modal-avatar my-avatar" id="matchModalMyAvatar"></div>
-                <div class="match-modal-heart">❤️</div>
-                <div class="match-modal-avatar partner-avatar" id="matchModalPartnerAvatar"></div>
+                <div class="match-modal-avatar my-avatar" id="matchModalMyAvatar" role="img" aria-label="Мой аватар"></div>
+                <div class="match-modal-heart" aria-hidden="true">❤️</div>
+                <div class="match-modal-avatar partner-avatar" id="matchModalPartnerAvatar" role="img" aria-label="Аватар партнера"></div>
             </div>
             <div class="match-modal-actions">
                 <button class="btn match-modal-chat-btn" id="matchModalChatBtn"></button>
@@ -415,15 +229,15 @@
     </div>
 
     <!-- НОВОЕ МОДАЛЬНОЕ ОКНО ДЛЯ ПРОФИЛЯ -->
-    <div class="modal-overlay" id="profileFullModalOverlay">
+    <div class="modal-overlay" id="profileFullModalOverlay" role="dialog" aria-modal="true" aria-labelledby="profileFullModalNameAge">
         <div class="profile-full-modal-content" id="profileFullModalContent">
-            <button class="profile-full-modal-close-btn" id="profileFullModalCloseBtn">
+            <button class="profile-full-modal-close-btn" id="profileFullModalCloseBtn" aria-label="Закрыть профиль">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
             </button>
-            <div class="profile-full-modal-scrollable-content" id="profileFullModalScrollableContent">
+            <div class="profile-full-modal-scrollable-content" id="profileFullModalScrollableContent" tabindex="0">
                 <div class="profile-full-modal-header-info">
                     <h1 class="profile-full-modal-name-age" id="profileFullModalNameAge"></h1>
                     <p class="profile-full-modal-description-short" id="profileFullModalDescriptionShort"></p>
@@ -469,15 +283,15 @@
     </div>
 
     <!-- НОВОЕ МОДАЛЬНОЕ ОКНО ДЛЯ АНКЕТЫ (ОСТАВЛЯЕМ КАК ЕСТЬ) -->
-    <div class="modal-overlay" id="matchModalOverlay">
+    <div class="modal-overlay" id="matchModalOverlay" role="dialog" aria-modal="true" aria-labelledby="matchFullModalNameAge">
         <div class="match-full-modal-content" id="matchFullModalContent">
-            <button class="match-full-modal-close-btn" id="matchFullModalCloseBtn">
+            <button class="match-full-modal-close-btn" id="matchFullModalCloseBtn" aria-label="Закрыть анкету">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
             </button>
-            <div class="match-full-modal-scrollable-content" id="matchFullModalScrollableContent">
+            <div class="match-full-modal-scrollable-content" id="matchFullModalScrollableContent" tabindex="0">
                 <div class="match-full-modal-header-info">
                     <h1 class="match-full-modal-name-age" id="matchFullModalNameAge"></h1>
                     <p class="match-full-modal-description-short" id="matchFullModalDescriptionShort"></p>
@@ -515,8 +329,9 @@
     <script src="assets/js/components/form.js"></script>
     <script src="assets/js/components/profile.js"></script>
     <script src="assets/js/components/match.js"></script>
-    <script src="assets/js/components/chat.js"></script>
-    <script src="assets/js/components/settings.js"></script>
+    <!-- Lazy load chat.js and settings.js -->
+    <script id="chat-script"></script>
+    <script id="settings-script"></script>
     <script src="assets/js/app.js"></script>
 </body>
 </html>

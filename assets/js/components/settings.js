@@ -11,11 +11,11 @@ class SettingsHandler {
 
         this.app.elements.settingsScreen.innerHTML = `
             <div class="settings-container">
-                <h2 class="section-title">${t('settings')}</h2>
+                <h2 class="section-title" id="settingsScreenTitle">${t('settings')}</h2>
                 <p class="section-description">${t('yourChatsDescription')}</p>
 
                 <!-- Language Settings Card -->
-                <div class="settings-card">
+                <div class="settings-card" role="region" aria-labelledby="languageSettingsTitle">
                     <div class="settings-card-header">
                         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
@@ -26,12 +26,12 @@ class SettingsHandler {
                             <line x1="2" y1="12" x2="6" y2="12"></line>
                             <line x1="18" y1="12" x2="22" y2="12"></line>
                         </svg>
-                        <h3 class="title">${t('languageSelection')}</h3>
+                        <h3 class="title" id="languageSettingsTitle">${t('languageSelection')}</h3>
                     </div>
                     <p class="settings-card-description">${t('selectLanguage')}.</p>
                     <div class="language-selector">
                         <label for="languageSelect">${t('selectLanguage')}:</label>
-                        <select id="languageSelect" class="language-select">
+                        <select id="languageSelect" class="language-select" aria-label="${t('selectLanguage')}">
                             <option value="ru">Русский</option>
                             <option value="en">English</option>
                         </select>
@@ -39,38 +39,38 @@ class SettingsHandler {
                 </div>
 
                 <!-- Profile Color Settings Card -->
-                <div class="settings-card">
+                <div class="settings-card" role="region" aria-labelledby="profileColorSettingsTitle">
                     <div class="settings-card-header">
                         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0L12 2.69z"></path>
                         </svg>
-                        <h3 class="title">${t('profileColorSettings')}</h3>
+                        <h3 class="title" id="profileColorSettingsTitle">${t('profileColorSettings')}</h3>
                     </div>
                     <p class="settings-card-description">${t('orChooseYourColor')}.</p>
                     <div class="settings-color-picker">
-                        <div class="settings-color-palette" id="settingsColorPalette">
+                        <div class="settings-color-palette" id="settingsColorPalette" role="radiogroup" aria-labelledby="profileColorSettingsTitle">
                             ${this.app.config.colors.map(color => `
                                 <div class="settings-color-option ${this.app.state.userData.profileColor === color ? 'selected' : ''}"
                                      style="background-color: ${color}"
-                                     data-color="${color}"></div>
+                                     data-color="${color}" role="radio" aria-checked="${this.app.state.userData.profileColor === color}" tabindex="0"></div>
                             `).join('')}
                         </div>
                         <div class="settings-color-custom">
-                            <input type="color" id="settingsCustomColor" value="${this.app.state.userData.profileColor}">
-                            <label>${t('orChooseYourColor')}</label>
+                            <input type="color" id="settingsCustomColor" value="${this.app.state.userData.profileColor}" aria-label="${t('orChooseYourColor')}">
+                            <label for="settingsCustomColor">${t('orChooseYourColor')}</label>
                         </div>
                     </div>
                 </div>
 
                 <!-- Danger Zone Card -->
-                <div class="settings-card">
+                <div class="settings-card" role="region" aria-labelledby="dangerZoneTitle">
                     <div class="settings-card-header">
                         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                             <line x1="12" y1="9" x2="12" y2="13"></line>
                             <line x1="12" y1="17" x2="12.01" y2="17"></line>
                         </svg>
-                        <h3 class="title">Danger Zone</h3>
+                        <h3 class="title" id="dangerZoneTitle">Danger Zone</h3>
                     </div>
                     <p class="settings-card-description">${t('confirmClearData')}</p>
                     <button class="btn settings-clear-data-btn" id="clearDataBtn">${t('clearProfileData')}</button>
@@ -78,7 +78,7 @@ class SettingsHandler {
             </div>
         `;
 
-        this.initElements();
+        this.initElements(); // Re-initialize elements after rendering HTML
         this.bindEvents();
         this.elements.languageSelect.value = this.app.state.currentLanguage;
         this.updateColorSelection(this.app.state.userData.profileColor);
@@ -96,6 +96,7 @@ class SettingsHandler {
 
     bindEvents() {
         if (this.elements.clearDataBtn) {
+            // Remove previous listener to prevent duplicates after re-rendering
             if (this.elements.clearDataBtn._hasClickListener) {
                 this.elements.clearDataBtn.removeEventListener('click', this.elements.clearDataBtn._hasClickListener);
             }
@@ -105,7 +106,7 @@ class SettingsHandler {
                 }
             };
             this.elements.clearDataBtn.addEventListener('click', newClearDataHandler);
-            this.elements.clearDataBtn._hasClickListener = newClearDataHandler;
+            this.elements.clearDataBtn._hasClickListener = newClearDataHandler; // Store reference
         }
 
         if (this.elements.languageSelect) {
@@ -133,6 +134,13 @@ class SettingsHandler {
                 };
                 option.addEventListener('click', newColorClickHandler);
                 option._hasClickListener = newColorClickHandler;
+                // Add keyboard navigation for color options
+                option.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.currentTarget.click();
+                    }
+                });
             });
         }
 
@@ -156,8 +164,10 @@ class SettingsHandler {
         if (this.elements.colorPalette) {
             this.elements.colorPalette.querySelectorAll('.settings-color-option').forEach(option => {
                 option.classList.remove('selected');
+                option.setAttribute('aria-checked', 'false'); // ARIA
                 if (option.dataset.color === selectedColor) {
                     option.classList.add('selected');
+                    option.setAttribute('aria-checked', 'true'); // ARIA
                 }
             });
         }

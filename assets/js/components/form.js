@@ -25,11 +25,12 @@ class FormHandler {
             <div class="form-step-container">
                 <!-- Step 1: Name -->
                 <div class="form-step" id="step1_name">
-                    <h2 class="section-title">${t('registrationTitle')}</h2>
+                    <h2 class="section-title" id="registrationTitle">${t('registrationTitle')}</h2>
                     <p class="section-description">${t('registrationDescription')}</p>
                     <input type="text" class="input-field" id="userName"
                            placeholder="${t('yourName')}"
-                           value="${this.app.state.userData.name || ''}" required>
+                           value="${this.app.state.userData.name || ''}" required aria-required="true">
+                    <div class="error-message" id="userNameError" aria-live="polite"></div>
                     <div class="form-navigation">
                         <button class="btn" id="nextStep1">${t('next')}</button>
                     </div>
@@ -39,16 +40,18 @@ class FormHandler {
                 <div class="form-step" id="step2_gender">
                     <h2 class="section-title">${t('registrationTitle')}</h2>
                     <p class="section-description">${t('registrationDescription')}</p>
-                    <div class="tags-container">
+                    <div class="tags-container" role="radiogroup" aria-labelledby="genderSelectionTitle">
+                        <h3 id="genderSelectionTitle" class="visually-hidden">${t('yourGender')}</h3>
                         <div class="tag ${this.app.state.userData.gender === 'male' ? 'selected' : ''}"
-                             data-gender="male">
+                             data-gender="male" role="radio" aria-checked="${this.app.state.userData.gender === 'male'}" tabindex="0">
                             👨 ${t('male')}
                         </div>
                         <div class="tag ${this.app.state.userData.gender === 'female' ? 'selected' : ''}"
-                             data-gender="female">
+                             data-gender="female" role="radio" aria-checked="${this.app.state.userData.gender === 'female'}" tabindex="0">
                             👩 ${t('female')}
                         </div>
                     </div>
+                    <div class="error-message" id="genderError" aria-live="polite"></div>
                     <div class="form-navigation">
                         <button class="btn" id="nextStep2">${t('next')}</button>
                         <button class="btn btn-secondary btn-prev" id="prevStep2">${t('back')}</button>
@@ -61,7 +64,8 @@ class FormHandler {
                     <p class="section-description">${t('registrationDescription')}</p>
                     <input type="text" class="input-field" id="userCity"
                            placeholder="${t('yourCity')}"
-                           value="${this.app.state.userData.city || ''}" required>
+                           value="${this.app.state.userData.city || ''}" required aria-required="true">
+                    <div class="error-message" id="userCityError" aria-live="polite"></div>
                     <div class="form-navigation">
                         <button class="btn" id="nextStep3">${t('next')}</button>
                         <button class="btn btn-secondary btn-prev" id="prevStep3">${t('back')}</button>
@@ -74,12 +78,13 @@ class FormHandler {
                     <p class="section-description">${t('registrationDescription')}</p>
                     <div class="date-input-group">
                         <input type="number" class="input-field" id="dobDay" placeholder="${t('day')}"
-                               value="${this.app.state.userData.dob.day || ''}" min="1" max="31" required>
+                               value="${this.app.state.userData.dob.day || ''}" min="1" max="31" required aria-required="true">
                         <input type="number" class="input-field" id="dobMonth" placeholder="${t('month')}"
-                               value="${this.app.state.userData.dob.month || ''}" min="1" max="12" required>
+                               value="${this.app.state.userData.dob.month || ''}" min="1" max="12" required aria-required="true">
                         <input type="number" class="input-field" id="dobYear" placeholder="${t('year')}"
-                               value="${this.app.state.userData.dob.year || ''}" min="1900" max="${new Date().getFullYear()}" required>
+                               value="${this.app.state.userData.dob.year || ''}" min="1900" max="${new Date().getFullYear()}" required aria-required="true">
                     </div>
+                    <div class="error-message" id="dobError" aria-live="polite"></div>
                     <div class="zodiac-display" id="zodiacDisplay" style="display:none;"></div>
                     <div class="form-navigation">
                         <button class="btn" id="nextStep4">${t('next')}</button>
@@ -91,14 +96,16 @@ class FormHandler {
                 <div class="form-step" id="step5_lookingFor">
                     <h2 class="section-title">${t('whatAreYouLookingFor')}</h2>
                     <p class="section-description">${t('registrationDescription')}</p>
-                    <div class="tags-container">
+                    <div class="tags-container" role="group" aria-labelledby="lookingForTitle">
+                        <h3 id="lookingForTitle" class="visually-hidden">${t('whatAreYouLookingFor')}</h3>
                         ${this.app.config.lookingForOptions.map(option => `
                             <div class="tag ${(this.app.state.userData.lookingFor || []).includes(option.id) ? 'selected' : ''}"
-                                 data-looking-for="${option.id}">
+                                 data-looking-for="${option.id}" role="checkbox" aria-checked="${(this.app.state.userData.lookingFor || []).includes(option.id)}" tabindex="0">
                                 ${option.emoji} ${t(option.id)}
                             </div>
                         `).join('')}
                     </div>
+                    <div class="error-message" id="lookingForError" aria-live="polite"></div>
                     <div class="form-navigation">
                         <button class="btn" id="nextStep5">${t('next')}</button>
                         <button class="btn btn-secondary btn-prev" id="prevStep5">${t('back')}</button>
@@ -109,14 +116,16 @@ class FormHandler {
                 <div class="form-step" id="step6_interests">
                     <h2 class="section-title">${t('yourInterests')}</h2>
                     <p class="section-description">${t('registrationDescription')}</p>
-                    <div class="tags-container" id="interestsContainer">
+                    <div class="tags-container" id="interestsContainer" role="group" aria-labelledby="interestsTitle">
+                        <h3 id="interestsTitle" class="visually-hidden">${t('yourInterests')}</h3>
                         ${this.app.config.interests.map(interest => `
                             <div class="tag ${this.app.state.userData.interests.includes(interest.id) ? 'selected' : ''}"
-                                 data-interest="${interest.id}">
+                                 data-interest="${interest.id}" role="checkbox" aria-checked="${this.app.state.userData.interests.includes(interest.id)}" tabindex="0">
                                 ${interest.emoji} ${t(interest.id)}
                             </div>
                         `).join('')}
                     </div>
+                    <div class="error-message" id="interestsError" aria-live="polite"></div>
                     <div class="form-navigation">
                         <button class="btn" id="nextStep6">${t('next')}</button>
                         <button class="btn btn-secondary btn-prev" id="prevStep6">${t('back')}</button>
@@ -127,14 +136,16 @@ class FormHandler {
                 <div class="form-step" id="step7_preference">
                     <h2 class="section-title">${t('whoAreYouLookingFor')}</h2>
                     <p class="section-description">${t('registrationDescription')}</p>
-                    <div class="tags-container">
+                    <div class="tags-container" role="radiogroup" aria-labelledby="preferenceTitle">
+                        <h3 id="preferenceTitle" class="visually-hidden">${t('whoAreYouLookingFor')}</h3>
                         ${this.app.config.preferenceOptions.map(option => `
                             <div class="tag ${this.app.state.userData.preference === option.id ? 'selected' : ''}"
-                                 data-preference="${option.id}">
+                                 data-preference="${option.id}" role="radio" aria-checked="${this.app.state.userData.preference === option.id}" tabindex="0">
                                 ${option.emoji} ${t(option.id)}
                             </div>
                         `).join('')}
                     </div>
+                    <div class="error-message" id="preferenceError" aria-live="polite"></div>
                     <div class="form-navigation">
                         <button class="btn" id="nextStep7">${t('next')}</button>
                         <button class="btn btn-secondary btn-prev" id="prevStep7">${t('back')}</button>
@@ -145,16 +156,17 @@ class FormHandler {
                 <div class="form-step" id="step8_profileColor">
                     <h2 class="section-title">${t('profileColor')}</h2>
                     <p class="section-description">${t('registrationDescription')}</p>
-                    <div class="color-palette">
+                    <div class="color-palette" role="group" aria-labelledby="colorPaletteTitle">
+                        <h3 id="colorPaletteTitle" class="visually-hidden">${t('profileColor')}</h3>
                         ${this.app.config.colors.map(color => `
                             <div class="color-option ${this.app.state.userData.profileColor === color ? 'selected' : ''}"
                                  style="background-color: ${color}"
-                                 data-color="${color}"></div>
+                                 data-color="${color}" role="radio" aria-checked="${this.app.state.userData.profileColor === color}" tabindex="0"></div>
                         `).join('')}
                     </div>
                     <div class="color-custom">
-                        <input type="color" id="customColor" value="${this.app.state.userData.profileColor}">
-                        <label>${t('orChooseYourColor')}</label>
+                        <input type="color" id="customColor" value="${this.app.state.userData.profileColor}" aria-label="${t('orChooseYourColor')}">
+                        <label for="customColor">${t('orChooseYourColor')}</label>
                     </div>
                     <div class="form-navigation">
                         <button class="btn" id="nextStep8">${t('next')}</button>
@@ -167,7 +179,8 @@ class FormHandler {
                     <h2 class="section-title">${t('aboutYou')}</h2>
                     <p class="section-description">${t('registrationDescription')}</p>
                     <textarea class="input-field" id="userDescription"
-                              placeholder="${t('aboutYouPlaceholder')}" rows="4">${this.app.state.userData.description || ''}</textarea>
+                              placeholder="${t('aboutYouPlaceholder')}" rows="4" required aria-required="true">${this.app.state.userData.description || ''}</textarea>
+                    <div class="error-message" id="userDescriptionError" aria-live="polite"></div>
                     <div class="form-navigation">
                         <button class="btn" id="nextStep9">${t('next')}</button>
                         <button class="btn btn-secondary btn-prev" id="prevStep9">${t('back')}</button>
@@ -194,6 +207,11 @@ class FormHandler {
         document.querySelectorAll('.form-step').forEach((step, index) => {
             if (index === stepIndex) {
                 step.classList.add('active');
+                // Set focus to the first interactive element in the active step for accessibility
+                const firstInteractiveElement = step.querySelector('input, textarea, button, [tabindex="0"]');
+                if (firstInteractiveElement) {
+                    firstInteractiveElement.focus();
+                }
             } else {
                 step.classList.remove('active');
             }
@@ -221,15 +239,47 @@ class FormHandler {
         }
     }
 
+    // Helper to display error messages
+    displayError(elementId, message) {
+        const errorElement = document.getElementById(elementId + 'Error');
+        const inputElement = document.getElementById(elementId);
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.style.display = message ? 'block' : 'none';
+        }
+        if (inputElement) {
+            if (message) {
+                inputElement.classList.add('error');
+                inputElement.setAttribute('aria-invalid', 'true');
+                inputElement.setAttribute('aria-describedby', elementId + 'Error');
+            } else {
+                inputElement.classList.remove('error');
+                inputElement.removeAttribute('aria-invalid');
+                inputElement.removeAttribute('aria-describedby');
+            }
+        }
+    }
+
     validateStep(stepIndex) {
         const t = (key, replacements) => this.app.translate(key, replacements);
         let isValid = true;
+        const currentStepId = this.formSteps[stepIndex];
 
-        switch (this.formSteps[stepIndex]) {
+        // Clear previous errors for the current step
+        document.querySelectorAll(`#${currentStepId} .error-message`).forEach(el => el.textContent = '');
+        document.querySelectorAll(`#${currentStepId} .input-field, #${currentStepId} .tag`).forEach(el => {
+            el.classList.remove('error');
+            el.removeAttribute('aria-invalid');
+            el.removeAttribute('aria-describedby');
+        });
+
+
+        switch (currentStepId) {
             case 'step1_name':
-                const userName = document.getElementById('userName').value.trim();
+                const userNameInput = document.getElementById('userName');
+                const userName = userNameInput.value.trim();
                 if (!userName) {
-                    alert(t('fillAllFieldsAlert'));
+                    this.displayError('userName', t('fillAllFieldsAlert'));
                     isValid = false;
                 } else {
                     this.app.state.userData.name = userName;
@@ -238,71 +288,89 @@ class FormHandler {
             case 'step2_gender':
                 const genderSelected = this.app.state.userData.gender;
                 if (!genderSelected) {
-                    alert(t('fillAllFieldsAlert'));
+                    this.displayError('gender', t('fillAllFieldsAlert'));
                     isValid = false;
                 }
                 break;
             case 'step3_city':
-                const userCity = document.getElementById('userCity').value.trim();
+                const userCityInput = document.getElementById('userCity');
+                const userCity = userCityInput.value.trim();
                 if (!userCity) {
-                    alert(t('fillAllFieldsAlert'));
+                    this.displayError('userCity', t('fillAllFieldsAlert'));
                     isValid = false;
                 } else {
                     this.app.state.userData.city = userCity;
                 }
                 break;
             case 'step4_dob':
-                const dobDay = document.getElementById('dobDay').value.trim();
-                const dobMonth = document.getElementById('dobMonth').value.trim();
-                const dobYear = document.getElementById('dobYear').value.trim();
+                const dobDayInput = document.getElementById('dobDay');
+                const dobMonthInput = document.getElementById('dobMonth');
+                const dobYearInput = document.getElementById('dobYear');
+
+                const dobDay = dobDayInput.value.trim();
+                const dobMonth = dobMonthInput.value.trim();
+                const dobYear = dobYearInput.value.trim();
 
                 if (!dobDay || !dobMonth || !dobYear) {
-                    alert(t('fillAllFieldsAlert'));
+                    this.displayError('dob', t('fillAllFieldsAlert'));
                     isValid = false;
                 } else {
                     const day = parseInt(dobDay);
                     const month = parseInt(dobMonth);
                     const year = parseInt(dobYear);
 
-                    if (isNaN(day) || isNaN(month) || isNaN(year) || day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > new Date().getFullYear()) {
-                        alert(t('invalidDate'));
+                    const currentYear = new Date().getFullYear();
+                    const minYear = 1900; // A reasonable minimum year
+
+                    if (isNaN(day) || isNaN(month) || isNaN(year) ||
+                        day < 1 || day > 31 || month < 1 || month > 12 ||
+                        year < minYear || year > currentYear) {
+                        this.displayError('dob', t('invalidDate'));
                         isValid = false;
                     } else {
-                        this.app.state.userData.dob = { day, month, year };
-                        this.app.state.userData.zodiacSign = this.app.getZodiacSign(day, month);
-                        const today = new Date();
-                        const birthDate = new Date(year, month - 1, day);
-                        let age = today.getFullYear() - birthDate.getFullYear();
-                        const m = today.getMonth() - birthDate.getMonth();
-                        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                            age--;
+                        // Basic date validity check (e.g., 31st of Feb)
+                        const testDate = new Date(year, month - 1, day);
+                        if (testDate.getFullYear() !== year || testDate.getMonth() !== month - 1 || testDate.getDate() !== day) {
+                            this.displayError('dob', t('invalidDate'));
+                            isValid = false;
+                        } else {
+                            this.app.state.userData.dob = { day, month, year };
+                            this.app.state.userData.zodiacSign = this.app.getZodiacSign(day, month);
+                            const today = new Date();
+                            const birthDate = new Date(year, month - 1, day);
+                            let age = today.getFullYear() - birthDate.getFullYear();
+                            const m = today.getMonth() - birthDate.getMonth();
+                            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                                age--;
+                            }
+                            this.app.state.userData.age = age;
                         }
-                        this.app.state.userData.age = age;
                     }
                 }
                 break;
             case 'step5_lookingFor':
                 if (this.app.state.userData.lookingFor.length === 0) {
-                    alert(t('fillAllFieldsAlert'));
+                    this.displayError('lookingFor', t('fillAllFieldsAlert'));
                     isValid = false;
                 }
                 break;
             case 'step6_interests':
                 if (this.app.state.userData.interests.length === 0) {
-                    alert(t('fillAllFieldsAlert'));
+                    this.displayError('interests', t('fillAllFieldsAlert'));
                     isValid = false;
                 }
                 break;
             case 'step7_preference':
                 if (!this.app.state.userData.preference) {
-                    alert(t('fillAllFieldsAlert'));
+                    this.displayError('preference', t('fillAllFieldsAlert'));
                     isValid = false;
                 }
                 break;
             case 'step9_aboutYou':
-                const userDescription = document.getElementById('userDescription').value.trim();
+                const userDescriptionInput = document.getElementById('userDescription');
+                const userDescription = userDescriptionInput.value.trim();
                 if (!userDescription) {
-                    alert(t('fillAllFieldsAlert'));
+                    this.displayError('userDescription', t('fillAllFieldsAlert'));
                     isValid = false;
                 } else {
                     this.app.state.userData.description = userDescription;
@@ -322,9 +390,20 @@ class FormHandler {
         if (prevStep2Btn) prevStep2Btn.onclick = () => this.prevStep();
         document.querySelectorAll('[data-gender]').forEach(tag => {
             tag.addEventListener('click', (e) => {
-                document.querySelectorAll('[data-gender]').forEach(t => t.classList.remove('selected'));
+                document.querySelectorAll('[data-gender]').forEach(t => {
+                    t.classList.remove('selected');
+                    t.setAttribute('aria-checked', 'false');
+                });
                 e.currentTarget.classList.add('selected');
+                e.currentTarget.setAttribute('aria-checked', 'true');
                 this.app.state.userData.gender = e.currentTarget.dataset.gender;
+                this.displayError('gender', ''); // Clear error on selection
+            });
+            tag.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.currentTarget.click();
+                }
             });
         });
 
@@ -332,6 +411,11 @@ class FormHandler {
         if (nextStep3Btn) nextStep3Btn.onclick = () => this.nextStep();
         const prevStep3Btn = document.getElementById('prevStep3');
         if (prevStep3Btn) prevStep3Btn.onclick = () => this.prevStep();
+        const userCityInput = document.getElementById('userCity');
+        if (userCityInput) {
+            userCityInput.addEventListener('input', () => this.displayError('userCity', ''));
+        }
+
 
         const nextStep4Btn = document.getElementById('nextStep4');
         if (nextStep4Btn) nextStep4Btn.onclick = () => this.nextStep();
@@ -356,6 +440,7 @@ class FormHandler {
             } else {
                 zodiacDisplay.style.display = 'none';
             }
+            this.displayError('dob', ''); // Clear error on input
         };
         if (dobDay) dobDay.addEventListener('input', updateZodiac);
         if (dobMonth) dobMonth.addEventListener('input', updateZodiac);
@@ -373,10 +458,19 @@ class FormHandler {
 
                 if (isSelected) {
                     e.currentTarget.classList.remove('selected');
+                    e.currentTarget.setAttribute('aria-checked', 'false');
                     this.app.state.userData.lookingFor = this.app.state.userData.lookingFor.filter(i => i !== option);
                 } else {
                     e.currentTarget.classList.add('selected');
+                    e.currentTarget.setAttribute('aria-checked', 'true');
                     this.app.state.userData.lookingFor.push(option);
+                }
+                this.displayError('lookingFor', ''); // Clear error on selection
+            });
+            tag.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.currentTarget.click();
                 }
             });
         });
@@ -392,14 +486,25 @@ class FormHandler {
 
                 if (isSelected) {
                     e.currentTarget.classList.remove('selected');
+                    e.currentTarget.setAttribute('aria-checked', 'false');
                     this.app.state.userData.interests = this.app.state.userData.interests.filter(i => i !== interestId);
                 } else {
                     if (this.app.state.userData.interests.length < this.app.config.maxInterests) {
                         e.currentTarget.classList.add('selected');
+                        e.currentTarget.setAttribute('aria-checked', 'true');
                         this.app.state.userData.interests.push(interestId);
                     } else {
-                        alert(this.app.translate('maxInterestsAlert', { maxInterests: this.app.config.maxInterests }));
+                        this.displayError('interests', this.app.translate('maxInterestsAlert', { maxInterests: this.app.config.maxInterests }));
                     }
+                }
+                if (this.app.state.userData.interests.length > 0) {
+                    this.displayError('interests', ''); // Clear error if at least one is selected
+                }
+            });
+            tag.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.currentTarget.click();
                 }
             });
         });
@@ -410,9 +515,20 @@ class FormHandler {
         if (prevStep7Btn) prevStep7Btn.onclick = () => this.prevStep();
         document.querySelectorAll('[data-preference]').forEach(tag => {
             tag.addEventListener('click', (e) => {
-                document.querySelectorAll('[data-preference]').forEach(t => t.classList.remove('selected'));
+                document.querySelectorAll('[data-preference]').forEach(t => {
+                    t.classList.remove('selected');
+                    t.setAttribute('aria-checked', 'false');
+                });
                 e.currentTarget.classList.add('selected');
+                e.currentTarget.setAttribute('aria-checked', 'true');
                 this.app.state.userData.preference = e.currentTarget.dataset.preference;
+                this.displayError('preference', ''); // Clear error on selection
+            });
+            tag.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.currentTarget.click();
+                }
             });
         });
 
@@ -420,14 +536,20 @@ class FormHandler {
         if (nextStep8Btn) nextStep8Btn.onclick = () => this.nextStep();
         const prevStep8Btn = document.getElementById('prevStep8');
         if (prevStep8Btn) prevStep8Btn.onclick = () => this.prevStep();
-        document.querySelectorAll('[data-color]').forEach(color => {
-            color.addEventListener('click', (e) => {
+        document.querySelectorAll('[data-color]').forEach(colorOption => {
+            colorOption.addEventListener('click', (e) => {
                 const selectedColor = e.currentTarget.dataset.color;
                 this.app.state.userData.profileColor = selectedColor;
                 this.updateColorPalette(selectedColor);
                 this.app.setAppThemeColor(selectedColor); // Apply to app theme
                 const customColorInput = document.getElementById('customColor');
                 if (customColorInput) customColorInput.value = selectedColor;
+            });
+            colorOption.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.currentTarget.click();
+                }
             });
         });
         const customColor = document.getElementById('customColor');
@@ -446,6 +568,10 @@ class FormHandler {
         if (nextStep9Btn) nextStep9Btn.onclick = () => this.nextStep();
         const prevStep9Btn = document.getElementById('prevStep9');
         if (prevStep9Btn) prevStep9Btn.onclick = () => this.prevStep();
+        const userDescriptionInput = document.getElementById('userDescription');
+        if (userDescriptionInput) {
+            userDescriptionInput.addEventListener('input', () => this.displayError('userDescription', ''));
+        }
 
         const saveProfileBtn = document.getElementById('saveProfileBtn');
         if (saveProfileBtn) saveProfileBtn.onclick = () => this.saveProfile();
@@ -456,11 +582,12 @@ class FormHandler {
     updateColorPalette(color) {
         document.querySelectorAll('.color-option').forEach(option => {
             option.classList.remove('selected');
+            option.setAttribute('aria-checked', 'false');
             if (option.dataset.color === color) {
                 option.classList.add('selected');
+                option.setAttribute('aria-checked', 'true');
             }
         });
-        // No need to update myProfileCard here, as setAppThemeColor handles global theme
     }
 
     saveProfile() {

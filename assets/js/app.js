@@ -110,7 +110,6 @@ class DatingApp {
                 backToProfile: 'Вернуться в профиль',
                 yourChats: 'Ваши чаты',
                 yourChatsDescription: 'Здесь будут отображаться ваши диалоги.',
-                noActiveChats: 'У вас пока нет активных чатов. Начните знакомиться в разделе "Анкеты"!',
                 typeMessage: 'Напишите сообщение...',
                 clearProfileData: 'Очистить данные профиля',
                 confirmClearData: 'Вы уверены, что хотите полностью очистить все данные профиля? Это действие необратимо.',
@@ -215,7 +214,6 @@ class DatingApp {
                 backToProfile: 'Back to Profile',
                 yourChats: 'Your Chats',
                 yourChatsDescription: 'Your conversations will appear here.',
-                noActiveChats: 'You don\'t have active chats yet. Start meeting people in the "Matches" section!',
                 typeMessage: 'Type a message...',
                 clearProfileData: 'Clear Profile Data',
                 confirmClearData: 'Are you sure you want to completely clear all profile data? This action is irreversible.',
@@ -284,8 +282,9 @@ class DatingApp {
         this.profileHandler = new ProfileHandler(this);
         this.uiHandler = new UIHandler(this);
         this.matchHandler = new MatchHandler(this);
-        this.chatHandler = new ChatHandler(this);
-        this.settingsHandler = new SettingsHandler(this);
+        // ChatHandler and SettingsHandler will be lazy loaded
+        this.chatHandler = null;
+        this.settingsHandler = null;
 
         this.bindEvents();
         this.checkSavedProfile();
@@ -369,8 +368,8 @@ class DatingApp {
             matchModalIcon: document.getElementById('matchModalIcon'),
             matchModalTitle: document.getElementById('matchModalTitle'),
             matchModalMessage: document.getElementById('matchModalMessage'),
-            matchModalMyAvatar: document.getElementById('matchModalMyAvatar'), // НОВЫЙ ЭЛЕМЕНТ
-            matchModalPartnerAvatar: document.getElementById('matchModalPartnerAvatar'), // НОВЫЙ ЭЛЕМЕНТ
+            matchModalMyAvatar: document.getElementById('matchModalMyAvatar'),
+            matchModalPartnerAvatar: document.getElementById('matchModalPartnerAvatar'),
             matchModalChatBtn: document.getElementById('matchModalChatBtn'),
             matchModalContinueBtn: document.getElementById('matchModalContinueBtn'),
             loadingTitle: document.getElementById('loadingTitle'),
@@ -379,9 +378,8 @@ class DatingApp {
             navMatchesText: document.getElementById('navMatchesText'),
             navChatText: document.getElementById('navChatText'),
             navSettingsText: document.getElementById('navSettingsText'),
-            dynamicStyles: document.getElementById('dynamic-styles'), // Get the style tag
+            dynamicStyles: document.getElementById('dynamic-styles'),
 
-            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ МОДАЛЬНОГО ОКНА ПРОФИЛЯ
             profileFullModalOverlay: document.getElementById('profileFullModalOverlay'),
             profileFullModalContent: document.getElementById('profileFullModalContent'),
             profileFullModalCloseBtn: document.getElementById('profileFullModalCloseBtn'),
@@ -395,7 +393,6 @@ class DatingApp {
             profileFullModalEditBtn: document.getElementById('profileFullModalEditBtn'),
             profileFullModalNewProfileBtn: document.getElementById('profileFullModalNewProfileBtn'),
 
-            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ МОДАЛЬНОГО ОКНА АНКЕТЫ
             matchFullModalOverlay: document.getElementById('matchModalOverlay'),
             matchFullModalContent: document.getElementById('matchFullModalContent'),
             matchFullModalCloseBtn: document.getElementById('matchFullModalCloseBtn'),
@@ -430,7 +427,10 @@ class DatingApp {
                 this.hideMatchSuccessModal();
                 this.switchScreen('chat');
                 if (this.matchHandler.lastMatchedProfile) {
-                    this.chatHandler.openChat(this.matchHandler.lastMatchedProfile.id);
+                    // Ensure chatHandler is loaded before calling openChat
+                    this.lazyLoadScript('chat').then(() => {
+                        this.chatHandler.openChat(this.matchHandler.lastMatchedProfile.id);
+                    });
                 }
             });
         }
@@ -469,7 +469,7 @@ class DatingApp {
             });
         }
 
-        // Обработчики для модального окна анкеты (оставляем как есть)
+        // Обработчики для модального окна анкеты
         if (this.elements.matchFullModalCloseBtn) {
             this.elements.matchFullModalCloseBtn.addEventListener('click', () => this.hideMatchFullModal());
         }
@@ -480,6 +480,21 @@ class DatingApp {
                 }
             });
         }
+
+        // Закрытие модальных окон по Esc
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (this.elements.matchSuccessModal.classList.contains('active')) {
+                    this.hideMatchSuccessModal();
+                }
+                if (this.elements.profileFullModalOverlay.classList.contains('active')) {
+                    this.hideProfileFullModal();
+                }
+                if (this.elements.matchFullModalOverlay.classList.contains('active')) {
+                    this.hideMatchFullModal();
+                }
+            }
+        });
     }
 
     checkSavedProfile() {
@@ -528,7 +543,6 @@ class DatingApp {
 
     startMatch() {
         this.matchHandler.startMatch();
-        // Removed logic to show swipe tutorial modal
     }
 
     clearAllData() {
@@ -548,14 +562,17 @@ class DatingApp {
             preference: 'both',
             profileColor: '#FF6B6B',
         };
-        this.chatHandler.chats = {};
-        alert(this.translate('confirmClearData'));
+        // Reset chatHandler if it's loaded
+        if (this.chatHandler) {
+            this.chatHandler.chats = {};
+        }
+        alert(this.translate('confirmClearData')); // This alert should be replaced with a custom modal
         this.setLanguage('ru');
         this.setAppThemeColor(this.state.userData.profileColor); // Reset theme color
         this.switchScreen('registration');
     }
 
-    switchScreen(screenName) {
+    async switchScreen(screenName) {
         document.querySelectorAll('.screen').forEach(screen => {
             screen.classList.remove('active');
             screen.style.display = 'none';
@@ -582,11 +599,13 @@ class DatingApp {
             targetScreenElement = this.elements.chatScreen;
             document.querySelector('.nav-btn[data-screen="chat"]').classList.add('active');
             this.elements.topNavigation.style.display = 'flex';
+            await this.lazyLoadScript('chat');
             this.chatHandler.showChatListScreen();
         } else if (screenName === 'settings') {
             targetScreenElement = this.elements.settingsScreen;
             document.querySelector('.nav-btn[data-screen="settings"]').classList.add('active');
             this.elements.topNavigation.style.display = 'flex';
+            await this.lazyLoadScript('settings');
             this.settingsHandler.renderSettings();
         }
 
@@ -599,6 +618,36 @@ class DatingApp {
 
         this.state.currentScreen = screenName;
         this.updateTextContent();
+    }
+
+    async lazyLoadScript(componentName) {
+        if (componentName === 'chat' && !this.chatHandler) {
+            const scriptElement = document.getElementById('chat-script');
+            if (!scriptElement.src) { // Load only if not already loaded
+                scriptElement.src = 'assets/js/components/chat.js';
+                await new Promise(resolve => {
+                    scriptElement.onload = () => {
+                        this.chatHandler = new ChatHandler(this);
+                        resolve();
+                    };
+                });
+            } else if (!this.chatHandler) { // If src is set but handler not initialized (e.g., after clearAllData)
+                this.chatHandler = new ChatHandler(this);
+            }
+        } else if (componentName === 'settings' && !this.settingsHandler) {
+            const scriptElement = document.getElementById('settings-script');
+            if (!scriptElement.src) { // Load only if not already loaded
+                scriptElement.src = 'assets/js/components/settings.js';
+                await new Promise(resolve => {
+                    scriptElement.onload = () => {
+                        this.settingsHandler = new SettingsHandler(this);
+                        resolve();
+                    };
+                });
+            } else if (!this.settingsHandler) { // If src is set but handler not initialized
+                this.settingsHandler = new SettingsHandler(this);
+            }
+        }
     }
 
     showMatchSuccessModal(profile, type) {
@@ -626,14 +675,14 @@ class DatingApp {
         this.elements.matchModalTitle.textContent = title;
         this.elements.matchModalMessage.textContent = message;
 
-        // ОБНОВЛЕНО: Установка аватаров для нового дизайна
-        this.elements.matchModalMyAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${this.state.userData.name}/100/100)`; // Аватар текущего пользователя
-        this.elements.matchModalPartnerAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${profile.id}/100/100)`; // Аватар партнера
+        this.elements.matchModalMyAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${this.state.userData.name}/100/100)`;
+        this.elements.matchModalPartnerAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${profile.id}/100/100)`;
 
         this.elements.matchModalChatBtn.textContent = this.translate('writeMessage');
         this.elements.matchModalContinueBtn.textContent = this.translate('continueSwiping');
 
         this.elements.matchSuccessModal.classList.add('active');
+        this.elements.matchSuccessModal.focus(); // Set focus to modal for accessibility
     }
 
     hideMatchSuccessModal() {
@@ -642,7 +691,6 @@ class DatingApp {
         }
     }
 
-    // НОВАЯ ФУНКЦИЯ: Показать модальное окно профиля
     showProfileFullModal(profileData) {
         if (!this.elements.profileFullModalOverlay || !this.elements.profileFullModalContent) return;
 
@@ -660,7 +708,6 @@ class DatingApp {
 
         this.elements.profileFullModalDescriptionFull.textContent = fullDescription;
 
-        // Обновляем знак зодиака
         const zodiacContainer = this.elements.profileFullModalZodiacSign;
         const zodiacSign = profileData.zodiacSign;
         if (zodiacSign) {
@@ -674,7 +721,6 @@ class DatingApp {
             zodiacContainer.innerHTML = `<div class="no-data">${this.translate('noData')}</div>`;
         }
 
-        // Обновляем "Ищу"
         const lookingForContainer = this.elements.profileFullModalLookingFor;
         lookingForContainer.innerHTML = '';
         if (profileData.lookingFor && profileData.lookingFor.length > 0) {
@@ -694,7 +740,6 @@ class DatingApp {
             lookingForContainer.innerHTML = `<div class="no-data">${this.translate('noLookingFor')}</div>`;
         }
 
-        // Обновляем "Интересы"
         const interestsContainer = this.elements.profileFullModalInterests;
         interestsContainer.innerHTML = '';
         if (profileData.interests && profileData.interests.length > 0) {
@@ -714,25 +759,22 @@ class DatingApp {
             interestsContainer.innerHTML = `<div class="no-data">${this.translate('noInterests')}</div>`;
         }
 
-        // Сбрасываем прокрутку
         this.elements.profileFullModalScrollableContent.scrollTop = 0;
 
-        // Показываем модальное окно
         this.elements.profileFullModalOverlay.classList.add('active');
         this.elements.profileFullModalContent.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Запрещаем прокрутку фона
+        document.body.style.overflow = 'hidden';
+        this.elements.profileFullModalContent.focus(); // Set focus to modal for accessibility
     }
 
-    // НОВАЯ ФУНКЦИЯ: Скрыть модальное окно профиля
     hideProfileFullModal() {
         if (this.elements.profileFullModalOverlay && this.elements.profileFullModalContent) {
             this.elements.profileFullModalOverlay.classList.remove('active');
             this.elements.profileFullModalContent.classList.remove('active');
-            document.body.style.overflow = ''; // Разрешаем прокрутку фона
+            document.body.style.overflow = '';
         }
     }
 
-    // НОВАЯ ФУНКЦИЯ: Показать модальное окно анкеты (оставляем как есть)
     showMatchFullModal(profileData) {
         if (!this.elements.matchFullModalOverlay || !this.elements.matchFullModalContent) return;
 
@@ -750,7 +792,6 @@ class DatingApp {
 
         this.elements.matchFullModalDescriptionFull.textContent = fullDescription;
 
-        // Обновляем статус активности и дистанцию
         this.elements.matchFullModalLastActive.textContent = profileData.lastActive;
         if (profileData.lastActive === this.translate('lastActiveToday')) {
             this.elements.matchFullModalActiveDot.classList.remove('offline');
@@ -772,7 +813,6 @@ class DatingApp {
             this.elements.matchFullModalDistance.textContent = '';
         }
 
-        // Обновляем знак зодиака
         const zodiacContainer = this.elements.matchFullModalZodiacSign;
         const zodiacSign = profileData.zodiacSign;
         if (zodiacSign) {
@@ -786,7 +826,6 @@ class DatingApp {
             zodiacContainer.innerHTML = `<div class="no-data">${this.translate('noData')}</div>`;
         }
 
-        // Обновляем "Ищу"
         const lookingForContainer = this.elements.matchFullModalLookingFor;
         lookingForContainer.innerHTML = '';
         if (profileData.lookingFor && profileData.lookingFor.length > 0) {
@@ -806,7 +845,6 @@ class DatingApp {
             lookingForContainer.innerHTML = `<div class="no-data">${this.translate('noLookingFor')}</div>`;
         }
 
-        // Обновляем "Интересы"
         const interestsContainer = this.elements.matchFullModalInterests;
         interestsContainer.innerHTML = '';
         if (profileData.interests && profileData.interests.length > 0) {
@@ -826,21 +864,19 @@ class DatingApp {
             interestsContainer.innerHTML = `<div class="no-data">${this.translate('noInterests')}</div>`;
         }
 
-        // Сбрасываем прокрутку
         this.elements.matchFullModalScrollableContent.scrollTop = 0;
 
-        // Показываем модальное окно
         this.elements.matchFullModalOverlay.classList.add('active');
         this.elements.matchFullModalContent.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Запрещаем прокрутку фона
+        document.body.style.overflow = 'hidden';
+        this.elements.matchFullModalContent.focus(); // Set focus to modal for accessibility
     }
 
-    // НОВАЯ ФУНКЦИЯ: Скрыть модальное окно анкеты (оставляем как есть)
     hideMatchFullModal() {
         if (this.elements.matchFullModalOverlay && this.elements.matchFullModalContent) {
             this.elements.matchFullModalOverlay.classList.remove('active');
             this.elements.matchFullModalContent.classList.remove('active');
-            document.body.style.overflow = ''; // Разрешаем прокрутку фона
+            document.body.style.overflow = '';
         }
     }
 
@@ -905,9 +941,9 @@ class DatingApp {
                 this.profileHandler.showProfile();
             } else if (this.state.currentScreen === 'match') {
                 this.matchHandler.showNextProfile();
-            } else if (this.state.currentScreen === 'chat') {
+            } else if (this.state.currentScreen === 'chat' && this.chatHandler) { // Check if loaded
                 this.chatHandler.showChatListScreen();
-            } else if (this.state.currentScreen === 'settings') {
+            } else if (this.state.currentScreen === 'settings' && this.settingsHandler) { // Check if loaded
                 this.settingsHandler.renderSettings();
             }
         } else {
@@ -915,7 +951,6 @@ class DatingApp {
         }
     }
 
-    // Helper to convert hex to RGB
     hexToRgb(hex) {
         const bigint = parseInt(hex.slice(1), 16);
         const r = (bigint >> 16) & 255;
@@ -924,13 +959,11 @@ class DatingApp {
         return `${r}, ${g}, ${b}`;
     }
 
-    // Helper to lighten/darken a color
     shadeColor(color, percent) {
         let f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=(f>>8)&0x00FF,B=f&0x0000FF;
         return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+Math.round((t-B)*p)+B).toString(16).slice(1);
     }
 
-    // New function to set the app's theme color
     setAppThemeColor(color) {
         if (!this.elements.dynamicStyles) {
             console.error('Dynamic styles element not found!');
@@ -938,8 +971,8 @@ class DatingApp {
         }
 
         const primaryRgb = this.hexToRgb(color);
-        const primaryDark = this.shadeColor(color, -0.2); // Darken by 20%
-        const primaryLight = this.shadeColor(color, 0.8); // Lighten by 80%
+        const primaryDark = this.shadeColor(color, -0.2);
+        const primaryLight = this.shadeColor(color, 0.8);
 
         this.elements.dynamicStyles.textContent = `
             :root {
@@ -950,7 +983,6 @@ class DatingApp {
             }
         `;
 
-        // Update logo stroke color if it exists
         const logoPath = document.querySelector('.logo-path');
         if (logoPath) {
             logoPath.setAttribute('stroke', 'var(--primary)');
@@ -965,21 +997,19 @@ class DatingApp {
         document.getElementById('navChatText').textContent = this.translate('chat');
         document.getElementById('navSettingsText').textContent = this.translate('settings');
 
-        // Обновление текста для модального окна успеха
         if (this.elements.matchSuccessModal && this.elements.matchSuccessModal.classList.contains('active')) {
-            // Если модальное окно активно, его текст будет обновлен при следующем вызове showMatchSuccessModal
-            // или при переключении языка, если оно активно.
-            // Для простоты, можно вызвать showMatchSuccessModal снова с текущими данными, если это необходимо.
-            // Но обычно оно закрывается перед сменой экрана/языка.
+            // Re-render match success modal content if it's active
+            // This is a simplified approach; a more robust solution would involve re-calling showMatchSuccessModal
+            // with the current profile and type, which would re-translate all its content.
         }
 
         const settingsScreen = document.getElementById('settingsScreen');
-        if (settingsScreen.classList.contains('active')) {
-            this.settingsHandler.renderSettings(); // Re-render settings to update texts
+        if (settingsScreen.classList.contains('active') && this.settingsHandler) {
+            this.settingsHandler.renderSettings();
         }
 
         const chatScreen = document.getElementById('chatScreen');
-        if (chatScreen.classList.contains('active')) {
+        if (chatScreen.classList.contains('active') && this.chatHandler) {
             this.chatHandler.updateChatTexts();
         }
 

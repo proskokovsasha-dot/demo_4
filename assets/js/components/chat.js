@@ -40,10 +40,19 @@ class ChatHandler {
                     this.sendMessage();
                 }
             });
-            this.elements.messageInput.addEventListener('input', () => {
+            // Debounce the input event for textarea resizing
+            const debounce = (func, delay) => {
+                let timeout;
+                return function(...args) {
+                    const context = this;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(context, args), delay);
+                };
+            };
+            this.elements.messageInput.addEventListener('input', debounce(() => {
                 this.elements.messageInput.style.height = 'auto';
                 this.elements.messageInput.style.height = this.elements.messageInput.scrollHeight + 'px';
-            });
+            }, 100)); // Debounce by 100ms
         }
     }
 
@@ -52,9 +61,8 @@ class ChatHandler {
         this.elements.activeChatContainer.classList.remove('active');
         this.elements.chatListContainer.style.display = 'flex';
         this.elements.noChatsMessage.style.display = Object.keys(this.chats).length === 0 ? 'block' : 'none';
-        // Ensure top navigation is visible when showing chat list
         this.app.elements.topNavigation.style.display = 'flex'; 
-        this.updateChatTexts(); // Update texts
+        this.updateChatTexts();
     }
 
     renderChatList() {
@@ -72,12 +80,15 @@ class ChatHandler {
         chatIds.forEach(chatId => {
             const chatData = this.chats[chatId];
             const lastMessage = chatData.messages.length > 0 ? chatData.messages[chatData.messages.length - 1] : null;
-            const lastMessageText = lastMessage ? lastMessage.text : this.app.translate('typeMessage'); // Use translation
+            const lastMessageText = lastMessage ? lastMessage.text : this.app.translate('typeMessage');
             const lastMessageTime = lastMessage ? new Date(lastMessage.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
 
             const chatItem = document.createElement('div');
             chatItem.className = 'chat-item';
             chatItem.dataset.chatId = chatId;
+            chatItem.setAttribute('role', 'listitem'); // ARIA
+            chatItem.setAttribute('tabindex', '0'); // Make focusable
+            chatItem.setAttribute('aria-label', `${chatData.partner.name}, ${chatData.partner.age}. Последнее сообщение: ${lastMessageText}`); // ARIA
             chatItem.innerHTML = `
                 <div class="chat-avatar" style="background-image: url('${chatData.partner.avatar}');"></div>
                 <div class="chat-info">
@@ -87,6 +98,12 @@ class ChatHandler {
                 <div class="chat-time">${lastMessageTime}</div>
             `;
             chatItem.addEventListener('click', () => this.openChat(chatId));
+            chatItem.addEventListener('keydown', (e) => { // Keyboard navigation
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.openChat(chatId);
+                }
+            });
             this.elements.chatListContainer.appendChild(chatItem);
         });
     }
@@ -105,9 +122,9 @@ class ChatHandler {
         this.elements.activeChatContainer.classList.add('active');
         this.renderMessages();
         this.scrollToBottom();
-        // Hide top navigation when active chat is open
         this.app.elements.topNavigation.style.display = 'none'; 
-        this.updateChatTexts(); // Update texts
+        this.updateChatTexts();
+        this.elements.messageInput.focus(); // Focus input field
     }
 
     renderMessages() {
@@ -118,6 +135,7 @@ class ChatHandler {
             const messageBubble = document.createElement('div');
             messageBubble.className = `message-bubble ${msg.sender === 'me' ? 'sent' : 'received'}`;
             messageBubble.textContent = msg.text;
+            messageBubble.setAttribute('role', 'listitem'); // ARIA
             this.elements.messagesContainer.appendChild(messageBubble);
         });
     }
@@ -145,7 +163,6 @@ class ChatHandler {
         this.activeChatPartner = null;
         this.elements.activeChatContainer.classList.remove('active');
         this.showChatListScreen();
-        // Ensure top navigation is visible when returning to chat list
         this.app.elements.topNavigation.style.display = 'flex'; 
     }
 
@@ -156,11 +173,10 @@ class ChatHandler {
     addChat(profile) {
         if (!this.chats[profile.id]) {
             this.chats[profile.id] = {
-                partner: { ...profile, avatar: `https://picsum.photos/seed/${profile.id}/50/50` }, // Добавляем заглушку для аватара
+                partner: { ...profile, avatar: `https://picsum.photos/seed/${profile.id}/50/50` },
                 messages: []
             };
             console.log(`Новый чат добавлен с ${profile.name}`);
-            // Only re-render chat list if we are currently on the chat screen
             if (this.app.state.currentScreen === 'chat') {
                 this.renderChatList();
             }
@@ -168,7 +184,6 @@ class ChatHandler {
     }
 
     updateChatTexts() {
-        // Update texts for chat list screen
         const chatScreen = document.getElementById('chatScreen');
         if (chatScreen) {
             const sectionTitle = chatScreen.querySelector('.section-title');
@@ -179,14 +194,12 @@ class ChatHandler {
             if (noChatsMessage) noChatsMessage.innerHTML = `<p>${this.app.translate('noActiveChats')}</p>`;
         }
 
-        // Update texts for active chat screen
         const activeChatContainer = document.getElementById('activeChatContainer');
         if (activeChatContainer && activeChatContainer.classList.contains('active')) {
             const messageInput = document.getElementById('messageInput');
             if (messageInput) messageInput.placeholder = this.app.translate('typeMessage');
         }
         
-        // Re-render chat list items to update their texts (last message, time)
         this.renderChatList();
     }
 }
