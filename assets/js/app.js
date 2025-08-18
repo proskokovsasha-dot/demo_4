@@ -66,6 +66,7 @@ class DatingApp {
             currentLanguage: 'ru', // Default language
             unreadMessagesCount: 0, // НОВОЕ: Счетчик непрочитанных сообщений
             blockedUsers: [], // НОВОЕ: Список заблокированных пользователей
+            likedByUsers: [], // НОВОЕ: Список пользователей, которые лайкнули текущего
         };
 
         this.translations = {
@@ -180,6 +181,12 @@ class DatingApp {
                 userBlocked: '{name} заблокирован.', // НОВОЕ
                 sendPhoto: 'Отправить фото', // НОВОЕ
                 sendEmoji: 'Отправить эмодзи', // НОВОЕ
+                likedBy: 'Лайкнули', // НОВОЕ
+                likedByTitle: 'Кто меня лайкнул', // НОВОЕ
+                likedByDescription: 'Здесь вы можете увидеть, кто поставил вам лайк.', // НОВОЕ
+                noLikedByMessage: 'Пока никто не поставил вам лайк. Продолжайте свайпать!', // НОВОЕ
+                likeBack: 'Лайкнуть в ответ', // НОВОЕ
+                skip: 'Пропустить', // НОВОЕ
             },
             en: {
                 appName: 'Meeting Point',
@@ -292,6 +299,12 @@ class DatingApp {
                 userBlocked: '{name} blocked.', // НОВОЕ
                 sendPhoto: 'Send Photo', // НОВОЕ
                 sendEmoji: 'Send Emoji', // НОВОЕ
+                likedBy: 'Liked By', // НОВОЕ
+                likedByTitle: 'Who Liked Me', // НОВОЕ
+                likedByDescription: 'Here you can see who liked you.', // НОВОЕ
+                noLikedByMessage: 'No one has liked you yet. Keep swiping!', // НОВОЕ
+                likeBack: 'Like Back', // НОВОЕ
+                skip: 'Skip', // НОВОЕ
             }
         };
 
@@ -380,6 +393,7 @@ class DatingApp {
             matchScreen: document.getElementById('matchScreen'),
             chatScreen: document.getElementById('chatScreen'),
             settingsScreen: document.getElementById('settingsScreen'),
+            likedByScreen: document.getElementById('likedByScreen'), // НОВОЕ
             topNavigation: document.getElementById('topNavigation'),
             navButtons: document.querySelectorAll('.nav-btn'),
             matchSuccessModal: document.getElementById('matchSuccessModal'),
@@ -396,6 +410,7 @@ class DatingApp {
             navMatchesText: document.getElementById('navMatchesText'),
             navChatText: document.getElementById('navChatText'),
             navSettingsText: document.getElementById('navSettingsText'),
+            navLikedByText: document.getElementById('navLikedByText'), // НОВОЕ
             dynamicStyles: document.getElementById('dynamic-styles'),
 
             profileFullModalOverlay: document.getElementById('profileFullModalOverlay'),
@@ -524,6 +539,7 @@ class DatingApp {
         const savedProfile = localStorage.getItem('datingProfile');
         const savedLanguage = localStorage.getItem('appLanguage');
         const savedBlockedUsers = localStorage.getItem('blockedUsers'); // НОВОЕ: Загрузка заблокированных пользователей
+        const savedLikedByUsers = localStorage.getItem('datingAppLikedByUsers'); // НОВОЕ
 
         if (savedLanguage) {
             this.state.currentLanguage = savedLanguage;
@@ -534,6 +550,14 @@ class DatingApp {
             } catch (e) {
                 console.error('Error loading blocked users:', e);
                 localStorage.removeItem('blockedUsers');
+            }
+        }
+        if (savedLikedByUsers) { // НОВОЕ
+            try {
+                this.state.likedByUsers = JSON.parse(savedLikedByUsers);
+            } catch (e) {
+                console.error('Error loading liked by users:', e);
+                localStorage.removeItem('datingAppLikedByUsers');
             }
         }
 
@@ -577,11 +601,16 @@ class DatingApp {
         this.matchHandler.startMatch();
     }
 
+    saveLikedByUsers() { // НОВОЕ: Функция для сохранения списка лайкнувших
+        localStorage.setItem('datingAppLikedByUsers', JSON.stringify(this.state.likedByUsers));
+    }
+
     clearAllData() {
         localStorage.removeItem('datingProfile');
         localStorage.removeItem('swipeTutorialShown');
         localStorage.removeItem('appLanguage');
         localStorage.removeItem('blockedUsers'); // НОВОЕ: Очистка заблокированных пользователей
+        localStorage.removeItem('datingAppLikedByUsers'); // НОВОЕ
         this.state.userData = {
             name: '',
             gender: '',
@@ -596,6 +625,7 @@ class DatingApp {
             profileColor: '#FF6B6B',
         };
         this.state.blockedUsers = []; // НОВОЕ: Сброс заблокированных пользователей
+        this.state.likedByUsers = []; // НОВОЕ
         this.state.unreadMessagesCount = 0; // НОВОЕ: Сброс счетчика
         this.updateChatNotificationBadge(); // НОВОЕ: Обновление бейджа
         // Reset chatHandler if it's loaded
@@ -645,6 +675,11 @@ class DatingApp {
             this.elements.topNavigation.style.display = 'flex';
             await this.lazyLoadScript('settings');
             this.settingsHandler.renderSettings();
+        } else if (screenName === 'likedBy') { // НОВОЕ
+            targetScreenElement = this.elements.likedByScreen;
+            document.querySelector('.nav-btn[data-screen="likedBy"]').classList.add('active');
+            this.elements.topNavigation.style.display = 'flex';
+            this.renderLikedByList(); // НОВОЕ: Рендерим список лайкнувших
         }
 
         if (targetScreenElement) {
@@ -656,6 +691,63 @@ class DatingApp {
 
         this.state.currentScreen = screenName;
         this.updateTextContent();
+    }
+
+    renderLikedByList() { // НОВОЕ: Функция для рендеринга списка лайкнувших
+        const likedByListContainer = document.getElementById('likedByList');
+        const noLikedByMessage = document.getElementById('noLikedByMessage');
+        likedByListContainer.innerHTML = ''; // Очищаем список
+
+        if (this.state.likedByUsers.length === 0) {
+            noLikedByMessage.style.display = 'block';
+        } else {
+            noLikedByMessage.style.display = 'none';
+            this.state.likedByUsers.forEach(profile => {
+                const likedByItem = document.createElement('div');
+                likedByItem.className = 'liked-by-item';
+                likedByItem.innerHTML = `
+                    <div class="liked-by-avatar" style="background-image: url('https://picsum.photos/seed/${profile.id}/80/80');"></div>
+                    <div class="liked-by-info">
+                        <div class="liked-by-name">${profile.name}, ${profile.age}</div>
+                    </div>
+                    <div class="liked-by-actions">
+                        <button class="btn btn-like" data-action="like" data-profile-id="${profile.id}">${this.translate('likeBack')}</button>
+                        <button class="btn btn-secondary" data-action="skip" data-profile-id="${profile.id}">${this.translate('skip')}</button>
+                    </div>
+                `;
+                likedByListContainer.appendChild(likedByItem);
+
+                // Добавляем обработчики событий для кнопок
+                likedByItem.querySelector('[data-action="like"]').addEventListener('click', (e) => {
+                    this.handleLikedByAction(e.target.dataset.profileId, 'like');
+                });
+                likedByItem.querySelector('[data-action="skip"]').addEventListener('click', (e) => {
+                    this.handleLikedByAction(e.target.dataset.profileId, 'skip');
+                });
+            });
+        }
+    }
+
+    handleLikedByAction(profileId, action) { // НОВОЕ: Обработка действий в разделе "Кто меня лайкнул"
+        const profileIndex = this.state.likedByUsers.findIndex(p => p.id === profileId);
+        if (profileIndex === -1) return;
+
+        const profile = this.state.likedByUsers[profileIndex];
+
+        if (action === 'like') {
+            console.log(`Лайкнули в ответ: ${profile.name}`);
+            this.lazyLoadScript('chat').then(() => {
+                this.chatHandler.addChat(profile); // Добавляем чат
+                this.showMatchSuccessModal(profile, 'match'); // Показываем модальное окно мэтча
+            });
+        } else if (action === 'skip') {
+            console.log(`Пропустили: ${profile.name}`);
+        }
+
+        // Удаляем пользователя из списка "Кто меня лайкнул"
+        this.state.likedByUsers.splice(profileIndex, 1);
+        this.saveLikedByUsers();
+        this.renderLikedByList(); // Перерисовываем список
     }
 
     async lazyLoadScript(componentName) {
@@ -983,6 +1075,8 @@ class DatingApp {
                 this.chatHandler.showChatListScreen();
             } else if (this.state.currentScreen === 'settings' && this.settingsHandler) { // Check if loaded
                 this.settingsHandler.renderSettings();
+            } else if (this.state.currentScreen === 'likedBy') { // НОВОЕ
+                this.renderLikedByList();
             }
         } else {
             console.warn(`Language "${lang}" not supported.`);
@@ -1034,6 +1128,7 @@ class DatingApp {
         document.getElementById('navMatchesText').textContent = this.translate('matches');
         document.getElementById('navChatText').textContent = this.translate('chat');
         document.getElementById('navSettingsText').textContent = this.translate('settings');
+        document.getElementById('navLikedByText').textContent = this.translate('likedBy'); // НОВОЕ
 
         if (this.elements.matchSuccessModal && this.elements.matchSuccessModal.classList.contains('active')) {
             // Re-render match success modal content if it's active
@@ -1054,6 +1149,13 @@ class DatingApp {
         const matchScreen = document.getElementById('matchScreen');
         if (matchScreen.classList.contains('active')) {
             document.getElementById('noProfilesMessage').innerHTML = `<p>${this.translate('noNewProfiles')}</p><button class="btn btn-secondary" style="margin-top: 20px;" id="backToProfileFromMatchBtn">${this.translate('backToProfile')}</button>`;
+        }
+
+        const likedByScreen = document.getElementById('likedByScreen'); // НОВОЕ
+        if (likedByScreen) {
+            likedByScreen.querySelector('.section-title').textContent = this.translate('likedByTitle');
+            likedByScreen.querySelector('.section-description').textContent = this.translate('likedByDescription');
+            likedByScreen.querySelector('#noLikedByMessage p').textContent = this.translate('noLikedByMessage');
         }
     }
 
@@ -1107,4 +1209,3 @@ class DatingApp {
 document.addEventListener('DOMContentLoaded', () => {
     new DatingApp();
 });
-

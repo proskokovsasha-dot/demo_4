@@ -407,12 +407,20 @@ class MatchHandler {
         
         if (action === 'like') {
             console.log('Liked:', profile.name);
-            this.app.chatHandler.addChat(profile);
-            this.lastMatchedProfile = profile;
-            if (Math.random() > 0.5) {
+            // Симуляция взаимного лайка
+            if (Math.random() < 0.3) { // 30% шанс, что пользователь лайкнет в ответ
+                this.app.chatHandler.addChat(profile);
+                this.lastMatchedProfile = profile;
                 this.app.showMatchSuccessModal(profile, 'match');
             } else {
                 this.app.showMatchSuccessModal(profile, 'like');
+                // Если нет мэтча, добавляем пользователя в список "Кто меня лайкнул"
+                // Только если его там еще нет и он не заблокирован
+                if (!this.app.state.likedByUsers.some(p => p.id === profile.id) && !this.app.isUserBlocked(profile.id)) {
+                    this.app.state.likedByUsers.push(profile);
+                    this.app.saveLikedByUsers();
+                    console.log(`Пользователь ${profile.name} добавлен в список "Кто меня лайкнул".`);
+                }
             }
             card.classList.add('animate-like');
         } else if (action === 'nope') {

@@ -479,3 +479,98 @@ body{
         min-width: 70px;
     }
 }
+
+/* Новые стили для раздела "Кто меня лайкнул" */
+.liked-by-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.liked-by-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast) ease;
+    flex-direction: column; /* Изменено для лучшего отображения кнопок */
+    text-align: center;
+}
+
+.liked-by-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.liked-by-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--border);
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+    margin-bottom: 10px;
+}
+
+.liked-by-info {
+    flex-grow: 1;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.liked-by-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.liked-by-actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+}
+
+.liked-by-actions .btn {
+    flex: 1;
+    min-width: unset; /* Отменяем min-width для кнопок */
+    padding: 10px 15px;
+    font-size: 0.9rem;
+}
+
+.no-liked-by-message {
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 20px;
+    text-align: center;
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    margin-top: 20px;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+    .liked-by-item {
+        padding: 12px;
+    }
+    .liked-by-avatar {
+        width: 60px;
+        height: 60px;
+    }
+    .liked-by-name {
+        font-size: 1.1rem;
+    }
+    .liked-by-actions .btn {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+}
