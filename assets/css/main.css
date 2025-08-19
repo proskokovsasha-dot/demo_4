@@ -574,3 +574,176 @@ body{
         font-size: 0.85rem;
     }
 }
+/* Добавьте эти стили в конец файла assets/css/main.css */
+
+/* Стили для нового модального окна ледоколов */
+.icebreaker-modal-content {
+    padding: 25px;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+}
+
+.icebreaker-modal-content .modal-title {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: var(--primary);
+}
+
+.icebreaker-modal-content .modal-description {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.icebreaker-options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+    max-height: 300px; /* Ограничение высоты для прокрутки */
+    overflow-y: auto;
+    padding-right: 5px; /* Для видимости скроллбара */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: var(--primary) var(--border); /* Firefox */
+}
+
+.icebreaker-options-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.icebreaker-options-container::-webkit-scrollbar-track {
+    background: var(--border);
+    border-radius: 10px;
+}
+
+.icebreaker-options-container::-webkit-scrollbar-thumb {
+    background-color: var(--primary);
+    border-radius: 10px;
+    border: 2px solid var(--border);
+}
+
+.icebreaker-option-item {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 12px 15px;
+    text-align: left;
+    cursor: pointer;
+    transition: all var(--transition-fast) ease;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.icebreaker-option-item:hover {
+    background-color: var(--primary-light);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.icebreaker-option-item .emoji {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.icebreaker-option-item .text {
+    flex-grow: 1;
+}
+
+.icebreaker-option-item.selected {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary-dark);
+    box-shadow: var(--shadow-md);
+}
+
+.icebreaker-option-item.selected .emoji,
+.icebreaker-option-item.selected .text {
+    color: white;
+}
+
+.icebreaker-modal-content .modal-actions {
+    margin-top: 15px;
+}
+
+.icebreaker-modal-content .modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--surface);
+    color: var(--text-secondary);
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.icebreaker-modal-content .modal-close-btn:hover {
+    background-color: var(--error);
+    color: white;
+}
+
+.icebreaker-modal-content .modal-close-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+    .icebreaker-modal-content {
+        padding: 20px;
+    }
+    .icebreaker-modal-content .modal-title {
+        font-size: 1.5rem;
+    }
+    .icebreaker-modal-content .modal-description {
+        font-size: 0.9rem;
+    }
+    .icebreaker-option-item {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+    .icebreaker-option-item .emoji {
+        font-size: 1.1rem;
+    }
+    .icebreaker-options-container {
+        max-height: 250px;
+    }
+}
+
+/* Стили для новой кнопки ледокола в чате */
+.message-input-actions #sendIcebreakerBtn {
+    background: none;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color var(--transition-fast) ease;
+    flex-shrink: 0;
+}
+
+.message-input-actions #sendIcebreakerBtn:hover {
+    background-color: var(--border);
+}
+
+.message-input-actions #sendIcebreakerBtn svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--text-secondary);
+    fill: none;
+}

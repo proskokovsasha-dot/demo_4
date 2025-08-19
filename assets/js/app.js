@@ -80,6 +80,24 @@ class DatingApp {
                 { id: 'marriage', name: 'Брак', emoji: '👰‍♀️' },
                 { id: 'travel_buddy', name: 'Спутник для путешествий', emoji: '✈️' },
                 { id: 'hobby_partner', name: 'Партнер по хобби', emoji: '🎨' }
+            ],
+            // НОВЫЕ КОНФИГУРАЦИИ ДЛЯ ЛЕДОКОЛОВ И ВОПРОСОВ
+            icebreakers: [
+                { id: 'fact_about_me', type: 'game', text: 'Отправь {partnerName} случайный факт о себе.' },
+                { id: 'two_truths_one_lie', type: 'game', text: 'Сыграйте в "Две правды и одна ложь".' },
+                { id: 'ideal_weekend', type: 'question', text: 'Твой идеальный выходной?' },
+                { id: 'never_again', type: 'question', text: 'Что ты никогда не сделаешь снова?' },
+                { id: 'favorite_movie', type: 'question', text: 'Какой твой любимый фильм и почему?' },
+                { id: 'dream_travel', type: 'question', text: 'Куда бы ты отправился(лась) в путешествие прямо сейчас, если бы мог(ла)?' },
+                { id: 'hidden_talent', type: 'question', text: 'Есть ли у тебя какой-нибудь скрытый талант?' },
+                { id: 'best_advice', type: 'question', text: 'Какой самый лучший совет ты когда-либо получал(а)?' },
+                { id: 'morning_routine', type: 'question', text: 'Опиши свое идеальное утро.' },
+                { id: 'superpower', type: 'question', text: 'Если бы у тебя была суперспособность, какая бы это была?' },
+                { id: 'desert_island_book', type: 'question', text: 'Какую одну книгу ты бы взял(а) на необитаемый остров?' },
+                { id: 'first_thing_after_win', type: 'question', text: 'Что первое ты сделаешь, если выиграешь в лотерею?' },
+                { id: 'childhood_dream', type: 'question', text: 'Кем ты мечтал(а) стать в детстве?' },
+                { id: 'favorite_food', type: 'question', text: 'Какое твое любимое блюдо и почему?' },
+                { id: 'learn_new_skill', type: 'question', text: 'Какой новый навык ты хотел(а) бы освоить?' },
             ]
         };
 
@@ -115,96 +133,25 @@ class DatingApp {
 
         this.translations = {
             ru: {
-                appName: 'ТочкаСхода',
-                appSubtitle: 'Место, где сливаются ваши пути',
+                loadingTitle: 'ТочкаСхода',
+                loadingSubtitle: 'Место, где сливаются ваши пути',
                 profile: 'Профиль',
                 matches: 'Анкеты',
                 chat: 'Чат',
                 settings: 'Настройки',
-                loadingTitle: 'ТочкаСхода',
-                loadingSubtitle: 'Место, где сливаются ваши пути',
-                registrationTitle: 'Расскажите о себе',
-                registrationDescription: 'Заполните информацию, чтобы создать свой профиль.',
+                likedBy: 'Лайкнули',
+                registrationTitle: 'Создайте свой профиль',
+                registrationDescription: 'Расскажите немного о себе, чтобы мы могли найти идеальные совпадения.',
                 yourName: 'Ваше имя',
+                next: 'Далее',
+                back: 'Назад',
                 male: 'Мужчина',
                 female: 'Женщина',
-                yourAge: 'Ваш возраст',
+                yourCity: 'Ваш город',
                 yourDob: 'Ваша дата рождения',
                 day: 'День',
                 month: 'Месяц',
                 year: 'Год',
-                yourZodiacSign: 'Ваш знак зодиака',
-                yourCity: 'Где вы живете?',
-                whatAreYouLookingFor: 'Что вы ищете?',
-                yourInterests: 'Ваши интересы',
-                whoAreYouLookingFor: 'Кого вы ищете?',
-                profileColor: 'Цвет профиля',
-                orChooseYourColor: 'Или выберите свой цвет',
-                yourPhotos: 'Ваши фото', // Удалено из функционала, но оставлено для перевода
-                addPhoto: '📸 Добавить фото', // Удалено из функционала, но оставлено для перевода
-                addPhotoDescription: 'Добавьте фото для профиля.', // Удалено из функционала, но оставлено для перевода
-                aboutYou: 'О себе',
-                aboutYouPlaceholder: 'Я люблю путешествия, книги и...',
-                saveProfile: 'Сохранить профиль',
-                edit: 'Редактировать',
-                newProfile: 'Новый профиль',
-                noData: 'Нет данных',
-                noDescription: 'Пользователь пока ничего о себе не рассказал.',
-                noLookingFor: 'Не указано, что ищет',
-                noInterests: 'Интересы не выбраны',
-                noPhotos: 'Фотографии не добавлены', // Удалено из функционала, но оставлено для перевода
-                noNewProfiles: 'Пока нет новых анкет. Попробуйте позже!',
-                backToProfile: 'Вернуться в профиль',
-                yourChats: 'Ваши чаты',
-                yourChatsDescription: 'Здесь будут отображаться ваши диалоги.',
-                typeMessage: 'Напишите сообщение...',
-                clearProfileData: 'Очистить данные профиля',
-                confirmClearData: 'Вы уверены, что хотите полностью очистить все данные профиля? Это действие необратимо.',
-                swipeTutorialTitle: 'Добро пожаловать в Анкеты!',
-                swipeTutorialText1: 'Здесь вы можете просматривать профили других пользователей.',
-                swipeTutorialText2: '👉 Смахните вправо, чтобы поставить **ЛАЙК**.<br>👈 Смахните влево, чтобы **ПРОПУСТИТЬ** анкету.<br>👆 Смахните вверх, чтобы поставить **СУПЕРЛАЙК**!',
-                gotIt: 'Понятно!',
-                match: 'Это Мэтч!',
-                likeSent: 'Лайк отправлен!',
-                superlikeSent: 'Суперлайк отправлен!',
-                youLiked: 'Вы понравились {name}!',
-                youLikedName: 'Вы лайкнули {name}. Ждем ответа!',
-                youSuperlikedName: 'Вы отправили суперлайк {name}. Надеемся на взаимность!',
-                writeMessage: 'Написать сообщение',
-                continueSwiping: 'Продолжить свайпать',
-                lastActiveToday: 'Была сегодня',
-                lastActiveYesterday: 'Была вчера',
-                lastActiveThisWeek: 'Была недавно',
-                lastActiveRecently: 'Была недавно',
-                km: 'км',
-                maxInterestsAlert: 'Вы можете выбрать не более {maxInterests} интересов.',
-                fillAllFieldsAlert: 'Пожалуйста, заполните все обязательные поля.',
-                invalidDate: 'Пожалуйста, введите корректную дату.',
-                friendship: 'Дружба',
-                dating: 'Романтические отношения',
-                serious: 'Серьёзные отношения',
-                networking: 'Нетворкинг',
-                travelCompanion: 'Спутник для путешествий',
-                men: 'Мужчин',
-                women: 'Женщин',
-                all: 'Всех',
-                music: 'Музыка',
-                sports: 'Спорт',
-                books: 'Книги',
-                travel: 'Путешествия',
-                art: 'Искусство',
-                games: 'Игры',
-                cooking: 'Кулинария',
-                photography: 'Фотография',
-                movies: 'Кино',
-                nature: 'Природа',
-                technology: 'Технологии',
-                fashion: 'Мода',
-                languageSelection: 'Выбор языка',
-                selectLanguage: 'Выберите язык',
-                next: 'Далее',
-                back: 'Назад',
-                profileColorSettings: 'Цвет профиля',
                 aquarius: 'Водолей',
                 pisces: 'Рыбы',
                 aries: 'Овен',
@@ -217,53 +164,89 @@ class DatingApp {
                 scorpio: 'Скорпион',
                 sagittarius: 'Стрелец',
                 capricorn: 'Козерог',
-                noActiveChats: 'У вас пока нет активных чатов. Начните знакомиться в разделе "Анкеты"!', // НОВОЕ
-                messageDelivered: 'Доставлено', // НОВОЕ
-                messageRead: 'Прочитано', // НОВОЕ
-                blockUser: 'Заблокировать', // НОВОЕ
-                confirmBlockUser: 'Вы уверены, что хотите заблокировать {name}? Вы больше не будете получать от него сообщения.', // НОВОЕ
-                userBlocked: '{name} заблокирован.', // НОВОЕ
-                sendPhoto: 'Отправить фото', // НОВОЕ
-                sendEmoji: 'Отправить эмодзи', // НОВОЕ
-                likedBy: 'Лайкнули', // НОВОЕ
-                likedByTitle: 'Кто меня лайкнул', // НОВОЕ
-                likedByDescription: 'Здесь вы можете увидеть, кто поставил вам лайк.', // НОВОЕ
-                noLikedByMessage: 'Пока никто не поставил вам лайк. Продолжайте свайпать!', // НОВОЕ
-                likeBack: 'Лайкнуть в ответ', // НОВОЕ
-                skip: 'Пропустить', // НОВОЕ
-                // НОВЫЕ ПЕРЕВОДЫ ДЛЯ РАСШИРЕННЫХ ПОЛЕЙ
+                whatAreYouLookingFor: 'Что вы ищете?',
+                friendship: 'Дружба',
+                dating: 'Романтические отношения',
+                serious: 'Серьёзные отношения',
+                networking: 'Нетворкинг',
+                travel: 'Спутник для путешествий',
+                yourInterests: 'Ваши интересы',
+                music: 'Музыка',
+                sports: 'Спорт',
+                books: 'Книги',
+                art: 'Искусство',
+                games: 'Игры',
+                cooking: 'Кулинария',
+                photography: 'Фотография',
+                movies: 'Кино',
+                nature: 'Природа',
+                technology: 'Технологии',
+                fashion: 'Мода',
+                whoAreYouLookingFor: 'Кого вы ищете?',
+                both: 'Всех',
+                profileColor: 'Цвет профиля',
+                orChooseYourColor: 'Или выберите свой цвет',
+                aboutYou: 'О себе',
+                aboutYouPlaceholder: 'Расскажите о себе, своих увлечениях, мечтах...',
+                saveProfile: 'Сохранить профиль',
+                noDescription: 'Описание отсутствует.',
+                noData: 'Нет данных',
+                noLookingFor: 'Не указано, что ищет',
+                noInterests: 'Интересы не указаны',
+                noPhotos: 'Фотографии отсутствуют',
+                lastActiveToday: 'Была сегодня',
+                lastActiveYesterday: 'Была вчера',
+                lastActiveThisWeek: 'Была на этой неделе',
+                lastActiveRecently: 'Была недавно',
+                km: 'км',
+                noNewProfiles: 'Пока нет новых анкет. Попробуйте позже!',
+                backToProfile: 'Вернуться в профиль',
+                match: 'Мэтч!',
+                youLiked: 'Вам понравился(лась) {name}!',
+                likeSent: 'Лайк отправлен!',
+                youLikedName: 'Вы лайкнули {name}!',
+                superlikeSent: 'Суперлайк отправлен!',
+                youSuperlikedName: 'Вы суперлайкнули {name}!',
+                writeMessage: 'Написать сообщение',
+                continueSwiping: 'Продолжить свайпать',
+                yourChats: 'Ваши чаты',
+                yourChatsDescription: 'Здесь будут отображаться ваши диалоги.',
+                noActiveChats: 'У вас пока нет активных чатов. Начните знакомиться в разделе "Анкеты"!',
+                typeMessage: 'Напишите сообщение...',
+                messageRead: 'Прочитано',
+                messageDelivered: 'Доставлено',
+                confirmClearData: 'Вы уверены, что хотите удалить все данные профиля? Это действие необратимо.',
+                clearProfileData: 'Удалить данные профиля',
+                invalidDate: 'Некорректная дата рождения. Пожалуйста, проверьте день, месяц и год.',
+                fillAllFieldsAlert: 'Пожалуйста, заполните это поле.',
+                maxInterestsAlert: 'Вы можете выбрать не более {maxInterests} интересов.',
                 education: 'Образование',
-                yourEducation: 'Ваше образование',
                 profession: 'Профессия',
+                yourEducation: 'Ваше образование',
                 yourProfession: 'Ваша профессия',
-                badHabits: 'Вредные привычки',
-                yourBadHabits: 'Ваши вредные привычки',
+                yourBadHabits: 'Вредные привычки',
                 none: 'Нет',
                 alcohol: 'Алкоголь',
                 smoking: 'Курение',
                 both: 'И то, и другое',
-                children: 'Дети',
-                yourChildrenStatus: 'Ваш статус по детям',
+                yourChildrenStatus: 'Дети',
                 no_children: 'Нет детей',
                 has_children: 'Есть дети',
                 wants_children: 'Хочу детей',
                 does_not_want_children: 'Не хочу детей',
-                pets: 'Домашние животные',
-                yourPets: 'Ваши домашние животные',
+                yourPets: 'Домашние животные',
                 no_pets: 'Нет животных',
                 cat: 'Кошка',
                 dog: 'Собака',
                 other_pets: 'Другие',
-                languages: 'Языки',
-                yourLanguages: 'Какие языки вы знаете?',
+                yourLanguages: 'Языки',
                 russian: 'Русский',
                 english: 'Английский',
                 spanish: 'Испанский',
                 german: 'Немецкий',
                 french: 'Французский',
                 chinese: 'Китайский',
-                datingGoals: 'Цели знакомства',
-                yourDatingGoals: 'Что вы ищете в отношениях?',
+                yourDatingGoals: 'Цели знакомства',
                 long_term_relationship: 'Серьезные отношения',
                 short_term_dating: 'Недолгие свидания',
                 new_friends: 'Новые друзья',
@@ -271,98 +254,56 @@ class DatingApp {
                 marriage: 'Брак',
                 travel_buddy: 'Спутник для путешествий',
                 hobby_partner: 'Партнер по хобби',
+                sendPhoto: 'Отправить фото',
+                sendEmoji: 'Отправить эмодзи',
+                blockUser: 'Заблокировать пользователя',
+                confirmBlockUser: 'Вы уверены, что хотите заблокировать {name}? Вы больше не будете видеть его/ее анкету и сообщения.',
+                userBlocked: '{name} заблокирован(а).',
+                likedByTitle: 'Кто меня лайкнул',
+                likedByDescription: 'Здесь вы можете увидеть, кто поставил вам лайк.',
+                noLikedByMessage: 'Пока никто не поставил вам лайк. Продолжайте свайпать!',
+                likeBack: 'Лайкнуть в ответ',
+                skip: 'Пропустить',
+                icebreakersTitle: 'Ледоколы',
+                icebreakersDescription: 'Выберите вопрос или игру, чтобы начать разговор.',
+                cancel: 'Отмена',
+                fact_about_me: 'Отправь {partnerName} случайный факт о себе.',
+                two_truths_one_lie: 'Сыграйте в "Две правды и одна ложь".',
+                ideal_weekend: 'Твой идеальный выходной?',
+                never_again: 'Что ты никогда не сделаешь снова?',
+                favorite_movie: 'Какой твой любимый фильм и почему?',
+                dream_travel: 'Куда бы ты отправился(лась) в путешествие прямо сейчас, если бы мог(ла)?',
+                hidden_talent: 'Есть ли у тебя какой-нибудь скрытый талант?',
+                best_advice: 'Какой самый лучший совет ты когда-либо получал(а)?',
+                morning_routine: 'Опиши свое идеальное утро.',
+                superpower: 'Если бы у тебя была суперспособность, какая бы это была?',
+                desert_island_book: 'Какую одну книгу ты бы взял(а) на необитаемый остров?',
+                first_thing_after_win: 'Что первое ты сделаешь, если выиграешь в лотерею?',
+                childhood_dream: 'Кем ты мечтал(а) стать в детстве?',
+                favorite_food: 'Какое твое любимое блюдо и почему?',
+                learn_new_skill: 'Какой новый навык ты хотел(а) бы освоить?',
+                sendIcebreaker: 'Отправить ледокол',
             },
             en: {
-                appName: 'Meeting Point',
-                appSubtitle: 'Where your paths converge',
+                loadingTitle: 'Meeting Point',
+                loadingSubtitle: 'Where your paths converge',
                 profile: 'Profile',
                 matches: 'Matches',
                 chat: 'Chat',
                 settings: 'Settings',
-                loadingTitle: 'Meeting Point',
-                loadingSubtitle: 'Where your paths converge',
-                registrationTitle: 'Tell Us About Yourself',
-                registrationDescription: 'Fill in your information to create your profile.',
+                likedBy: 'Liked By',
+                registrationTitle: 'Create Your Profile',
+                registrationDescription: 'Tell us a little about yourself so we can find your perfect matches.',
                 yourName: 'Your Name',
+                next: 'Next',
+                back: 'Back',
                 male: 'Male',
                 female: 'Female',
-                yourAge: 'Your Age',
+                yourCity: 'Your City',
                 yourDob: 'Your Date of Birth',
                 day: 'Day',
                 month: 'Month',
                 year: 'Year',
-                yourZodiacSign: 'Your Zodiac Sign',
-                yourCity: 'Where do you live?',
-                whatAreYouLookingFor: 'What are you looking for?',
-                yourInterests: 'Your Interests',
-                whoAreYouLookingFor: 'Who are you looking for?',
-                profileColor: 'Profile Color',
-                orChooseYourColor: 'Or choose your own color',
-                yourPhotos: 'Your Photos', // Removed from functionality, but kept for translation
-                addPhoto: '📸 Add Photo', // Removed from functionality, but kept for translation
-                addPhotoDescription: 'Add photos for your profile.', // Removed from functionality, but kept for translation
-                aboutYou: 'About You',
-                aboutYouPlaceholder: 'I love traveling, books, and...',
-                saveProfile: 'Save Profile',
-                edit: 'Edit',
-                newProfile: 'New Profile',
-                noData: 'No data',
-                noDescription: 'User has not provided a description yet.',
-                noLookingFor: 'Not specified what they are looking for',
-                noInterests: 'No interests selected',
-                noPhotos: 'No photos added', // Removed from functionality, but kept for translation
-                noNewProfiles: 'No new profiles for now. Try again later!',
-                backToProfile: 'Back to Profile',
-                yourChats: 'Your Chats',
-                yourChatsDescription: 'Your conversations will appear here.',
-                typeMessage: 'Type a message...',
-                clearProfileData: 'Clear Profile Data',
-                confirmClearData: 'Are you sure you want to completely clear all profile data? This action is irreversible.',
-                swipeTutorialTitle: 'Welcome to Matches!',
-                swipeTutorialText1: 'Here you can view other users\' profiles.',
-                swipeTutorialText2: '👉 Swipe right to **LIKE**.<br>👈 Swipe left to **SKIP**.<br>👆 Swipe up to **SUPERLIKE**!',
-                gotIt: 'Got it!',
-                match: 'It\'s a Match!',
-                likeSent: 'Like Sent!',
-                superlikeSent: 'Superlike Sent!',
-                youLiked: 'You liked {name}!',
-                youLikedName: 'You liked {name}. Waiting for a response!',
-                youSuperlikedName: 'You sent a superlike to {name}. Hoping for a match!',
-                writeMessage: 'Write a message',
-                continueSwiping: 'Continue Swiping',
-                lastActiveToday: 'Online today',
-                lastActiveYesterday: 'Online yesterday',
-                lastActiveThisWeek: 'Online this week',
-                lastActiveRecently: 'Online recently',
-                km: 'km',
-                maxInterestsAlert: 'You can select no more than {maxInterests} interests.',
-                fillAllFieldsAlert: 'Please fill in all required fields.',
-                invalidDate: 'Please enter a valid date.',
-                friendship: 'Friendship',
-                dating: 'Dating',
-                serious: 'Serious relationship',
-                networking: 'Networking',
-                travelCompanion: 'Travel companion',
-                men: 'Men',
-                women: 'Women',
-                all: 'All',
-                music: 'Music',
-                sports: 'Sports',
-                books: 'Books',
-                travel: 'Travel',
-                art: 'Art',
-                games: 'Games',
-                cooking: 'Cooking',
-                photography: 'Photography',
-                movies: 'Movies',
-                nature: 'Nature',
-                technology: 'Technology',
-                fashion: 'Fashion',
-                languageSelection: 'Language Selection',
-                selectLanguage: 'Select Language',
-                next: 'Next',
-                back: 'Back',
-                profileColorSettings: 'Profile Color',
                 aquarius: 'Aquarius',
                 pisces: 'Pisces',
                 aries: 'Aries',
@@ -375,53 +316,89 @@ class DatingApp {
                 scorpio: 'Scorpio',
                 sagittarius: 'Sagittarius',
                 capricorn: 'Capricorn',
-                noActiveChats: 'You don\'t have any active chats yet. Start meeting people in the "Matches" section!', // НОВОЕ
-                messageDelivered: 'Delivered', // НОВОЕ
-                messageRead: 'Read', // НОВОЕ
-                blockUser: 'Block', // НОВОЕ
-                confirmBlockUser: 'Are you sure you want to block {name}? You will no longer receive messages from them.', // НОВОЕ
-                userBlocked: '{name} blocked.', // НОВОЕ
-                sendPhoto: 'Send Photo', // НОВОЕ
-                sendEmoji: 'Send Emoji', // НОВОЕ
-                likedBy: 'Liked By', // НОВОЕ
-                likedByTitle: 'Who Liked Me', // НОВОЕ
-                likedByDescription: 'Here you can see who liked you.', // НОВОЕ
-                noLikedByMessage: 'No one has liked you yet. Keep swiping!', // НОВОЕ
-                likeBack: 'Like Back', // НОВОЕ
-                skip: 'Skip', // НОВОЕ
-                // НОВЫЕ ПЕРЕВОДЫ ДЛЯ РАСШИРЕННЫХ ПОЛЕЙ
+                whatAreYouLookingFor: 'What are you looking for?',
+                friendship: 'Friendship',
+                dating: 'Dating',
+                serious: 'Serious Relationship',
+                networking: 'Networking',
+                travel: 'Travel Buddy',
+                yourInterests: 'Your Interests',
+                music: 'Music',
+                sports: 'Sports',
+                books: 'Books',
+                art: 'Art',
+                games: 'Games',
+                cooking: 'Cooking',
+                photography: 'Photography',
+                movies: 'Movies',
+                nature: 'Nature',
+                technology: 'Technology',
+                fashion: 'Fashion',
+                whoAreYouLookingFor: 'Who are you looking for?',
+                both: 'Everyone',
+                profileColor: 'Profile Color',
+                orChooseYourColor: 'Or choose your own color',
+                aboutYou: 'About You',
+                aboutYouPlaceholder: 'Tell us about yourself, your hobbies, dreams...',
+                saveProfile: 'Save Profile',
+                noDescription: 'No description provided.',
+                noData: 'No data',
+                noLookingFor: 'Not specified what they are looking for',
+                noInterests: 'No interests specified',
+                noPhotos: 'No photos available',
+                lastActiveToday: 'Online today',
+                lastActiveYesterday: 'Online yesterday',
+                lastActiveThisWeek: 'Online this week',
+                lastActiveRecently: 'Online recently',
+                km: 'km',
+                noNewProfiles: 'No new profiles for now. Try again later!',
+                backToProfile: 'Back to Profile',
+                match: 'Match!',
+                youLiked: 'You matched with {name}!',
+                likeSent: 'Like Sent!',
+                youLikedName: 'You liked {name}!',
+                superlikeSent: 'Superlike Sent!',
+                youSuperlikedName: 'You superliked {name}!',
+                writeMessage: 'Write a message',
+                continueSwiping: 'Continue Swiping',
+                yourChats: 'Your Chats',
+                yourChatsDescription: 'Here you will see your conversations.',
+                noActiveChats: 'You have no active chats yet. Start swiping in the "Matches" section!',
+                typeMessage: 'Type a message...',
+                messageRead: 'Read',
+                messageDelivered: 'Delivered',
+                confirmClearData: 'Are you sure you want to delete all profile data? This action is irreversible.',
+                clearProfileData: 'Clear Profile Data',
+                invalidDate: 'Invalid date of birth. Please check day, month, and year.',
+                fillAllFieldsAlert: 'Please fill in this field.',
+                maxInterestsAlert: 'You can select no more than {maxInterests} interests.',
                 education: 'Education',
-                yourEducation: 'Your Education',
                 profession: 'Profession',
+                yourEducation: 'Your Education',
                 yourProfession: 'Your Profession',
-                badHabits: 'Bad Habits',
-                yourBadHabits: 'Your Bad Habits',
+                yourBadHabits: 'Bad Habits',
                 none: 'None',
                 alcohol: 'Alcohol',
                 smoking: 'Smoking',
                 both: 'Both',
-                children: 'Children',
-                yourChildrenStatus: 'Your Children Status',
+                yourChildrenStatus: 'Children',
                 no_children: 'No children',
                 has_children: 'Has children',
                 wants_children: 'Wants children',
-                does_not_want_children: 'Does not want children',
-                pets: 'Pets',
-                yourPets: 'Your Pets',
+                does_not_want_children: 'Doesn\'t want children',
+                yourPets: 'Pets',
                 no_pets: 'No pets',
                 cat: 'Cat',
                 dog: 'Dog',
                 other_pets: 'Other',
-                languages: 'Languages',
-                yourLanguages: 'What languages do you know?',
+                yourLanguages: 'Languages',
                 russian: 'Russian',
                 english: 'English',
                 spanish: 'Spanish',
                 german: 'German',
                 french: 'French',
                 chinese: 'Chinese',
-                datingGoals: 'Dating Goals',
-                yourDatingGoals: 'What are you looking for in a relationship?',
+                yourDatingGoals: 'Dating Goals',
                 long_term_relationship: 'Long-term relationship',
                 short_term_dating: 'Short-term dating',
                 new_friends: 'New friends',
@@ -429,37 +406,36 @@ class DatingApp {
                 marriage: 'Marriage',
                 travel_buddy: 'Travel buddy',
                 hobby_partner: 'Hobby partner',
+                sendPhoto: 'Send Photo',
+                sendEmoji: 'Send Emoji',
+                blockUser: 'Block User',
+                confirmBlockUser: 'Are you sure you want to block {name}? You will no longer see their profile or messages.',
+                userBlocked: '{name} has been blocked.',
+                likedByTitle: 'Liked By',
+                likedByDescription: 'Here you can see who liked you.',
+                noLikedByMessage: 'No one has liked you yet. Keep swiping!',
+                likeBack: 'Like Back',
+                skip: 'Skip',
+                icebreakersTitle: 'Icebreakers',
+                icebreakersDescription: 'Choose a question or game to start the conversation.',
+                cancel: 'Cancel',
+                fact_about_me: 'Send {partnerName} a random fact about yourself.',
+                two_truths_one_lie: 'Play "Two truths and a lie".',
+                ideal_weekend: 'What\'s your ideal weekend?',
+                never_again: 'What would you never do again?',
+                favorite_movie: 'What\'s your favorite movie and why?',
+                dream_travel: 'Where would you travel right now if you could?',
+                hidden_talent: 'Do you have any hidden talents?',
+                best_advice: 'What\'s the best advice you\'ve ever received?',
+                morning_routine: 'Describe your ideal morning.',
+                superpower: 'If you had a superpower, what would it be?',
+                desert_island_book: 'What one book would you take to a desert island?',
+                first_thing_after_win: 'What\'s the first thing you\'d do if you won the lottery?',
+                childhood_dream: 'What did you dream of becoming as a child?',
+                favorite_food: 'What\'s your favorite food and why?',
+                learn_new_skill: 'What new skill would you like to learn?',
+                sendIcebreaker: 'Send Icebreaker',
             }
-        };
-
-        this.state = {
-            currentScreen: 'main',
-            userData: {
-                name: '',
-                gender: '',
-                age: '',
-                dob: { day: '', month: '', year: '' },
-                zodiacSign: null,
-                city: '',
-                description: '',
-                interests: [],
-                lookingFor: [],
-                preference: 'both',
-                profileColor: '#FF6B6B', // Default color
-                // НОВЫЕ ПОЛЯ ПРОФИЛЯ
-                education: '',
-                profession: '',
-                badHabits: [], // Может быть несколько
-                children: '', // Выбор из опций
-                pets: [], // Может быть несколько
-                languages: [], // Может быть несколько
-                datingGoals: [], // Множественный выбор
-            },
-            suggestedProfiles: [],
-            currentLanguage: 'ru', // Default language
-            unreadMessagesCount: 0, // НОВОЕ: Счетчик непрочитанных сообщений
-            blockedUsers: [], // НОВОЕ: Список заблокированных пользователей
-            likedByUsers: [], // НОВОЕ: Список пользователей, которые лайкнули текущего
         };
 
         this.initElements();
@@ -516,11 +492,11 @@ class DatingApp {
         setTimeout(() => {
             // Then fade in title and subtitle with staggered delays
             loadingTitle.style.animation = 'fadeInScale 1s ease-out forwards';
-        }, 1500); // Delay for title after logo animation starts
+        }, 300); // Delay for title after logo animation starts (reduced from 1500)
 
         setTimeout(() => {
             loadingSubtitle.style.animation = 'fadeInScale 1s ease-out forwards';
-        }, 1800); // Delay for subtitle after title starts
+        }, 600); // Delay for subtitle after title starts (reduced from 1800)
 
         setTimeout(() => {
             loadingScreen.style.opacity = '0';
@@ -537,7 +513,7 @@ class DatingApp {
                 appContainer.style.display = 'flex';
                 this.switchScreen(this.state.currentScreen);
             }, { once: true });
-        }, 3500); // Total duration before hiding loading screen
+        }, 2000); // Total duration before hiding loading screen (reduced from 3500)
     }
 
     initElements() {
@@ -611,11 +587,18 @@ class DatingApp {
             matchFullModalPets: document.getElementById('matchFullModalPets'),
             matchFullModalLanguages: document.getElementById('matchFullModalLanguages'),
             matchFullModalDatingGoals: document.getElementById('matchFullModalDatingGoals'),
-            // matchViewFullProfileBtn: document.getElementById('matchViewFullProfileBtn'), // УДАЛЕНО: Кнопка просмотра полного профиля анкеты
 
             // НОВОЕ: Элементы для уведомлений чата
             chatNavBtn: document.querySelector('.nav-btn[data-screen="chat"]'),
             chatNotificationBadge: document.getElementById('chatNotificationBadge'),
+
+            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ ЛЕДОКОЛОВ
+            icebreakerModalOverlay: document.getElementById('icebreakerModalOverlay'),
+            icebreakerModalCloseBtn: document.getElementById('icebreakerModalCloseBtn'),
+            icebreakerModalTitle: document.getElementById('icebreakerModalTitle'),
+            icebreakerModalDescription: document.getElementById('icebreakerModalDescription'),
+            icebreakerOptionsContainer: document.getElementById('icebreakerOptionsContainer'),
+            icebreakerModalCancelBtn: document.getElementById('icebreakerModalCancelBtn'),
         };
     }
 
@@ -640,6 +623,8 @@ class DatingApp {
                     // Ensure chatHandler is loaded before calling openChat
                     this.lazyLoadScript('chat').then(() => {
                         this.chatHandler.addChat(this.matchHandler.lastMatchedProfile);
+                        // If we want to immediately open the chat after match
+                        this.chatHandler.openChat(this.matchHandler.lastMatchedProfile.id);
                     });
                 }
             });
@@ -691,15 +676,20 @@ class DatingApp {
             });
         }
 
-        // УДАЛЕНО: Обработчик для кнопки просмотра полного профиля анкеты
-        // if (this.elements.matchViewFullProfileBtn) {
-        //     this.elements.matchViewFullProfileBtn.addEventListener('click', () => {
-        //         const currentProfile = this.matchHandler.app.state.suggestedProfiles[this.matchHandler.currentIndex];
-        //         if (currentProfile) {
-        //             this.showMatchFullModal(currentProfile);
-        //         }
-        //     });
-        // }
+        // НОВЫЕ ОБРАБОТЧИКИ ДЛЯ ЛЕДОКОЛОВ
+        if (this.elements.icebreakerModalCloseBtn) {
+            this.elements.icebreakerModalCloseBtn.addEventListener('click', () => this.hideIcebreakerModal());
+        }
+        if (this.elements.icebreakerModalOverlay) {
+            this.elements.icebreakerModalOverlay.addEventListener('click', (e) => {
+                if (e.target === this.elements.icebreakerModalOverlay) {
+                    this.hideIcebreakerModal();
+                }
+            });
+        }
+        if (this.elements.icebreakerModalCancelBtn) {
+            this.elements.icebreakerModalCancelBtn.addEventListener('click', () => this.hideIcebreakerModal());
+        }
 
         // Закрытие модальных окон по Esc
         document.addEventListener('keydown', (e) => {
@@ -712,6 +702,9 @@ class DatingApp {
                 }
                 if (this.elements.matchFullModalOverlay.classList.contains('active')) {
                     this.hideMatchFullModal();
+                }
+                if (this.elements.icebreakerModalOverlay.classList.contains('active')) {
+                    this.hideIcebreakerModal();
                 }
             }
         });
@@ -808,6 +801,7 @@ class DatingApp {
         localStorage.removeItem('appLanguage');
         localStorage.removeItem('blockedUsers'); // НОВОЕ: Очистка заблокированных пользователей
         localStorage.removeItem('datingAppLikedByUsers'); // НОВОЕ
+        localStorage.removeItem('datingAppChats'); // Очистка чатов
         this.state.userData = {
             name: '',
             gender: '',
@@ -836,6 +830,7 @@ class DatingApp {
         // Reset chatHandler if it's loaded
         if (this.chatHandler) {
             this.chatHandler.chats = {};
+            this.chatHandler.showChatListScreen(); // Re-render empty chat list
         }
         alert(this.translate('confirmClearData')); // This alert should be replaced with a custom modal
         this.setLanguage('ru');
@@ -870,7 +865,7 @@ class DatingApp {
             document.querySelector('.nav-btn[data-screen="match"]').classList.add('active');
             this.elements.topNavigation.style.display = 'flex';
             this.matchHandler.startMatch();
-            this.matchHandler.setupEventListeners(); // <--- ИСПРАВЛЕНО: Перепривязываем слушатели для кнопок свайпа
+            this.matchHandler.setupEventListeners();
         } else if (screenName === 'chat') {
             targetScreenElement = this.elements.chatScreen;
             document.querySelector('.nav-btn[data-screen="chat"]').classList.add('active');
@@ -915,6 +910,7 @@ class DatingApp {
             this.state.likedByUsers.forEach(profile => {
                 const likedByItem = document.createElement('div');
                 likedByItem.className = 'liked-by-item';
+                likedByItem.dataset.profileId = profile.id; // Добавлено для идентификации
                 likedByItem.innerHTML = `
                     <div class="liked-by-avatar" style="background-image: url('https://picsum.photos/seed/${profile.id}/80/80');"></div>
                     <div class="liked-by-info">
@@ -1015,7 +1011,9 @@ class DatingApp {
         this.elements.matchModalTitle.textContent = title;
         this.elements.matchModalMessage.textContent = message;
 
-        this.elements.matchModalMyAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${this.app.state.userData.name}/100/100)`;
+        // Убедимся, что this.app.state.userData.name существует для seed
+        const myAvatarSeed = this.state.userData.name || 'my_default_avatar';
+        this.elements.matchModalMyAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${myAvatarSeed}/100/100)`;
         this.elements.matchModalPartnerAvatar.style.backgroundImage = `url(https://picsum.photos/seed/${profile.id}/100/100)`;
 
         this.elements.matchModalChatBtn.textContent = this.translate('writeMessage');
@@ -1278,7 +1276,7 @@ class DatingApp {
                 this.profileHandler.showProfile();
             } else if (this.state.currentScreen === 'match') {
                 this.matchHandler.showNextProfile();
-                this.matchHandler.setupEventListeners(); // <--- ИСПРАВЛЕНО: Перепривязываем слушатели для кнопок свайпа
+                this.matchHandler.setupEventListeners();
             } else if (this.state.currentScreen === 'chat' && this.chatHandler) { // Check if loaded
                 this.chatHandler.showChatListScreen();
             } else if (this.state.currentScreen === 'settings' && this.settingsHandler) { // Check if loaded
@@ -1342,6 +1340,9 @@ class DatingApp {
             // Re-render match success modal content if it's active
             // This is a simplified approach; a more robust solution would involve re-calling showMatchSuccessModal
             // with the current profile and type, which would re-translate all its content.
+            // For now, we just update the buttons.
+            this.elements.matchModalChatBtn.textContent = this.translate('writeMessage');
+            this.elements.matchModalContinueBtn.textContent = this.translate('continueSwiping');
         }
 
         const settingsScreen = document.getElementById('settingsScreen');
@@ -1356,14 +1357,36 @@ class DatingApp {
 
         const matchScreen = document.getElementById('matchScreen');
         if (matchScreen.classList.contains('active')) {
-            document.getElementById('noProfilesMessage').innerHTML = `<p>${this.translate('noNewProfiles')}</p><button class="btn btn-secondary" style="margin-top: 20px;" id="backToProfileFromMatchBtn">${this.translate('backToProfile')}</button>`;
+            const noProfilesMessageElement = document.getElementById('noProfilesMessage');
+            if (noProfilesMessageElement) {
+                noProfilesMessageElement.innerHTML = `<p>${this.translate('noNewProfiles')}</p><button class="btn btn-secondary" style="margin-top: 20px;" id="backToProfileFromMatchBtn">${this.translate('backToProfile')}</button>`;
+                // Re-bind event listener for this button if it's dynamically re-rendered
+                const backToProfileFromMatchBtn = document.getElementById('backToProfileFromMatchBtn');
+                if (backToProfileFromMatchBtn) {
+                    backToProfileFromMatchBtn.removeEventListener('click', () => this.switchScreen('profile')); // Remove old
+                    backToProfileFromMatchBtn.addEventListener('click', () => this.switchScreen('profile')); // Add new
+                }
+            }
         }
 
         const likedByScreen = document.getElementById('likedByScreen'); // НОВОЕ
         if (likedByScreen) {
             likedByScreen.querySelector('.section-title').textContent = this.translate('likedByTitle');
             likedByScreen.querySelector('.section-description').textContent = this.translate('likedByDescription');
-            likedByScreen.querySelector('#noLikedByMessage p').textContent = this.translate('noLikedByMessage');
+            const noLikedByMessageElement = likedByScreen.querySelector('#noLikedByMessage p');
+            if (noLikedByMessageElement) {
+                noLikedByMessageElement.textContent = this.translate('noLikedByMessage');
+            }
+            // Re-render the list to update button texts
+            this.renderLikedByList();
+        }
+
+        // НОВОЕ: Обновление текстов для модального окна ледоколов
+        if (this.elements.icebreakerModalOverlay && this.elements.icebreakerModalOverlay.classList.contains('active')) {
+            // Only re-render if chatHandler and activeChatPartner exist
+            if (this.chatHandler && this.chatHandler.activeChatPartner) {
+                this.showIcebreakerModal(this.chatHandler.activeChatPartner); // Перерисовать модальное окно
+            }
         }
     }
 
@@ -1375,12 +1398,13 @@ class DatingApp {
             console.log(`User ${userId} blocked.`);
             // Если чат открыт, обновить его
             if (this.chatHandler && this.chatHandler.activeChatPartner && this.chatHandler.activeChatPartner.id === userId) {
-                this.chatHandler.showChatList(); // Вернуться к списку чатов
+                this.chatHandler.showChatListScreen(); // Вернуться к списку чатов
             }
             // Удалить чат из списка, если он существует
             if (this.chatHandler && this.chatHandler.chats[userId]) {
                 delete this.chatHandler.chats[userId];
                 this.chatHandler.renderChatList();
+                this.chatHandler.updateTotalUnreadCount(); // Обновить счетчик после удаления чата
             }
         }
     }
@@ -1401,7 +1425,7 @@ class DatingApp {
                 this.elements.chatNotificationBadge.textContent = this.state.unreadMessagesCount;
                 this.elements.chatNotificationBadge.classList.add('active');
                 if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-                    Telegram.WebApp.setHeaderColor(getComputedStyle(document.documentElement).getPropertyValue('--surface')); // Обновить цвет хедера, чтобы бейдж был виден
+                    // Telegram.WebApp.setHeaderColor(getComputedStyle(document.documentElement).getPropertyValue('--surface')); // Обновить цвет хедера, чтобы бейдж был виден
                     // Telegram.WebApp.setBadges({ unread_count: this.state.unreadMessagesCount }); // Для реального бейджа в Telegram
                 }
             } else {
@@ -1410,6 +1434,61 @@ class DatingApp {
                     // Telegram.WebApp.setBadges({ unread_count: 0 });
                 }
             }
+        }
+    }
+
+    // НОВЫЕ МЕТОДЫ ДЛЯ ЛЕДОКОЛОВ
+    showIcebreakerModal(partner) {
+        if (!this.elements.icebreakerModalOverlay) return;
+
+        this.elements.icebreakerModalTitle.textContent = this.translate('icebreakersTitle');
+        this.elements.icebreakerModalDescription.textContent = this.translate('icebreakersDescription');
+        this.elements.icebreakerModalCancelBtn.textContent = this.translate('cancel');
+
+        this.elements.icebreakerOptionsContainer.innerHTML = ''; // Очищаем предыдущие опции
+
+        // Добавляем вопросы
+        const questions = this.config.icebreakers.filter(item => item.type === 'question');
+        questions.forEach(q => {
+            const item = document.createElement('div');
+            item.className = 'icebreaker-option-item';
+            item.dataset.icebreakerId = q.id;
+            item.dataset.icebreakerType = q.type;
+            item.innerHTML = `<span class="emoji">❓</span> <span class="text">${this.translate(q.id)}</span>`;
+            item.addEventListener('click', () => this.selectIcebreaker(q.id, q.type, partner));
+            this.elements.icebreakerOptionsContainer.appendChild(item);
+        });
+
+        // Добавляем игры
+        const games = this.config.icebreakers.filter(item => item.type === 'game');
+        games.forEach(g => {
+            const item = document.createElement('div');
+            item.className = 'icebreaker-option-item';
+            item.dataset.icebreakerId = g.id;
+            item.dataset.icebreakerType = g.type;
+            item.innerHTML = `<span class="emoji">🎲</span> <span class="text">${this.translate(g.id, { partnerName: partner.name })}</span>`;
+            item.addEventListener('click', () => this.selectIcebreaker(g.id, g.type, partner));
+            this.elements.icebreakerOptionsContainer.appendChild(item);
+        });
+
+        this.elements.icebreakerModalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        this.elements.icebreakerModalOverlay.focus();
+    }
+
+    hideIcebreakerModal() {
+        if (this.elements.icebreakerModalOverlay) {
+            this.elements.icebreakerModalOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+
+    selectIcebreaker(icebreakerId, type, partner) {
+        const icebreaker = this.config.icebreakers.find(item => item.id === icebreakerId);
+        if (icebreaker && this.chatHandler) {
+            let messageText = this.translate(icebreaker.id, { partnerName: partner.name });
+            this.chatHandler.sendMessage(messageText); // Отправляем как обычное сообщение
+            this.hideIcebreakerModal();
         }
     }
 }

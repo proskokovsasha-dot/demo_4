@@ -27,6 +27,7 @@ class ChatHandler {
             blockUserBtn: document.getElementById('blockUserBtn'), // НОВОЕ: Кнопка блокировки
             sendPhotoBtn: document.getElementById('sendPhotoBtn'), // НОВОЕ: Кнопка отправки фото
             sendEmojiBtn: document.getElementById('sendEmojiBtn'), // НОВОЕ: Кнопка отправки эмодзи
+            sendIcebreakerBtn: document.getElementById('sendIcebreakerBtn'), // НОВАЯ КНОПКА ЛЕДОКОЛА
         };
     }
 
@@ -70,6 +71,14 @@ class ChatHandler {
         }
         if (this.elements.sendEmojiBtn) {
             this.elements.sendEmojiBtn.addEventListener('click', () => this.openEmojiPicker()); // Заглушка для выбора эмодзи
+        }
+        // НОВЫЙ ОБРАБОТЧИК ДЛЯ КНОПКИ ЛЕДОКОЛА
+        if (this.elements.sendIcebreakerBtn) {
+            this.elements.sendIcebreakerBtn.addEventListener('click', () => {
+                if (this.activeChatPartner) {
+                    this.app.showIcebreakerModal(this.activeChatPartner);
+                }
+            });
         }
     }
 
@@ -217,8 +226,7 @@ class ChatHandler {
         });
     }
 
-    sendMessage() {
-        const messageText = this.elements.messageInput.value.trim();
+    sendMessage(messageText = this.elements.messageInput.value.trim()) { // Добавлена возможность передавать текст
         if (messageText === '' || !this.activeChatPartner) {
             return;
         }
@@ -332,6 +340,8 @@ class ChatHandler {
             if (sendPhotoBtn) sendPhotoBtn.setAttribute('aria-label', this.app.translate('sendPhoto'));
             const sendEmojiBtn = document.getElementById('sendEmojiBtn');
             if (sendEmojiBtn) sendEmojiBtn.setAttribute('aria-label', this.app.translate('sendEmoji'));
+            const sendIcebreakerBtn = document.getElementById('sendIcebreakerBtn'); // НОВОЕ
+            if (sendIcebreakerBtn) sendIcebreakerBtn.setAttribute('aria-label', this.app.translate('sendIcebreaker')); // НОВОЕ
         }
         
         this.renderChatList();
@@ -488,4 +498,3 @@ class ChatHandler {
         }
     }
 }
-
