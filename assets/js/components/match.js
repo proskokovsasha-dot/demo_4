@@ -8,7 +8,7 @@ class MatchHandler {
 
     init() {
         this.cacheElements();
-        this.setupEventListeners();
+        this.setupEventListeners(); // Изначальная привязка
     }
 
     cacheElements() {
@@ -38,30 +38,36 @@ class MatchHandler {
 
     setupEventListeners() {
         // Удаляем старые обработчики, чтобы избежать дублирования
+        // Проверяем, существуют ли обработчики, прежде чем удалять
         if (this.nopeBtnHandler) {
             this.elements.nopeBtn.removeEventListener('click', this.nopeBtnHandler);
+        }
+        if (this.likeBtnHandler) {
             this.elements.likeBtn.removeEventListener('click', this.likeBtnHandler);
-            if (this.elements.superLikeBtn) {
-                this.elements.superLikeBtn.removeEventListener('click', this.superLikeBtnHandler);
-            }
+        }
+        if (this.superLikeBtnHandler && this.elements.superLikeBtn) {
+            this.elements.superLikeBtn.removeEventListener('click', this.superLikeBtnHandler);
+        }
+        if (this.matchCardClickHandler && this.elements.matchCard) {
+            this.elements.matchCard.removeEventListener('click', this.matchCardClickHandler);
         }
 
         // Привязываем новые обработчики кнопок
-        this.nopeBtnHandler = (e) => { // Добавлено 'e'
-            e.stopPropagation(); // Останавливаем всплытие события
+        this.nopeBtnHandler = (e) => {
+            e.stopPropagation();
             this.handleSwipe('nope');
         };
         this.elements.nopeBtn.addEventListener('click', this.nopeBtnHandler);
         
-        this.likeBtnHandler = (e) => { // Добавлено 'e'
-            e.stopPropagation(); // Останавливаем всплытие события
+        this.likeBtnHandler = (e) => {
+            e.stopPropagation();
             this.handleSwipe('like');
         };
         this.elements.likeBtn.addEventListener('click', this.likeBtnHandler);
 
         if (this.elements.superLikeBtn) {
-            this.superLikeBtnHandler = (e) => { // Добавлено 'e'
-                e.stopPropagation(); // Останавливаем всплытие события
+            this.superLikeBtnHandler = (e) => {
+                e.stopPropagation();
                 this.handleSwipe('superlike');
             };
             this.elements.superLikeBtn.addEventListener('click', this.superLikeBtnHandler);
@@ -69,10 +75,6 @@ class MatchHandler {
 
         // НОВОЕ: Добавляем обработчик клика на всю карточку профиля
         if (this.elements.matchCard) {
-            // Удаляем предыдущий обработчик, если он был
-            if (this.matchCardClickHandler) {
-                this.elements.matchCard.removeEventListener('click', this.matchCardClickHandler);
-            }
             this.matchCardClickHandler = () => {
                 const currentProfile = this.app.state.suggestedProfiles[this.currentIndex];
                 if (currentProfile) {

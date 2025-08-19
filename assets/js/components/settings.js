@@ -12,7 +12,7 @@ class SettingsHandler {
         this.app.elements.settingsScreen.innerHTML = `
             <div class="settings-container">
                 <h2 class="section-title" id="settingsScreenTitle">${t('settings')}</h2>
-                <p class="section-description">${t('yourChatsDescription')}</p>
+               
 
                 <!-- Language Settings Card -->
                 <div class="settings-card" role="region" aria-labelledby="languageSettingsTitle">

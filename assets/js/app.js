@@ -13,7 +13,7 @@ class DatingApp {
                 { id: 'art', name: 'Искусство', emoji: '🎨' },
                 { id: 'games', name: 'Игры', emoji: '🎮' },
                 { id: 'cooking', name: 'Кулинария', emoji: '🍳' },
-                { id: 'photography', name: 'Фотография', emoji: '📷' },
+                { id: 'photography', name: 'Фотография', 'emoji': '📷' },
                 { id: 'movies', name: 'Кино', emoji: '🎬' },
                 { id: 'nature', name: 'Природа', emoji: '🌳' },
                 { id: 'technology', name: 'Технологии', emoji: '💻' },
@@ -466,7 +466,7 @@ class DatingApp {
         this.formHandler = new FormHandler(this);
         this.profileHandler = new ProfileHandler(this);
         this.uiHandler = new UIHandler(this);
-        this.matchHandler = new MatchHandler(this);
+        this.matchHandler = new MatchHandler(this); // Инициализируем MatchHandler здесь
         // ChatHandler and SettingsHandler will be lazy loaded
         this.chatHandler = null;
         this.settingsHandler = null;
@@ -870,6 +870,7 @@ class DatingApp {
             document.querySelector('.nav-btn[data-screen="match"]').classList.add('active');
             this.elements.topNavigation.style.display = 'flex';
             this.matchHandler.startMatch();
+            this.matchHandler.setupEventListeners(); // <--- ИСПРАВЛЕНО: Перепривязываем слушатели для кнопок свайпа
         } else if (screenName === 'chat') {
             targetScreenElement = this.elements.chatScreen;
             document.querySelector('.nav-btn[data-screen="chat"]').classList.add('active');
@@ -1277,6 +1278,7 @@ class DatingApp {
                 this.profileHandler.showProfile();
             } else if (this.state.currentScreen === 'match') {
                 this.matchHandler.showNextProfile();
+                this.matchHandler.setupEventListeners(); // <--- ИСПРАВЛЕНО: Перепривязываем слушатели для кнопок свайпа
             } else if (this.state.currentScreen === 'chat' && this.chatHandler) { // Check if loaded
                 this.chatHandler.showChatListScreen();
             } else if (this.state.currentScreen === 'settings' && this.settingsHandler) { // Check if loaded
