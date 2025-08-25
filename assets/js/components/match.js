@@ -388,13 +388,9 @@ class MatchHandler {
                 });
             } else {
                 this.app.showMatchSuccessModal(profile, 'like');
-                // Если нет мэтча, добавляем пользователя в список "Кто меня лайкнул"
-                // Только если его там еще нет и он не заблокирован
-                if (!this.app.state.likedByUsers.some(p => p.id === profile.id) && !this.app.isUserBlocked(profile.id)) {
-                    this.app.state.likedByUsers.push(profile);
-                    this.app.saveLikedByUsers();
-                    console.log(`Пользователь ${profile.name} добавлен в список "Кто меня лайкнул".`);
-                }
+                // Если нет мэтча, НЕ добавляем пользователя в список "Кто меня лайкнул"
+                // this.app.state.likedByUsers.push(profile); // УДАЛЕНО
+                // this.app.saveLikedByUsers(); // УДАЛЕНО
             }
             card.classList.add('animate-like');
         } else if (action === 'nope') {
