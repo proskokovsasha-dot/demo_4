@@ -109,7 +109,7 @@ class ChatHandler {
         this.elements.activeChatContainer.classList.remove('active');
         this.elements.chatListContainer.style.display = 'flex';
         this.elements.noChatsMessage.style.display = Object.keys(this.chats).length === 0 ? 'block' : 'none';
-        this.app.elements.topNavigation.style.display = 'flex'; 
+        this.app.elements.topNavigation.style.display = 'flex';
         this.updateChatTexts();
         this.updateTotalUnreadCount(); // НОВОЕ: Обновляем общий счетчик при показе списка чатов
     }
@@ -173,7 +173,7 @@ class ChatHandler {
 
         this.elements.chatPartnerAvatar.style.backgroundImage = `url('${this.activeChatPartner.avatar}')`;
         this.elements.chatPartnerName.textContent = `${this.activeChatPartner.name}, ${this.activeChatPartner.age}`;
-        
+
         // НОВОЕ: Сброс счетчика непрочитанных сообщений для текущего чата
         if (this.chats[chatId].unreadCount > 0) {
             this.chats[chatId].unreadCount = 0;
@@ -185,7 +185,7 @@ class ChatHandler {
         this.elements.activeChatContainer.classList.add('active');
         this.renderMessages();
         this.scrollToBottom();
-        this.app.elements.topNavigation.style.display = 'none'; 
+        this.app.elements.topNavigation.style.display = 'none';
         this.updateChatTexts();
         this.elements.messageInput.focus(); // Focus input field
     }
@@ -197,7 +197,7 @@ class ChatHandler {
         messages.forEach(msg => {
             const messageBubble = document.createElement('div');
             messageBubble.className = `message-bubble ${msg.sender === 'me' ? 'sent' : 'received'} ${msg.type === 'media' ? 'media' : ''}`; // НОВОЕ: Класс для медиа
-            
+
             if (msg.type === 'text') {
                 messageBubble.textContent = msg.text;
             } else if (msg.type === 'media') {
@@ -293,7 +293,7 @@ class ChatHandler {
         this.activeChatPartner = null;
         this.elements.activeChatContainer.classList.remove('active');
         this.showChatListScreen();
-        this.app.elements.topNavigation.style.display = 'flex'; 
+        this.app.elements.topNavigation.style.display = 'flex';
     }
 
     scrollToBottom() {
@@ -343,7 +343,7 @@ class ChatHandler {
             const sendIcebreakerBtn = document.getElementById('sendIcebreakerBtn'); // НОВОЕ
             if (sendIcebreakerBtn) sendIcebreakerBtn.setAttribute('aria-label', this.app.translate('sendIcebreaker')); // НОВОЕ
         }
-        
+
         this.renderChatList();
     }
 
@@ -394,7 +394,7 @@ class ChatHandler {
                 }
 
                 chatData.messages.push(newMessage);
-                
+
                 // Увеличиваем счетчик непрочитанных, если чат не активен
                 if (this.activeChatPartner && this.activeChatPartner.id === randomChatId) {
                     // Если чат активен, сразу помечаем как прочитанное

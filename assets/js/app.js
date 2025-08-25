@@ -839,65 +839,69 @@ class DatingApp {
     }
 
     async switchScreen(screenName) {
+        // Hide all screens first
         document.querySelectorAll('.screen').forEach(screen => {
             screen.classList.remove('active');
             screen.style.display = 'none';
         });
 
+        // Deactivate all nav buttons
         this.elements.navButtons.forEach(button => {
             button.classList.remove('active');
-            // Убираем tabindex="-1" со всех кнопок навигации, чтобы они были доступны для фокуса
-            button.removeAttribute('tabindex');
+            button.removeAttribute('tabindex'); // Ensure all nav buttons are focusable
         });
 
         let targetScreenElement;
+        let navButtonToActivate = null;
+
+        // Determine target screen and nav button
         if (screenName === 'registration') {
             targetScreenElement = this.elements.registrationForm;
             this.elements.topNavigation.style.display = 'none';
             this.formHandler.renderForm();
         } else if (screenName === 'profile') {
             targetScreenElement = this.elements.profileView;
-            document.querySelector('.nav-btn[data-screen="profile"]').classList.add('active');
+            navButtonToActivate = document.querySelector('.nav-btn[data-screen="profile"]');
             this.elements.topNavigation.style.display = 'flex';
             this.profileHandler.showProfile();
         } else if (screenName === 'match') {
             targetScreenElement = this.elements.matchScreen;
-            document.querySelector('.nav-btn[data-screen="match"]').classList.add('active');
+            navButtonToActivate = document.querySelector('.nav-btn[data-screen="match"]');
             this.elements.topNavigation.style.display = 'flex';
             this.matchHandler.startMatch();
             this.matchHandler.setupEventListeners();
         } else if (screenName === 'chat') {
             targetScreenElement = this.elements.chatScreen;
-            document.querySelector('.nav-btn[data-screen="chat"]').classList.add('active');
+            navButtonToActivate = document.querySelector('.nav-btn[data-screen="chat"]');
             this.elements.topNavigation.style.display = 'flex';
             await this.lazyLoadScript('chat');
             this.chatHandler.showChatListScreen();
-            this.state.unreadMessagesCount = 0; // НОВОЕ: Сброс счетчика при открытии чата
-            this.updateChatNotificationBadge(); // НОВОЕ: Обновление бейджа
+            this.state.unreadMessagesCount = 0; // Reset unread count when chat is opened
+            this.updateChatNotificationBadge();
         } else if (screenName === 'settings') {
             targetScreenElement = this.elements.settingsScreen;
-            document.querySelector('.nav-btn[data-screen="settings"]').classList.add('active');
+            navButtonToActivate = document.querySelector('.nav-btn[data-screen="settings"]');
             this.elements.topNavigation.style.display = 'flex';
             await this.lazyLoadScript('settings');
             this.settingsHandler.renderSettings();
-        } 
-        // else if (screenName === 'likedBy') { // УДАЛЕНО
-        //     targetScreenElement = this.elements.likedByScreen;
-        //     document.querySelector('.nav-btn[data-screen="likedBy"]').classList.add('active');
-        //     this.elements.topNavigation.style.display = 'flex';
-        //     this.renderLikedByList(); // НОВОЕ: Рендерим список лайкнувших
-        // }
+        }
 
+        // Activate the target screen and nav button
         if (targetScreenElement) {
-            targetScreenElement.style.display = 'flex';
+            targetScreenElement.style.display = 'flex'; // Make it visible for transition
+            // Use a small timeout to ensure display:flex is applied before adding 'active'
             setTimeout(() => {
                 targetScreenElement.classList.add('active');
             }, 10);
+        }
+        if (navButtonToActivate) {
+            navButtonToActivate.classList.add('active');
         }
 
         this.state.currentScreen = screenName;
         this.updateTextContent();
     }
+
 
     // renderLikedByList() { // УДАЛЕНО: Функция для рендеринга списка лайкнувших
     //     const likedByListContainer = document.getElementById('likedByList');
@@ -1282,7 +1286,7 @@ class DatingApp {
                 this.chatHandler.showChatListScreen();
             } else if (this.state.currentScreen === 'settings' && this.settingsHandler) { // Check if loaded
                 this.settingsHandler.renderSettings();
-            } 
+            }
             // else if (this.state.currentScreen === 'likedBy') { // УДАЛЕНО
             //     this.renderLikedByList();
             // }

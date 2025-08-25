@@ -39,6 +39,7 @@
     color: var(--match-text-color);
     /* Изменено: убраны прямые переходы, теперь управляется JS */
     transform-origin: bottom center;
+    border: none; /* Убрана граница */
 }
 
 .match-card.animate-like {
