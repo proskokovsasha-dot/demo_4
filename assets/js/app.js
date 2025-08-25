@@ -283,6 +283,10 @@ class DatingApp {
                 favorite_food: 'Какое твое любимое блюдо и почему?' ,
                 learn_new_skill: 'Какой новый навык ты хотел(а) бы освоить?',
                 sendIcebreaker: 'Отправить ледокол',
+                settings: 'Настройки', // Добавлено
+                languageSelection: 'Выбор языка', // Добавлено
+                selectLanguage: 'Выберите язык', // Добавлено
+                profileColorSettings: 'Настройки цвета профиля', // Добавлено
             },
             en: {
                 loadingTitle: 'Meeting Point',
@@ -435,6 +439,10 @@ class DatingApp {
                 favorite_food: 'What\'s your favorite food and why?',
                 learn_new_skill: 'What new skill would you like to learn?',
                 sendIcebreaker: 'Send Icebreaker',
+                settings: 'Settings', // Добавлено
+                languageSelection: 'Language Selection', // Добавлено
+                selectLanguage: 'Select Language', // Добавлено
+                profileColorSettings: 'Profile Color Settings', // Добавлено
             }
         };
 
@@ -1052,6 +1060,7 @@ class DatingApp {
         this.elements.profileFullModalDescriptionFull.textContent = fullDescription;
 
         // НОВЫЕ ПОЛЯ
+        // Обновлено: теперь отображаем текст, даже если поле пустое, используя "Нет данных"
         this.elements.profileFullModalEducation.textContent = profileData.education || this.translate('noData');
         this.elements.profileFullModalProfession.textContent = profileData.profession || this.translate('noData');
 
@@ -1138,6 +1147,7 @@ class DatingApp {
         }
 
         // НОВЫЕ ПОЛЯ
+        // Обновлено: теперь отображаем текст, даже если поле пустое, используя "Нет данных"
         this.elements.matchFullModalEducation.textContent = profileData.education || this.translate('noData');
         this.elements.matchFullModalProfession.textContent = profileData.profession || this.translate('noData');
 

@@ -33,6 +33,15 @@ class MatchHandler {
             matchCardActions: document.querySelector('.match-card-actions'),
             matchActiveDot: document.querySelector('.match-active-dot'),
             // matchViewFullProfileBtn: document.getElementById('matchViewFullProfileBtn'), // УДАЛЕНО
+
+            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ ОТОБРАЖЕНИЯ В КАРТОЧКЕ АНКЕТЫ
+            matchEducation: document.getElementById('matchFullModalEducation'), // Используем те же ID, что и для модалки
+            matchProfession: document.getElementById('matchFullModalProfession'),
+            matchBadHabits: document.getElementById('matchFullModalBadHabits'),
+            matchChildren: document.getElementById('matchFullModalChildren'),
+            matchPets: document.getElementById('matchFullModalPets'),
+            matchLanguages: document.getElementById('matchFullModalLanguages'),
+            matchDatingGoals: document.getElementById('matchFullModalDatingGoals'),
         };
     }
 
@@ -126,13 +135,13 @@ class MatchHandler {
         ];
 
         // НОВЫЕ ДАННЫЕ ДЛЯ ГЕНЕРАЦИИ
-        const educations = ['Высшее', 'Среднее специальное', 'Неоконченное высшее', 'Кандидат наук'];
-        const professions = ['Инженер', 'Дизайнер', 'Врач', 'Учитель', 'Менеджер', 'Разработчик', 'Предприниматель', 'Студент'];
-        const badHabits = [['none'], ['alcohol'], ['smoking'], ['alcohol', 'smoking']];
-        const childrenStatuses = ['no_children', 'has_children', 'wants_children', 'does_not_want_children'];
-        const pets = [['no_pets'], ['cat'], ['dog'], ['cat', 'dog'], ['other_pets']];
-        const languages = [['russian'], ['english'], ['russian', 'english'], ['spanish']];
-        const datingGoals = [['long_term_relationship'], ['new_friends'], ['casual_fun'], ['marriage'], ['travel_buddy'], ['hobby_partner']];
+        const educations = ['Высшее', 'Среднее специальное', 'Неоконченное высшее', 'Кандидат наук', '']; // Добавлена пустая строка
+        const professions = ['Инженер', 'Дизайнер', 'Врач', 'Учитель', 'Менеджер', 'Разработчик', 'Предприниматель', 'Студент', '']; // Добавлена пустая строка
+        const badHabits = [['none'], ['alcohol'], ['smoking'], ['alcohol', 'smoking'], []]; // Добавлен пустой массив
+        const childrenStatuses = ['no_children', 'has_children', 'wants_children', 'does_not_want_children', '']; // Добавлена пустая строка
+        const pets = [['no_pets'], ['cat'], ['dog'], ['cat', 'dog'], ['other_pets'], []]; // Добавлен пустой массив
+        const languages = [['russian'], ['english'], ['russian', 'english'], ['spanish'], []]; // Добавлен пустой массив
+        const datingGoals = [['long_term_relationship'], ['new_friends'], ['casual_fun'], ['marriage'], ['travel_buddy'], ['hobby_partner'], []]; // Добавлен пустой массив
 
 
         for (let i = 0; i < count; i++) {
@@ -286,6 +295,16 @@ class MatchHandler {
         this.updateLookingFor(profile.lookingFor, this.app.config.lookingForOptions, this.elements.matchLookingFor);
         this.updateInterests(profile.interests, this.app.config.interests, this.elements.matchInterests);
         // this.updatePhotos(profile.photos, this.elements.matchPhotosGrid); // Удалено
+
+        // НОВЫЕ ПОЛЯ: Обновление содержимого
+        this.elements.matchEducation.textContent = profile.education || this.app.translate('noData');
+        this.elements.matchProfession.textContent = profile.profession || this.app.translate('noData');
+        this.app.renderTags(this.elements.matchBadHabits, profile.badHabits, this.app.config.badHabitsOptions, 'bad-habit');
+        this.app.renderSingleTag(this.elements.matchChildren, profile.children, this.app.config.childrenOptions, 'children');
+        this.app.renderTags(this.elements.matchPets, profile.pets, this.app.config.petsOptions, 'pets');
+        this.app.renderTags(this.elements.matchLanguages, profile.languages, this.app.config.languagesOptions, 'language');
+        this.app.renderTags(this.elements.matchDatingGoals, profile.datingGoals, this.app.config.datingGoalsOptions, 'dating-goal');
+
 
         this.elements.matchCard.style.transform = 'translateX(0) rotate(0)';
         this.elements.matchCard.style.opacity = '1';
